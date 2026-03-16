@@ -1,0 +1,220 @@
+# =============================================================================
+# DIRECTOR: Decoupled Identity and REference ConTexT fOR Multi-Shot Video
+# Default Configuration
+# =============================================================================
+
+seed: 42
+cuda_device: 3  # CUDA_VISIBLE_DEVICES
+
+# --- Model ---
+model:
+  backbone: "THUDM/CogVideoX-2b"
+  # CogVideoX-2b architecture constants
+  inner_dim: 1920            # num_heads(30) * head_dim(64)
+  text_embed_dim: 4096
+  num_heads: 30
+  head_dim: 64
+  num_layers: 30
+  max_text_seq_length: 226
+  patch_size: 2
+  vae_latent_channels: 16
+  vae_spatial_scale: 8      # 2^(len(block_out_channels)-1)
+  vae_temporal_compression: 4
+  vae_scaling_factor: 1.15258426
+
+  # DIRECTOR-specific
+  context:
+    local_token_count: 256     # tokens from VAE encoding of last frame
+    global_token_count: 64     # tokens per character from CLIP
+    max_characters: 4          # max character references
+    context_dim: 1920          # must match inner_dim
+    clip_vision_dim: 1024      # CLIP ViT-L/14 output dim
+    local_proj_dim: 1920       # projection target for local tokens
+    global_proj_dim: 1920      # projection target for global tokens
+    clip_model: "openai/clip-vit-large-patch14"
+
+  # Multi-context dropout probabilities (must sum to 1.0)
+  dropout:
+    drop_global_prob: 0.10     # drop global tokens
+    drop_local_prob: 0.10      # drop local tokens
+    keep_both_prob: 0.80       # keep both
+
+  # Attention injection
+  attention:
+    inject_layers: "all"       # "all" or list of layer indices
+    context_gate_init: 0.0     # initial gate value (tanh gating)
+
+# --- Dataset ---
+dataset:
+  # Raw video processing
+  video_dir: "data/raw_videos"
+  processed_dir: "data/processed"
+  triplet_dir: "data/triplets"
+  dataset_dir: "data/processed_dataset"
+  cache_dir: "data/cache"
+
+  # Shot detection (TransNetV2)
+  shot_detection:
+    threshold: 0.5
+    min_shot_length_frames: 24    # ~1 second at 24fps
+    batch_size: 16
+
+  # Identity matching (DINOv2)
+  identity_matching:
+    model: "facebook/dinov2-base"
+    similarity_threshold: 0.75
+    min_face_size: 64
+
+  # Character extraction (SAM2)
+  character_extraction:
+    model_cfg: "sam2_hiera_l"
+    points_per_side: 32
+    pred_iou_thresh: 0.88
+    stability_score_thresh: 0.95
+
+  # Video properties
+  video:
+    fps: 8
+    num_frames: 49              # CogVideoX native
+    height: 480
+    width: 720
+    latent_height: 60           # 480 / 8
+    latent_width: 90            # 720 / 8
+    latent_frames: 13           # (49 - 1) / 4 + 1
+
+  # Captioning
+  captioning:
+    model: "llava"              # or "gpt4v" for API-based
+    max_caption_length: 200
+
+  # DataLoader
+  dataloader:
+    batch_size: 1
+    num_workers: 4
+    pin_memory: true
+    prefetch_factor: 2
+
+# --- Training ---
+training:
+  # Optimization
+  optimizer:
+    type: "adamw"
+    lr: 1.0e-5
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "cosine"
+    warmup_steps: 500
+    min_lr_ratio: 0.1
+
+  # Training loop
+  num_epochs: 50
+  max_steps: 100000
+  gradient_accumulation_steps: 4
+  max_grad_norm: 1.0
+
+  # Precision
+  mixed_precision: "bf16"
+  gradient_checkpointing: true    # compatible with post-block adapter design
+
+  # Single-GPU memory settings (RTX 5090 32GB, gradient checkpointing ON)
+  # 320x512x13 = 23.5GB with headroom for dataloader + VAE
+  # 384x640x13 = 30.5GB (tight, may OOM with num_workers>0)
+  train_height: 320
+  train_width: 512
+  train_frames: 13
+
+  # Flow matching
+  flow_matching:
+    sigma_min: 0.001           # minimum noise for stability
+    time_sampling: "logit_normal"  # uniform, logit_normal
+    logit_normal_mean: 0.0
+    logit_normal_std: 1.0
+
+  # Checkpointing
+  checkpoint:
+    save_every_steps: 5000
+    save_dir: "checkpoints"
+    keep_last_n: 3
+    save_best: true
+    best_metric: "loss"        # metric to track for best model
+
+  # Logging
+  logging:
+    log_every_steps: 50
+    tensorboard_dir: "logs/tensorboard"
+    log_grad_norm: true
+
+  # LoRA (optional fine-tuning mode)
+  lora:
+    enabled: false
+    rank: 64
+    alpha: 64
+    target_modules: ["to_q", "to_k", "to_v", "to_out.0"]
+    dropout: 0.0
+
+  # DeepSpeed
+  deepspeed:
+    enabled: false
+    config_file: "configs/deepspeed_config.json"
+
+# --- Inference ---
+inference:
+  # Multi-CFG guidance scales
+  guidance:
+    omega_text: 6.0
+    omega_local: 2.0
+    omega_global: 3.0
+
+  # ODE solver
+  solver:
+    type: "euler"              # euler, midpoint
+    num_steps: 50
+    sigma_min: 0.001
+
+  # Generation
+  generation:
+    num_frames: 49
+    height: 480
+    width: 720
+    fps: 8
+
+  # Autoregressive
+  autoregressive:
+    max_shots: 10
+    overlap_frames: 0          # O(1) memory: no frame overlap needed
+    character_cache_size: 4
+
+  # Output
+  output:
+    save_dir: "outputs"
+    save_individual_shots: true
+    save_concatenated: true
+    video_codec: "libx264"
+    video_quality: 23          # CRF value
+
+# --- Evaluation ---
+evaluation:
+  # Identity consistency (DINOv2)
+  identity:
+    model: "facebook/dinov2-base"
+    shot_pairs: "all"          # "all", "adjacent", "distant"
+    num_samples: 100
+
+  # Motion coherence (optical flow)
+  motion:
+    flow_method: "raft"        # raft, farneback
+    boundary_window: 5         # frames around shot boundary
+
+  # VBench
+  vbench:
+    dimensions: ["subject_consistency", "temporal_flickering", "motion_smoothness",
+                  "aesthetic_quality", "imaging_quality"]
+
+  # Comparison
+  comparison:
+    baselines: ["storydiffusion"]
+    num_test_prompts: 50
+    metrics: ["identity_consistency", "motion_coherence", "fid", "fvd"]

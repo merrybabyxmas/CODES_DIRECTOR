@@ -1,0 +1,22 @@
+# Model weights & checkpoints
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Raw data & large files
+data/raw_videos/
+data/processed_dataset/
+data/test_output/
+data/test_single_video/
+
+# Generated outputs
+outputs/
+
+# Logs
+logs/
+
+# Python cache
+__pycache__/
+*.pyc

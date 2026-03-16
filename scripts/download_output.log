@@ -1,0 +1,982 @@
+[1] https://www.youtube.com/watch?v=hEJnMQG9ev8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=hEJnMQG9ev8
+[youtube] hEJnMQG9ev8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] hEJnMQG9ev8: Downloading android vr player API JSON
+[info] hEJnMQG9ev8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/hEJnMQG9ev8.mp4
+[download]   0.0% of   13.42MiB at  Unknown B/s ETA Unknown[download]   0.0% of   13.42MiB at  Unknown B/s ETA Unknown[download]   0.1% of   13.42MiB at  Unknown B/s ETA Unknown[download]   0.1% of   13.42MiB at    8.80MiB/s ETA 00:01  [download]   0.2% of   13.42MiB at    4.57MiB/s ETA 00:02[download]   0.5% of   13.42MiB at    6.16MiB/s ETA 00:02[download]   0.9% of   13.42MiB at    6.85MiB/s ETA 00:01[download]   1.9% of   13.42MiB at    7.05MiB/s ETA 00:01[download]   3.7% of   13.42MiB at    7.02MiB/s ETA 00:01[download]   7.4% of   13.42MiB at    7.35MiB/s ETA 00:01[download]  14.9% of   13.42MiB at    6.69MiB/s ETA 00:01[download]  29.8% of   13.42MiB at    7.12MiB/s ETA 00:01[download]  59.6% of   13.42MiB at    6.97MiB/s ETA 00:00[download]  73.6% of   13.42MiB at    7.94MiB/s ETA 00:00[download]  73.7% of   13.42MiB at  Unknown B/s ETA Unknown[download]  73.7% of   13.42MiB at  Unknown B/s ETA Unknown[download]  73.7% of   13.42MiB at  Unknown B/s ETA Unknown[download]  73.8% of   13.42MiB at    8.75MiB/s ETA 00:00  [download]  73.9% of   13.42MiB at    9.25MiB/s ETA 00:00[download]  74.1% of   13.42MiB at    9.01MiB/s ETA 00:00[download]  74.6% of   13.42MiB at    9.05MiB/s ETA 00:00[download]  75.5% of   13.42MiB at    8.79MiB/s ETA 00:00[download]  77.4% of   13.42MiB at    8.74MiB/s ETA 00:00[download]  81.1% of   13.42MiB at    8.54MiB/s ETA 00:00[download]  88.5% of   13.42MiB at    8.43MiB/s ETA 00:00[download] 100.0% of   13.42MiB at    5.26MiB/s ETA 00:00[download] 100% of   13.42MiB in 00:00:07 at 1.86MiB/s   
+    OK
+[2] https://www.youtube.com/watch?v=wb49-oV0F78
+[youtube] Extracting URL: https://www.youtube.com/watch?v=wb49-oV0F78
+[youtube] wb49-oV0F78: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] wb49-oV0F78: Downloading android vr player API JSON
+[info] wb49-oV0F78: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/wb49-oV0F78.mp4
+[download]   0.0% of    9.23MiB at   69.02KiB/s ETA 02:17[download]   0.0% of    9.23MiB at  200.67KiB/s ETA 00:47[download]   0.1% of    9.23MiB at  460.49KiB/s ETA 00:20[download]   0.2% of    9.23MiB at  978.58KiB/s ETA 00:09[download]   0.3% of    9.23MiB at  363.69KiB/s ETA 00:25[download]   0.7% of    9.23MiB at  416.94KiB/s ETA 00:22[download]   1.3% of    9.23MiB at  568.08KiB/s ETA 00:16[download]   2.7% of    9.23MiB at  804.25KiB/s ETA 00:11[download]   5.4% of    9.23MiB at    1.11MiB/s ETA 00:07[download]  10.8% of    9.23MiB at    1.75MiB/s ETA 00:04[download]  21.7% of    9.23MiB at    2.82MiB/s ETA 00:02[download]  43.3% of    9.23MiB at    4.21MiB/s ETA 00:01[download]  86.7% of    9.23MiB at    2.93MiB/s ETA 00:00[download] 100.0% of    9.23MiB at    2.98MiB/s ETA 00:00[download] 100% of    9.23MiB in 00:00:03 at 2.39MiB/s   
+    OK
+[3] https://www.youtube.com/watch?v=M7XM597XO94
+[youtube] Extracting URL: https://www.youtube.com/watch?v=M7XM597XO94
+[youtube] M7XM597XO94: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] M7XM597XO94: Downloading android vr player API JSON
+[info] M7XM597XO94: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/M7XM597XO94.mp4
+[download]   0.0% of   13.55MiB at  Unknown B/s ETA Unknown[download]   0.0% of   13.55MiB at  Unknown B/s ETA Unknown[download]   0.1% of   13.55MiB at    6.16MiB/s ETA 00:02  [download]   0.1% of   13.55MiB at    8.80MiB/s ETA 00:01[download]   0.2% of   13.55MiB at    3.14MiB/s ETA 00:04[download]   0.5% of   13.55MiB at    4.33MiB/s ETA 00:03[download]   0.9% of   13.55MiB at    5.58MiB/s ETA 00:02[download]   1.8% of   13.55MiB at    6.95MiB/s ETA 00:01[download]   3.7% of   13.55MiB at    7.51MiB/s ETA 00:01[download]   7.4% of   13.55MiB at    8.47MiB/s ETA 00:01[download]  14.8% of   13.55MiB at    6.81MiB/s ETA 00:01[download]  29.5% of   13.55MiB at    7.43MiB/s ETA 00:01[download]  59.0% of   13.55MiB at    4.53MiB/s ETA 00:01[download]  72.3% of   13.55MiB at    5.54MiB/s ETA 00:00[download]  72.3% of   13.55MiB at  Unknown B/s ETA Unknown[download]  72.3% of   13.55MiB at  Unknown B/s ETA Unknown[download]  72.3% of   13.55MiB at  Unknown B/s ETA Unknown[download]  72.4% of   13.55MiB at    8.77MiB/s ETA 00:00  [download]  72.5% of   13.55MiB at    9.27MiB/s ETA 00:00[download]  72.7% of   13.55MiB at    9.46MiB/s ETA 00:00[download]  73.2% of   13.55MiB at    9.73MiB/s ETA 00:00[download]  74.1% of   13.55MiB at  997.63KiB/s ETA 00:03[download]  75.9% of   13.55MiB at    1.89MiB/s ETA 00:01[download]  79.6% of   13.55MiB at    3.24MiB/s ETA 00:00[download]  87.0% of   13.55MiB at    4.45MiB/s ETA 00:00[download] 100.0% of   13.55MiB at    4.43MiB/s ETA 00:00[download] 100% of   13.55MiB in 00:00:02 at 4.59MiB/s   
+    OK
+[4] https://www.youtube.com/watch?v=aSiDu3Ywi8E
+[youtube] Extracting URL: https://www.youtube.com/watch?v=aSiDu3Ywi8E
+[youtube] aSiDu3Ywi8E: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] aSiDu3Ywi8E: Downloading android vr player API JSON
+[info] aSiDu3Ywi8E: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/aSiDu3Ywi8E.mp4
+[download]   0.0% of   13.92MiB at  123.63KiB/s ETA 01:55[download]   0.0% of   13.92MiB at  355.64KiB/s ETA 00:40[download]   0.0% of   13.92MiB at  814.90KiB/s ETA 00:17[download]   0.1% of   13.92MiB at    1.68MiB/s ETA 00:08[download]   0.2% of   13.92MiB at  309.32KiB/s ETA 00:46[download]   0.4% of   13.92MiB at  338.19KiB/s ETA 00:41[download]   0.9% of   13.92MiB at  471.66KiB/s ETA 00:29[download]   1.8% of   13.92MiB at  664.17KiB/s ETA 00:21[download]   3.6% of   13.92MiB at  966.57KiB/s ETA 00:14[download]   7.2% of   13.92MiB at    1.49MiB/s ETA 00:08[download]  14.4% of   13.92MiB at    2.37MiB/s ETA 00:05[download]  28.7% of   13.92MiB at    3.01MiB/s ETA 00:03[download]  57.4% of   13.92MiB at    4.77MiB/s ETA 00:01[download]  70.4% of   13.92MiB at    5.46MiB/s ETA 00:00[download]  70.4% of   13.92MiB at  Unknown B/s ETA Unknown[download]  70.4% of   13.92MiB at  Unknown B/s ETA Unknown[download]  70.4% of   13.92MiB at  Unknown B/s ETA Unknown[download]  70.5% of   13.92MiB at    8.58MiB/s ETA 00:00  [download]  70.6% of   13.92MiB at    9.18MiB/s ETA 00:00[download]  70.8% of   13.92MiB at    9.62MiB/s ETA 00:00[download]  71.2% of   13.92MiB at    9.74MiB/s ETA 00:00[download]  72.1% of   13.92MiB at  797.42KiB/s ETA 00:04[download]  73.9% of   13.92MiB at    1.55MiB/s ETA 00:02[download]  77.5% of   13.92MiB at    2.82MiB/s ETA 00:01[download]  84.7% of   13.92MiB at    4.63MiB/s ETA 00:00[download]  99.1% of   13.92MiB at    6.17MiB/s ETA 00:00[download] 100.0% of   13.92MiB at    6.30MiB/s ETA 00:00[download] 100% of   13.92MiB in 00:00:03 at 3.81MiB/s   
+    OK
+[5] https://www.youtube.com/watch?v=giXco2jaZ_4
+    SKIPPED (already exists)
+[6] https://www.youtube.com/watch?v=mqqft2x_Aa4
+    SKIPPED (already exists)
+[7] https://www.youtube.com/watch?v=xjDjIWPwcPU
+[youtube] Extracting URL: https://www.youtube.com/watch?v=xjDjIWPwcPU
+[youtube] xjDjIWPwcPU: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] xjDjIWPwcPU: Downloading android vr player API JSON
+[info] xjDjIWPwcPU: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/xjDjIWPwcPU.mp4
+[download]   0.0% of    8.44MiB at  185.03KiB/s ETA 00:46[download]   0.0% of    8.44MiB at  513.09KiB/s ETA 00:16[download]   0.1% of    8.44MiB at    1.14MiB/s ETA 00:07[download]   0.2% of    8.44MiB at    2.38MiB/s ETA 00:03[download]   0.4% of    8.44MiB at  421.43KiB/s ETA 00:20[download]   0.7% of    8.44MiB at  480.24KiB/s ETA 00:17[download]   1.5% of    8.44MiB at  643.63KiB/s ETA 00:13[download]   2.9% of    8.44MiB at  860.93KiB/s ETA 00:09[download]   5.9% of    8.44MiB at    1.28MiB/s ETA 00:06[download]  11.8% of    8.44MiB at    1.97MiB/s ETA 00:03[download]  23.7% of    8.44MiB at    3.17MiB/s ETA 00:02[download]  47.4% of    8.44MiB at    5.28MiB/s ETA 00:00[download]  94.7% of    8.44MiB at    8.35MiB/s ETA 00:00[download] 100.0% of    8.44MiB at    8.80MiB/s ETA 00:00[download] 100% of    8.44MiB in 00:00:01 at 6.27MiB/s   
+    OK
+[8] https://www.youtube.com/watch?v=_Z3QKkl1WyM
+[youtube] Extracting URL: https://www.youtube.com/watch?v=_Z3QKkl1WyM
+[youtube] _Z3QKkl1WyM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] _Z3QKkl1WyM: Downloading android vr player API JSON
+WARNING: [youtube] _Z3QKkl1WyM: Some android_vr client https formats have been skipped as they are missing a URL. YouTube may have enabled the SABR-only streaming experiment for the current session. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+ERROR: [youtube] _Z3QKkl1WyM: Requested format is not available. Use --list-formats for a list of available formats
+    OK
+[9] https://www.youtube.com/watch?v=giWIr7U1deA
+[youtube] Extracting URL: https://www.youtube.com/watch?v=giWIr7U1deA
+[youtube] giWIr7U1deA: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] giWIr7U1deA: Downloading android vr player API JSON
+[info] giWIr7U1deA: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/giWIr7U1deA.mp4
+[download]   0.0% of    7.49MiB at  Unknown B/s ETA Unknown[download]   0.0% of    7.49MiB at  Unknown B/s ETA Unknown[download]   0.1% of    7.49MiB at  Unknown B/s ETA Unknown[download]   0.2% of    7.49MiB at    8.74MiB/s ETA 00:00  [download]   0.4% of    7.49MiB at    4.98MiB/s ETA 00:01[download]   0.8% of    7.49MiB at    8.42MiB/s ETA 00:00[download]   1.7% of    7.49MiB at    3.18MiB/s ETA 00:02[download]   3.3% of    7.49MiB at    3.37MiB/s ETA 00:02[download]   6.7% of    7.49MiB at    4.61MiB/s ETA 00:01[download]  13.3% of    7.49MiB at    6.36MiB/s ETA 00:01[download]  26.7% of    7.49MiB at    7.36MiB/s ETA 00:00[download]  53.4% of    7.49MiB at    8.77MiB/s ETA 00:00[download] 100.0% of    7.49MiB at    7.77MiB/s ETA 00:00[download] 100% of    7.49MiB in 00:00:01 at 5.60MiB/s   
+    OK
+[10] https://www.youtube.com/watch?v=1Q8fG0TtVAY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=1Q8fG0TtVAY
+[youtube] 1Q8fG0TtVAY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 1Q8fG0TtVAY: Downloading android vr player API JSON
+[info] 1Q8fG0TtVAY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/1Q8fG0TtVAY.mp4
+[download]   0.0% of   12.35MiB at  Unknown B/s ETA Unknown[download]   0.0% of   12.35MiB at  Unknown B/s ETA Unknown[download]   0.1% of   12.35MiB at  Unknown B/s ETA Unknown[download]   0.1% of   12.35MiB at    8.48MiB/s ETA 00:01  [download]   0.2% of   12.35MiB at    4.53MiB/s ETA 00:02[download]   0.5% of   12.35MiB at    6.14MiB/s ETA 00:02[download]   1.0% of   12.35MiB at    2.11MiB/s ETA 00:05[download]   2.0% of   12.35MiB at    2.10MiB/s ETA 00:05[download]   4.0% of   12.35MiB at    2.81MiB/s ETA 00:04[download]   8.1% of   12.35MiB at    3.87MiB/s ETA 00:02[download]  16.2% of   12.35MiB at    5.42MiB/s ETA 00:01[download]  32.4% of   12.35MiB at    3.71MiB/s ETA 00:02[download]  55.2% of   12.35MiB at    3.07MiB/s ETA 00:01[download]  75.2% of   12.35MiB at    3.63MiB/s ETA 00:00[download]  80.2% of   12.35MiB at    3.81MiB/s ETA 00:00[download]  80.2% of   12.35MiB at  Unknown B/s ETA Unknown[download]  80.3% of   12.35MiB at  Unknown B/s ETA Unknown[download]  80.3% of   12.35MiB at  Unknown B/s ETA Unknown[download]  80.4% of   12.35MiB at    8.78MiB/s ETA 00:00  [download]  80.5% of   12.35MiB at    9.03MiB/s ETA 00:00[download]  80.7% of   12.35MiB at    9.58MiB/s ETA 00:00[download]  81.2% of   12.35MiB at    6.15MiB/s ETA 00:00[download]  82.3% of   12.35MiB at    9.87MiB/s ETA 00:00[download]  84.3% of   12.35MiB at    8.62MiB/s ETA 00:00[download]  88.3% of   12.35MiB at    8.45MiB/s ETA 00:00[download]  96.4% of   12.35MiB at    8.71MiB/s ETA 00:00[download] 100.0% of   12.35MiB at    9.97MiB/s ETA 00:00[download] 100% of   12.35MiB in 00:00:03 at 3.50MiB/s   
+    OK
+[11] https://www.youtube.com/watch?v=L6P3nI6VnlY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=L6P3nI6VnlY
+[youtube] L6P3nI6VnlY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] L6P3nI6VnlY: Downloading android vr player API JSON
+[info] L6P3nI6VnlY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/L6P3nI6VnlY.mp4
+[download]   0.0% of    9.83MiB at  Unknown B/s ETA Unknown[download]   0.0% of    9.83MiB at  Unknown B/s ETA Unknown[download]   0.1% of    9.83MiB at  Unknown B/s ETA Unknown[download]   0.1% of    9.83MiB at    8.56MiB/s ETA 00:01  [download]   0.3% of    9.83MiB at    5.16MiB/s ETA 00:01[download]   0.6% of    9.83MiB at    7.11MiB/s ETA 00:01[download]   1.3% of    9.83MiB at    1.92MiB/s ETA 00:05[download]   2.5% of    9.83MiB at    1.98MiB/s ETA 00:04[download]   5.1% of    9.83MiB at    2.63MiB/s ETA 00:03[download]  10.2% of    9.83MiB at    3.64MiB/s ETA 00:02[download]  20.3% of    9.83MiB at    5.10MiB/s ETA 00:01[download]  40.7% of    9.83MiB at    7.46MiB/s ETA 00:00[download]  81.4% of    9.83MiB at    4.89MiB/s ETA 00:00[download]  98.4% of    9.83MiB at    5.57MiB/s ETA 00:00[download]  98.4% of    9.83MiB at  Unknown B/s ETA Unknown[download]  98.4% of    9.83MiB at  Unknown B/s ETA Unknown[download]  98.5% of    9.83MiB at  Unknown B/s ETA Unknown[download]  98.6% of    9.83MiB at    8.87MiB/s ETA 00:00  [download]  98.7% of    9.83MiB at    9.35MiB/s ETA 00:00[download]  99.0% of    9.83MiB at    9.50MiB/s ETA 00:00[download]  99.7% of    9.83MiB at    9.45MiB/s ETA 00:00[download] 100.0% of    9.83MiB at    9.82MiB/s ETA 00:00[download] 100% of    9.83MiB in 00:00:02 at 4.11MiB/s   
+    OK
+[12] https://www.youtube.com/watch?v=wZti8QKBWPo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=wZti8QKBWPo
+[youtube] wZti8QKBWPo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] wZti8QKBWPo: Downloading android vr player API JSON
+[info] wZti8QKBWPo: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/wZti8QKBWPo.mp4
+[download]   0.0% of   11.52MiB at  Unknown B/s ETA Unknown[download]   0.0% of   11.52MiB at  Unknown B/s ETA Unknown[download]   0.1% of   11.52MiB at  Unknown B/s ETA Unknown[download]   0.1% of   11.52MiB at    8.49MiB/s ETA 00:01  [download]   0.3% of   11.52MiB at    4.49MiB/s ETA 00:02[download]   0.5% of   11.52MiB at    5.89MiB/s ETA 00:01[download]   1.1% of   11.52MiB at    6.84MiB/s ETA 00:01[download]   2.2% of   11.52MiB at    7.81MiB/s ETA 00:01[download]   4.3% of   11.52MiB at    7.92MiB/s ETA 00:01[download]   8.7% of   11.52MiB at    8.27MiB/s ETA 00:01[download]  17.4% of   11.52MiB at    6.08MiB/s ETA 00:01[download]  34.7% of   11.52MiB at    5.21MiB/s ETA 00:01[download]  69.5% of   11.52MiB at    6.69MiB/s ETA 00:00[download]  84.3% of   11.52MiB at    7.50MiB/s ETA 00:00[download]  84.3% of   11.52MiB at  Unknown B/s ETA Unknown[download]  84.3% of   11.52MiB at  Unknown B/s ETA Unknown[download]  84.3% of   11.52MiB at  Unknown B/s ETA Unknown[download]  84.4% of   11.52MiB at    8.60MiB/s ETA 00:00  [download]  84.5% of   11.52MiB at    9.26MiB/s ETA 00:00[download]  84.8% of   11.52MiB at    9.62MiB/s ETA 00:00[download]  85.4% of   11.52MiB at    9.76MiB/s ETA 00:00[download]  86.4% of   11.52MiB at    9.67MiB/s ETA 00:00[download]  88.6% of   11.52MiB at    3.29MiB/s ETA 00:00[download]  93.0% of   11.52MiB at    5.83MiB/s ETA 00:00[download] 100.0% of   11.52MiB at    8.00MiB/s ETA 00:00[download] 100% of   11.52MiB in 00:00:01 at 6.09MiB/s   
+    OK
+[13] https://www.youtube.com/watch?v=0IOsk2Vlc4o
+[youtube] Extracting URL: https://www.youtube.com/watch?v=0IOsk2Vlc4o
+[youtube] 0IOsk2Vlc4o: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 0IOsk2Vlc4o: Downloading android vr player API JSON
+[info] 0IOsk2Vlc4o: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/0IOsk2Vlc4o.mp4
+[download]   0.0% of   11.03MiB at  103.18KiB/s ETA 01:49[download]   0.0% of   11.03MiB at  292.78KiB/s ETA 00:38[download]   0.1% of   11.03MiB at  674.11KiB/s ETA 00:16[download]   0.1% of   11.03MiB at    1.39MiB/s ETA 00:07[download]   0.3% of   11.03MiB at  659.13KiB/s ETA 00:17[download]   0.6% of   11.03MiB at  763.65KiB/s ETA 00:14[download]   1.1% of   11.03MiB at    1.01MiB/s ETA 00:10[download]   2.3% of   11.03MiB at    1.42MiB/s ETA 00:07[download]   4.5% of   11.03MiB at    2.01MiB/s ETA 00:05[download]   9.1% of   11.03MiB at    3.08MiB/s ETA 00:03[download]  18.1% of   11.03MiB at    5.08MiB/s ETA 00:01[download]  36.2% of   11.03MiB at    8.11MiB/s ETA 00:00[download]  72.5% of   11.03MiB at    5.46MiB/s ETA 00:00[download]  90.6% of   11.03MiB at    6.81MiB/s ETA 00:00[download]  90.6% of   11.03MiB at  Unknown B/s ETA Unknown[download]  90.6% of   11.03MiB at  Unknown B/s ETA Unknown[download]  90.6% of   11.03MiB at  Unknown B/s ETA Unknown[download]  90.7% of   11.03MiB at    8.78MiB/s ETA 00:00  [download]  90.9% of   11.03MiB at    9.29MiB/s ETA 00:00[download]  91.1% of   11.03MiB at    9.62MiB/s ETA 00:00[download]  91.7% of   11.03MiB at    9.77MiB/s ETA 00:00[download]  92.8% of   11.03MiB at    9.86MiB/s ETA 00:00[download]  95.1% of   11.03MiB at    9.83MiB/s ETA 00:00[download]  99.6% of   11.03MiB at    9.90MiB/s ETA 00:00[download] 100.0% of   11.03MiB at    9.93MiB/s ETA 00:00[download] 100% of   11.03MiB in 00:00:02 at 4.83MiB/s   
+    OK
+[14] https://www.youtube.com/watch?v=19ikl8vy4zs
+[youtube] Extracting URL: https://www.youtube.com/watch?v=19ikl8vy4zs
+[youtube] 19ikl8vy4zs: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 19ikl8vy4zs: Downloading android vr player API JSON
+[info] 19ikl8vy4zs: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/19ikl8vy4zs.mp4
+[download]   0.0% of    7.50MiB at  Unknown B/s ETA Unknown[download]   0.0% of    7.50MiB at  Unknown B/s ETA Unknown[download]   0.1% of    7.50MiB at  Unknown B/s ETA Unknown[download]   0.2% of    7.50MiB at    8.87MiB/s ETA 00:00  [download]   0.4% of    7.50MiB at    3.38MiB/s ETA 00:02[download]   0.8% of    7.50MiB at    4.25MiB/s ETA 00:01[download]   1.7% of    7.50MiB at    5.84MiB/s ETA 00:01[download]   3.3% of    7.50MiB at    7.06MiB/s ETA 00:01[download]   6.7% of    7.50MiB at    7.76MiB/s ETA 00:00[download]  13.3% of    7.50MiB at    8.30MiB/s ETA 00:00[download]  26.7% of    7.50MiB at    8.18MiB/s ETA 00:00[download]  53.4% of    7.50MiB at    5.87MiB/s ETA 00:00[download] 100.0% of    7.50MiB at    8.41MiB/s ETA 00:00[download] 100% of    7.50MiB in 00:00:01 at 6.11MiB/s   
+    OK
+[15] https://www.youtube.com/watch?v=AHmCH7iB_wM
+[youtube] Extracting URL: https://www.youtube.com/watch?v=AHmCH7iB_wM
+[youtube] AHmCH7iB_wM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] AHmCH7iB_wM: Downloading android vr player API JSON
+ERROR: [youtube] AHmCH7iB_wM: Video unavailable
+    OK
+[16] https://www.youtube.com/watch?v=XJMuhwVlca4
+[youtube] Extracting URL: https://www.youtube.com/watch?v=XJMuhwVlca4
+[youtube] XJMuhwVlca4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] XJMuhwVlca4: Downloading android vr player API JSON
+[info] XJMuhwVlca4: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/XJMuhwVlca4.mp4
+[download]   0.0% of   12.97MiB at   78.56KiB/s ETA 02:49[download]   0.0% of   12.97MiB at  228.60KiB/s ETA 00:58[download]   0.1% of   12.97MiB at  528.01KiB/s ETA 00:25[download]   0.1% of   12.97MiB at    1.09MiB/s ETA 00:11[download]   0.2% of   12.97MiB at  415.94KiB/s ETA 00:31[download]   0.5% of   12.97MiB at  488.58KiB/s ETA 00:27[download]   1.0% of   12.97MiB at  656.34KiB/s ETA 00:20[download]   1.9% of   12.97MiB at  921.54KiB/s ETA 00:14[download]   3.8% of   12.97MiB at    1.28MiB/s ETA 00:09[download]   7.7% of   12.97MiB at    2.06MiB/s ETA 00:05[download]  15.4% of   12.97MiB at    3.27MiB/s ETA 00:03[download]  30.8% of   12.97MiB at    5.37MiB/s ETA 00:01[download]  61.7% of   12.97MiB at    7.72MiB/s ETA 00:00[download]  73.4% of   12.97MiB at    8.48MiB/s ETA 00:00[download]  73.4% of   12.97MiB at  Unknown B/s ETA Unknown[download]  73.4% of   12.97MiB at  Unknown B/s ETA Unknown[download]  73.4% of   12.97MiB at  Unknown B/s ETA 00:00  [download]  73.5% of   12.97MiB at    8.53MiB/s ETA 00:00[download]  73.6% of   12.97MiB at    9.18MiB/s ETA 00:00[download]  73.8% of   12.97MiB at    9.51MiB/s ETA 00:00[download]  74.3% of   12.97MiB at    9.59MiB/s ETA 00:00[download]  75.3% of   12.97MiB at    9.71MiB/s ETA 00:00[download]  77.2% of   12.97MiB at    9.77MiB/s ETA 00:00[download]  81.1% of   12.97MiB at    9.88MiB/s ETA 00:00[download]  88.8% of   12.97MiB at    9.10MiB/s ETA 00:00[download] 100.0% of   12.97MiB at    9.54MiB/s ETA 00:00[download] 100% of   12.97MiB in 00:00:02 at 6.29MiB/s   
+    OK
+[17] https://www.youtube.com/watch?v=qEVUtrk8_B4
+[youtube] Extracting URL: https://www.youtube.com/watch?v=qEVUtrk8_B4
+[youtube] qEVUtrk8_B4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] qEVUtrk8_B4: Downloading android vr player API JSON
+[info] qEVUtrk8_B4: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/qEVUtrk8_B4.mp4
+[download]   0.0% of   12.55MiB at  180.71KiB/s ETA 01:11[download]   0.0% of   12.55MiB at  515.74KiB/s ETA 00:24[download]   0.1% of   12.55MiB at    1.14MiB/s ETA 00:11[download]   0.1% of   12.55MiB at    2.37MiB/s ETA 00:05[download]   0.2% of   12.55MiB at  415.78KiB/s ETA 00:30[download]   0.5% of   12.55MiB at  500.98KiB/s ETA 00:25[download]   1.0% of   12.55MiB at  685.03KiB/s ETA 00:18[download]   2.0% of   12.55MiB at  963.72KiB/s ETA 00:13[download]   4.0% of   12.55MiB at    1.30MiB/s ETA 00:09[download]   8.0% of   12.55MiB at    2.07MiB/s ETA 00:05[download]  15.9% of   12.55MiB at    3.34MiB/s ETA 00:03[download]  31.9% of   12.55MiB at    5.33MiB/s ETA 00:01[download]  63.8% of   12.55MiB at    7.93MiB/s ETA 00:00[download]  77.9% of   12.55MiB at    9.33MiB/s ETA 00:00[download]  77.9% of   12.55MiB at  Unknown B/s ETA Unknown[download]  77.9% of   12.55MiB at  Unknown B/s ETA Unknown[download]  77.9% of   12.55MiB at    6.01MiB/s ETA 00:00  [download]  78.0% of   12.55MiB at    8.76MiB/s ETA 00:00[download]  78.1% of   12.55MiB at    9.31MiB/s ETA 00:00[download]  78.4% of   12.55MiB at    9.22MiB/s ETA 00:00[download]  78.9% of   12.55MiB at    9.15MiB/s ETA 00:00[download]  79.9% of   12.55MiB at    6.89MiB/s ETA 00:00[download]  81.9% of   12.55MiB at    9.01MiB/s ETA 00:00[download]  85.8% of   12.55MiB at    8.37MiB/s ETA 00:00[download]  93.8% of   12.55MiB at    8.98MiB/s ETA 00:00[download] 100.0% of   12.55MiB at    8.27MiB/s ETA 00:00[download] 100% of   12.55MiB in 00:00:01 at 6.59MiB/s   
+    OK
+[18] https://www.youtube.com/watch?v=u3V5KDHRQvk
+[youtube] Extracting URL: https://www.youtube.com/watch?v=u3V5KDHRQvk
+[youtube] u3V5KDHRQvk: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] u3V5KDHRQvk: Downloading android vr player API JSON
+[info] u3V5KDHRQvk: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/u3V5KDHRQvk.mp4
+[download]   0.0% of    6.64MiB at  702.33KiB/s ETA 00:09[download]   0.0% of    6.64MiB at    1.71MiB/s ETA 00:03[download]   0.1% of    6.64MiB at    3.56MiB/s ETA 00:01[download]   0.2% of    6.64MiB at    6.95MiB/s ETA 00:00[download]   0.5% of    6.64MiB at    5.31MiB/s ETA 00:01[download]   0.9% of    6.64MiB at    6.56MiB/s ETA 00:01[download]   1.9% of    6.64MiB at    7.50MiB/s ETA 00:00[download]   3.8% of    6.64MiB at    8.02MiB/s ETA 00:00[download]   7.5% of    6.64MiB at    8.50MiB/s ETA 00:00[download]  15.1% of    6.64MiB at    8.67MiB/s ETA 00:00[download]  30.1% of    6.64MiB at    8.04MiB/s ETA 00:00[download]  60.2% of    6.64MiB at    5.33MiB/s ETA 00:00[download] 100.0% of    6.64MiB at    6.63MiB/s ETA 00:00[download] 100% of    6.64MiB in 00:00:01 at 4.80MiB/s   
+    OK
+[19] https://www.youtube.com/watch?v=7kSuas6mRpk
+[youtube] Extracting URL: https://www.youtube.com/watch?v=7kSuas6mRpk
+[youtube] 7kSuas6mRpk: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 7kSuas6mRpk: Downloading android vr player API JSON
+[info] 7kSuas6mRpk: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/7kSuas6mRpk.mp4
+[download]   0.0% of   21.98MiB at  Unknown B/s ETA Unknown[download]   0.0% of   21.98MiB at  Unknown B/s ETA Unknown[download]   0.0% of   21.98MiB at  Unknown B/s ETA Unknown[download]   0.1% of   21.98MiB at    9.01MiB/s ETA 00:02  [download]   0.1% of   21.98MiB at    4.25MiB/s ETA 00:05[download]   0.3% of   21.98MiB at    6.06MiB/s ETA 00:03[download]   0.6% of   21.98MiB at    1.14MiB/s ETA 00:19[download]   1.1% of   21.98MiB at    1.14MiB/s ETA 00:19[download]   2.3% of   21.98MiB at    1.51MiB/s ETA 00:14[download]   4.5% of   21.98MiB at    2.08MiB/s ETA 00:10[download]   9.1% of   21.98MiB at    2.98MiB/s ETA 00:06[download]  18.2% of   21.98MiB at    5.18MiB/s ETA 00:03[download]  36.4% of   21.98MiB at    6.48MiB/s ETA 00:02[download]  44.2% of   21.98MiB at    7.22MiB/s ETA 00:01[download]  44.2% of   21.98MiB at  Unknown B/s ETA Unknown[download]  44.2% of   21.98MiB at  Unknown B/s ETA Unknown[download]  44.2% of   21.98MiB at  Unknown B/s ETA Unknown[download]  44.3% of   21.98MiB at    8.83MiB/s ETA 00:01  [download]  44.3% of   21.98MiB at    9.33MiB/s ETA 00:01[download]  44.5% of   21.98MiB at    9.64MiB/s ETA 00:01[download]  44.8% of   21.98MiB at    9.75MiB/s ETA 00:01[download]  45.3% of   21.98MiB at    9.86MiB/s ETA 00:01[download]  46.5% of   21.98MiB at    9.61MiB/s ETA 00:01[download]  48.8% of   21.98MiB at    8.51MiB/s ETA 00:01[download]  53.3% of   21.98MiB at    9.33MiB/s ETA 00:01[download]  62.4% of   21.98MiB at    5.31MiB/s ETA 00:01[download]  79.3% of   21.98MiB at    8.70MiB/s ETA 00:00[download]  88.8% of   21.98MiB at    9.10MiB/s ETA 00:00[download]  88.8% of   21.98MiB at  Unknown B/s ETA Unknown[download]  88.9% of   21.98MiB at  Unknown B/s ETA Unknown[download]  88.9% of   21.98MiB at  Unknown B/s ETA Unknown[download]  88.9% of   21.98MiB at    8.85MiB/s ETA 00:00  [download]  89.0% of   21.98MiB at    9.35MiB/s ETA 00:00[download]  89.1% of   21.98MiB at    9.63MiB/s ETA 00:00[download]  89.4% of   21.98MiB at    9.78MiB/s ETA 00:00[download]  90.0% of   21.98MiB at    9.72MiB/s ETA 00:00[download]  91.1% of   21.98MiB at    9.81MiB/s ETA 00:00[download]  93.4% of   21.98MiB at    9.89MiB/s ETA 00:00[download]  97.9% of   21.98MiB at    8.83MiB/s ETA 00:00[download] 100.0% of   21.98MiB at    9.94MiB/s ETA 00:00[download] 100% of   21.98MiB in 00:00:03 at 6.32MiB/s   
+    OK
+[20] https://www.youtube.com/watch?v=MG9uFX3uYq4
+[youtube] Extracting URL: https://www.youtube.com/watch?v=MG9uFX3uYq4
+[youtube] MG9uFX3uYq4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] MG9uFX3uYq4: Downloading android vr player API JSON
+[info] MG9uFX3uYq4: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/MG9uFX3uYq4.mp4
+[download]   0.0% of   13.54MiB at  173.85KiB/s ETA 01:19[download]   0.0% of   13.54MiB at  488.54KiB/s ETA 00:28[download]   0.1% of   13.54MiB at    1.07MiB/s ETA 00:12[download]   0.1% of   13.54MiB at    2.19MiB/s ETA 00:06[download]   0.2% of   13.54MiB at  421.24KiB/s ETA 00:32[download]   0.5% of   13.54MiB at  463.37KiB/s ETA 00:29[download]   0.9% of   13.54MiB at  647.18KiB/s ETA 00:21[download]   1.8% of   13.54MiB at  913.95KiB/s ETA 00:14[download]   3.7% of   13.54MiB at    1.28MiB/s ETA 00:10[download]   7.4% of   13.54MiB at    2.04MiB/s ETA 00:06[download]  14.8% of   13.54MiB at    3.28MiB/s ETA 00:03[download]  29.5% of   13.54MiB at    5.32MiB/s ETA 00:01[download]  59.1% of   13.54MiB at    7.03MiB/s ETA 00:00[download]  70.7% of   13.54MiB at    8.20MiB/s ETA 00:00[download]  70.7% of   13.54MiB at  Unknown B/s ETA Unknown[download]  70.7% of   13.54MiB at  Unknown B/s ETA Unknown[download]  70.7% of   13.54MiB at  Unknown B/s ETA Unknown[download]  70.8% of   13.54MiB at    8.62MiB/s ETA 00:00  [download]  70.9% of   13.54MiB at    8.81MiB/s ETA 00:00[download]  71.2% of   13.54MiB at    9.57MiB/s ETA 00:00[download]  71.6% of   13.54MiB at    9.71MiB/s ETA 00:00[download]  72.5% of   13.54MiB at    9.82MiB/s ETA 00:00[download]  74.4% of   13.54MiB at    9.89MiB/s ETA 00:00[download]  78.1% of   13.54MiB at    9.91MiB/s ETA 00:00[download]  85.5% of   13.54MiB at    9.92MiB/s ETA 00:00[download] 100.0% of   13.54MiB at    7.47MiB/s ETA 00:00[download] 100% of   13.54MiB in 00:00:02 at 5.64MiB/s   
+    OK
+[21] https://www.youtube.com/watch?v=9NJj12tiBzc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=9NJj12tiBzc
+[youtube] 9NJj12tiBzc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 9NJj12tiBzc: Downloading android vr player API JSON
+ERROR: [youtube] 9NJj12tiBzc: Video unavailable
+    OK
+[22] https://www.youtube.com/watch?v=5xH0HfJHsaY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=5xH0HfJHsaY
+[youtube] 5xH0HfJHsaY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 5xH0HfJHsaY: Downloading android vr player API JSON
+[info] 5xH0HfJHsaY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/5xH0HfJHsaY.mp4
+[download]   0.0% of    4.25MiB at  Unknown B/s ETA Unknown[download]   0.1% of    4.25MiB at  Unknown B/s ETA Unknown[download]   0.2% of    4.25MiB at  Unknown B/s ETA Unknown[download]   0.3% of    4.25MiB at    8.43MiB/s ETA 00:00  [download]   0.7% of    4.25MiB at    5.21MiB/s ETA 00:00[download]   1.4% of    4.25MiB at    7.19MiB/s ETA 00:00[download]   2.9% of    4.25MiB at    7.72MiB/s ETA 00:00[download]   5.9% of    4.25MiB at    7.78MiB/s ETA 00:00[download]  11.7% of    4.25MiB at    8.18MiB/s ETA 00:00[download]  23.5% of    4.25MiB at    8.25MiB/s ETA 00:00[download]  47.0% of    4.25MiB at    8.22MiB/s ETA 00:00[download]  94.1% of    4.25MiB at    7.85MiB/s ETA 00:00[download] 100.0% of    4.25MiB at    8.33MiB/s ETA 00:00[download] 100% of    4.25MiB in 00:00:00 at 6.05MiB/s   
+    OK
+[23] https://www.youtube.com/watch?v=RofpAjqwMa8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RofpAjqwMa8
+[youtube] RofpAjqwMa8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] RofpAjqwMa8: Downloading android vr player API JSON
+[info] RofpAjqwMa8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/RofpAjqwMa8.mp4
+[download]   0.0% of    4.82MiB at   78.77KiB/s ETA 01:02[download]   0.1% of    4.82MiB at  226.45KiB/s ETA 00:21[download]   0.1% of    4.82MiB at  522.72KiB/s ETA 00:09[download]   0.3% of    4.82MiB at    1.08MiB/s ETA 00:04[download]   0.6% of    4.82MiB at  431.12KiB/s ETA 00:11[download]   1.3% of    4.82MiB at  490.31KiB/s ETA 00:09[download]   2.6% of    4.82MiB at  666.90KiB/s ETA 00:07[download]   5.2% of    4.82MiB at  923.42KiB/s ETA 00:05[download]  10.4% of    4.82MiB at    1.29MiB/s ETA 00:03[download]  20.7% of    4.82MiB at    2.07MiB/s ETA 00:01[download]  41.5% of    4.82MiB at    3.31MiB/s ETA 00:00[download]  83.0% of    4.82MiB at    5.13MiB/s ETA 00:00[download] 100.0% of    4.82MiB at    5.89MiB/s ETA 00:00[download] 100% of    4.82MiB in 00:00:01 at 3.59MiB/s   
+    OK
+[24] https://www.youtube.com/watch?v=6sxCFZ8_d84
+[youtube] Extracting URL: https://www.youtube.com/watch?v=6sxCFZ8_d84
+[youtube] 6sxCFZ8_d84: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 6sxCFZ8_d84: Downloading android vr player API JSON
+[info] 6sxCFZ8_d84: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/6sxCFZ8_d84.mp4
+[download]   0.0% of    3.87MiB at  Unknown B/s ETA Unknown[download]   0.1% of    3.87MiB at    2.49MiB/s ETA 00:01  [download]   0.2% of    3.87MiB at    5.19MiB/s ETA 00:00[download]   0.4% of    3.87MiB at    8.82MiB/s ETA 00:00[download]   0.8% of    3.87MiB at    5.28MiB/s ETA 00:00[download]   1.6% of    3.87MiB at    7.42MiB/s ETA 00:00[download]   3.2% of    3.87MiB at    7.31MiB/s ETA 00:00[download]   6.4% of    3.87MiB at    8.38MiB/s ETA 00:00[download]  12.9% of    3.87MiB at    8.46MiB/s ETA 00:00[download]  25.8% of    3.87MiB at    8.20MiB/s ETA 00:00[download]  51.7% of    3.87MiB at    8.19MiB/s ETA 00:00[download] 100.0% of    3.87MiB at    5.74MiB/s ETA 00:00[download] 100% of    3.87MiB in 00:00:00 at 4.61MiB/s   
+    OK
+[25] https://www.youtube.com/watch?v=KQ0gFidlro8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=KQ0gFidlro8
+[youtube] KQ0gFidlro8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] KQ0gFidlro8: Downloading android vr player API JSON
+[info] KQ0gFidlro8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/KQ0gFidlro8.mp4
+[download]   0.0% of    8.12MiB at  Unknown B/s ETA Unknown[download]   0.0% of    8.12MiB at  Unknown B/s ETA Unknown[download]   0.1% of    8.12MiB at  Unknown B/s ETA Unknown[download]   0.2% of    8.12MiB at    8.77MiB/s ETA 00:00  [download]   0.4% of    8.12MiB at    5.04MiB/s ETA 00:01[download]   0.8% of    8.12MiB at    6.99MiB/s ETA 00:01[download]   1.5% of    8.12MiB at    2.11MiB/s ETA 00:03[download]   3.1% of    8.12MiB at    2.20MiB/s ETA 00:03[download]   6.1% of    8.12MiB at    2.90MiB/s ETA 00:02[download]  12.3% of    8.12MiB at    4.01MiB/s ETA 00:01[download]  24.6% of    8.12MiB at    5.55MiB/s ETA 00:01[download]  49.2% of    8.12MiB at    8.71MiB/s ETA 00:00[download]  98.5% of    8.12MiB at    7.71MiB/s ETA 00:00[download] 100.0% of    8.12MiB at    7.83MiB/s ETA 00:00[download] 100% of    8.12MiB in 00:00:01 at 5.47MiB/s   
+    OK
+[26] https://www.youtube.com/watch?v=BHi-a1n8t7M
+[youtube] Extracting URL: https://www.youtube.com/watch?v=BHi-a1n8t7M
+[youtube] BHi-a1n8t7M: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] BHi-a1n8t7M: Downloading android vr player API JSON
+[info] BHi-a1n8t7M: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/BHi-a1n8t7M.mp4
+[download]   0.0% of    5.20MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.20MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.20MiB at  Unknown B/s ETA Unknown[download]   0.3% of    5.20MiB at    8.83MiB/s ETA 00:00  [download]   0.6% of    5.20MiB at    4.45MiB/s ETA 00:01[download]   1.2% of    5.20MiB at    7.38MiB/s ETA 00:00[download]   2.4% of    5.20MiB at    3.59MiB/s ETA 00:01[download]   4.8% of    5.20MiB at    4.06MiB/s ETA 00:01[download]   9.6% of    5.20MiB at    5.06MiB/s ETA 00:00[download]  19.2% of    5.20MiB at    6.44MiB/s ETA 00:00[download]  38.4% of    5.20MiB at    7.50MiB/s ETA 00:00[download]  76.9% of    5.20MiB at    4.18MiB/s ETA 00:00[download] 100.0% of    5.20MiB at    4.26MiB/s ETA 00:00[download] 100% of    5.20MiB in 00:00:01 at 3.22MiB/s   
+    OK
+[27] https://www.youtube.com/watch?v=gsVoD0pTge0
+[youtube] Extracting URL: https://www.youtube.com/watch?v=gsVoD0pTge0
+[youtube] gsVoD0pTge0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] gsVoD0pTge0: Downloading android vr player API JSON
+[info] gsVoD0pTge0: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/gsVoD0pTge0.mp4
+[download]   0.0% of   14.91MiB at  Unknown B/s ETA Unknown[download]   0.0% of   14.91MiB at  Unknown B/s ETA Unknown[download]   0.0% of   14.91MiB at  Unknown B/s ETA Unknown[download]   0.1% of   14.91MiB at    8.83MiB/s ETA 00:01  [download]   0.2% of   14.91MiB at    6.03MiB/s ETA 00:02[download]   0.4% of   14.91MiB at    8.07MiB/s ETA 00:01[download]   0.8% of   14.91MiB at    7.46MiB/s ETA 00:01[download]   1.7% of   14.91MiB at    7.99MiB/s ETA 00:01[download]   3.3% of   14.91MiB at    8.25MiB/s ETA 00:01[download]   6.7% of   14.91MiB at    8.28MiB/s ETA 00:01[download]  13.4% of   14.91MiB at    8.21MiB/s ETA 00:01[download]  26.8% of   14.91MiB at    7.95MiB/s ETA 00:01[download]  53.6% of   14.91MiB at    8.50MiB/s ETA 00:00[download]  66.5% of   14.91MiB at    9.97MiB/s ETA 00:00[download]  66.5% of   14.91MiB at  Unknown B/s ETA Unknown[download]  66.5% of   14.91MiB at  Unknown B/s ETA Unknown[download]  66.6% of   14.91MiB at  Unknown B/s ETA Unknown[download]  66.6% of   14.91MiB at    8.53MiB/s ETA 00:00  [download]  66.7% of   14.91MiB at    9.33MiB/s ETA 00:00[download]  66.9% of   14.91MiB at    9.61MiB/s ETA 00:00[download]  67.3% of   14.91MiB at    9.77MiB/s ETA 00:00[download]  68.2% of   14.91MiB at    9.86MiB/s ETA 00:00[download]  69.9% of   14.91MiB at    9.90MiB/s ETA 00:00[download]  73.2% of   14.91MiB at    9.89MiB/s ETA 00:00[download]  79.9% of   14.91MiB at    9.90MiB/s ETA 00:00[download]  93.3% of   14.91MiB at    6.73MiB/s ETA 00:00[download] 100.0% of   14.91MiB at    8.37MiB/s ETA 00:00[download] 100% of   14.91MiB in 00:00:01 at 8.55MiB/s   
+    OK
+[28] https://www.youtube.com/watch?v=a2m5VLaSO8U
+[youtube] Extracting URL: https://www.youtube.com/watch?v=a2m5VLaSO8U
+[youtube] a2m5VLaSO8U: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] a2m5VLaSO8U: Downloading android vr player API JSON
+ERROR: [youtube] a2m5VLaSO8U: Video unavailable
+    OK
+[29] https://www.youtube.com/watch?v=cNi_HC839Wo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=cNi_HC839Wo
+[youtube] cNi_HC839Wo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] cNi_HC839Wo: Downloading android vr player API JSON
+[info] cNi_HC839Wo: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/cNi_HC839Wo.mp4
+[download]   0.0% of    6.44MiB at  Unknown B/s ETA Unknown[download]   0.0% of    6.44MiB at  Unknown B/s ETA Unknown[download]   0.1% of    6.44MiB at  Unknown B/s ETA Unknown[download]   0.2% of    6.44MiB at    8.66MiB/s ETA 00:00  [download]   0.5% of    6.44MiB at    4.54MiB/s ETA 00:01[download]   1.0% of    6.44MiB at    6.04MiB/s ETA 00:01[download]   1.9% of    6.44MiB at    7.28MiB/s ETA 00:00[download]   3.9% of    6.44MiB at    7.57MiB/s ETA 00:00[download]   7.7% of    6.44MiB at    7.81MiB/s ETA 00:00[download]  15.5% of    6.44MiB at    8.26MiB/s ETA 00:00[download]  31.0% of    6.44MiB at    7.09MiB/s ETA 00:00[download]  62.1% of    6.44MiB at    6.16MiB/s ETA 00:00[download] 100.0% of    6.44MiB at    3.50MiB/s ETA 00:00[download] 100% of    6.44MiB in 00:00:02 at 2.95MiB/s   
+    OK
+[30] https://www.youtube.com/watch?v=ELvKuuXdfCU
+[youtube] Extracting URL: https://www.youtube.com/watch?v=ELvKuuXdfCU
+[youtube] ELvKuuXdfCU: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] ELvKuuXdfCU: Downloading android vr player API JSON
+[info] ELvKuuXdfCU: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/ELvKuuXdfCU.mp4
+[download]   0.0% of    2.62MiB at  170.01KiB/s ETA 00:15[download]   0.1% of    2.62MiB at  486.03KiB/s ETA 00:05[download]   0.3% of    2.62MiB at    1.08MiB/s ETA 00:02[download]   0.6% of    2.62MiB at    2.27MiB/s ETA 00:01[download]   1.2% of    2.62MiB at  417.17KiB/s ETA 00:06[download]   2.3% of    2.62MiB at  461.97KiB/s ETA 00:05[download]   4.7% of    2.62MiB at  639.67KiB/s ETA 00:04[download]   9.5% of    2.62MiB at  917.62KiB/s ETA 00:02[download]  19.0% of    2.62MiB at    1.27MiB/s ETA 00:01[download]  38.1% of    2.62MiB at    2.04MiB/s ETA 00:00[download]  76.2% of    2.62MiB at    3.24MiB/s ETA 00:00[download] 100.0% of    2.62MiB at    3.00MiB/s ETA 00:00[download] 100% of    2.62MiB in 00:00:01 at 1.42MiB/s   
+    OK
+[31] https://www.youtube.com/watch?v=0pmfrE1YL4I
+[youtube] Extracting URL: https://www.youtube.com/watch?v=0pmfrE1YL4I
+[youtube] 0pmfrE1YL4I: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 0pmfrE1YL4I: Downloading android vr player API JSON
+[info] 0pmfrE1YL4I: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/0pmfrE1YL4I.mp4
+[download]   0.0% of    8.48MiB at  139.29KiB/s ETA 01:02[download]   0.0% of    8.48MiB at  392.08KiB/s ETA 00:22[download]   0.1% of    8.48MiB at  880.42KiB/s ETA 00:09[download]   0.2% of    8.48MiB at    1.78MiB/s ETA 00:04[download]   0.4% of    8.48MiB at  371.23KiB/s ETA 00:23[download]   0.7% of    8.48MiB at  423.82KiB/s ETA 00:20[download]   1.5% of    8.48MiB at  578.50KiB/s ETA 00:14[download]   2.9% of    8.48MiB at  812.38KiB/s ETA 00:10[download]   5.9% of    8.48MiB at    1.12MiB/s ETA 00:07[download]  11.8% of    8.48MiB at    1.81MiB/s ETA 00:04[download]  23.6% of    8.48MiB at    2.88MiB/s ETA 00:02[download]  47.2% of    8.48MiB at    4.70MiB/s ETA 00:00[download]  94.3% of    8.48MiB at    6.19MiB/s ETA 00:00[download] 100.0% of    8.48MiB at    6.19MiB/s ETA 00:00[download] 100% of    8.48MiB in 00:00:02 at 3.92MiB/s   
+    OK
+[32] https://www.youtube.com/watch?v=BKP_0z52ZAw
+[youtube] Extracting URL: https://www.youtube.com/watch?v=BKP_0z52ZAw
+[youtube] BKP_0z52ZAw: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] BKP_0z52ZAw: Downloading android vr player API JSON
+[info] BKP_0z52ZAw: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/BKP_0z52ZAw.mp4
+[download]   0.0% of    7.33MiB at  Unknown B/s ETA Unknown[download]   0.0% of    7.33MiB at  Unknown B/s ETA Unknown[download]   0.1% of    7.33MiB at  Unknown B/s ETA Unknown[download]   0.2% of    7.33MiB at    8.61MiB/s ETA 00:00  [download]   0.4% of    7.33MiB at    5.58MiB/s ETA 00:01[download]   0.8% of    7.33MiB at    7.04MiB/s ETA 00:01[download]   1.7% of    7.33MiB at    7.61MiB/s ETA 00:00[download]   3.4% of    7.33MiB at    8.43MiB/s ETA 00:00[download]   6.8% of    7.33MiB at    8.55MiB/s ETA 00:00[download]  13.6% of    7.33MiB at    8.29MiB/s ETA 00:00[download]  27.3% of    7.33MiB at    8.24MiB/s ETA 00:00[download]  54.5% of    7.33MiB at    7.87MiB/s ETA 00:00[download] 100.0% of    7.33MiB at    8.72MiB/s ETA 00:00[download] 100% of    7.33MiB in 00:00:00 at 7.54MiB/s   
+    OK
+[33] https://www.youtube.com/watch?v=nWiQodhMvOE
+[youtube] Extracting URL: https://www.youtube.com/watch?v=nWiQodhMvOE
+[youtube] nWiQodhMvOE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] nWiQodhMvOE: Downloading android vr player API JSON
+ERROR: [youtube] nWiQodhMvOE: Video unavailable
+    OK
+[34] https://www.youtube.com/watch?v=xGSmwWm-MnA
+[youtube] Extracting URL: https://www.youtube.com/watch?v=xGSmwWm-MnA
+[youtube] xGSmwWm-MnA: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] xGSmwWm-MnA: Downloading android vr player API JSON
+ERROR: [youtube] xGSmwWm-MnA: Video unavailable
+    OK
+[35] https://www.youtube.com/watch?v=kA244xewjcI
+[youtube] Extracting URL: https://www.youtube.com/watch?v=kA244xewjcI
+[youtube] kA244xewjcI: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] kA244xewjcI: Downloading android vr player API JSON
+[info] kA244xewjcI: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/kA244xewjcI.mp4
+[download]   0.0% of    8.05MiB at   89.20KiB/s ETA 01:32[download]   0.0% of    8.05MiB at  261.69KiB/s ETA 00:31[download]   0.1% of    8.05MiB at  603.10KiB/s ETA 00:13[download]   0.2% of    8.05MiB at    1.24MiB/s ETA 00:06[download]   0.4% of    8.05MiB at  240.36KiB/s ETA 00:34[download]   0.8% of    8.05MiB at  271.70KiB/s ETA 00:30[download]   1.5% of    8.05MiB at  368.78KiB/s ETA 00:21[download]   3.1% of    8.05MiB at  527.58KiB/s ETA 00:15[download]   6.2% of    8.05MiB at  767.71KiB/s ETA 00:10[download]  12.4% of    8.05MiB at    1.19MiB/s ETA 00:05[download]  24.8% of    8.05MiB at    1.89MiB/s ETA 00:03[download]  49.7% of    8.05MiB at    3.13MiB/s ETA 00:01[download]  99.4% of    8.05MiB at    3.83MiB/s ETA 00:00[download] 100.0% of    8.05MiB at    3.85MiB/s ETA 00:00[download] 100% of    8.05MiB in 00:00:03 at 2.64MiB/s   
+    OK
+[36] https://www.youtube.com/watch?v=EG0si5bSd6I
+[youtube] Extracting URL: https://www.youtube.com/watch?v=EG0si5bSd6I
+[youtube] EG0si5bSd6I: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] EG0si5bSd6I: Downloading android vr player API JSON
+[info] EG0si5bSd6I: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/EG0si5bSd6I.mp4
+[download]   0.0% of    6.33MiB at  Unknown B/s ETA Unknown[download]   0.0% of    6.33MiB at  Unknown B/s ETA Unknown[download]   0.1% of    6.33MiB at  Unknown B/s ETA Unknown[download]   0.2% of    6.33MiB at    8.69MiB/s ETA 00:00  [download]   0.5% of    6.33MiB at    5.13MiB/s ETA 00:01[download]   1.0% of    6.33MiB at    7.06MiB/s ETA 00:00[download]   2.0% of    6.33MiB at    7.35MiB/s ETA 00:00[download]   3.9% of    6.33MiB at    8.28MiB/s ETA 00:00[download]   7.9% of    6.33MiB at    8.64MiB/s ETA 00:00[download]  15.8% of    6.33MiB at    8.99MiB/s ETA 00:00[download]  31.6% of    6.33MiB at    9.17MiB/s ETA 00:00[download]  63.2% of    6.33MiB at    2.73MiB/s ETA 00:00[download]  88.5% of    6.33MiB at    2.92MiB/s ETA 00:00[download] 100.0% of    6.33MiB at    2.58MiB/s ETA 00:00[download] 100% of    6.33MiB in 00:00:02 at 2.44MiB/s   
+    OK
+[37] https://www.youtube.com/watch?v=uYPbbksJxIg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=uYPbbksJxIg
+[youtube] uYPbbksJxIg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] uYPbbksJxIg: Downloading android vr player API JSON
+[info] uYPbbksJxIg: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/uYPbbksJxIg.mp4
+[download]   0.0% of    9.41MiB at  Unknown B/s ETA Unknown[download]   0.0% of    9.41MiB at  Unknown B/s ETA Unknown[download]   0.1% of    9.41MiB at  Unknown B/s ETA Unknown[download]   0.2% of    9.41MiB at    8.47MiB/s ETA 00:01  [download]   0.3% of    9.41MiB at    4.33MiB/s ETA 00:02[download]   0.7% of    9.41MiB at    6.76MiB/s ETA 00:01[download]   1.3% of    9.41MiB at    6.74MiB/s ETA 00:01[download]   2.6% of    9.41MiB at    8.07MiB/s ETA 00:01[download]   5.3% of    9.41MiB at    8.52MiB/s ETA 00:01[download]  10.6% of    9.41MiB at    8.79MiB/s ETA 00:00[download]  21.3% of    9.41MiB at    5.22MiB/s ETA 00:01[download]  42.5% of    9.41MiB at    7.63MiB/s ETA 00:00[download]  85.0% of    9.41MiB at    7.92MiB/s ETA 00:00[download] 100.0% of    9.41MiB at    9.22MiB/s ETA 00:00[download] 100% of    9.41MiB in 00:00:01 at 7.33MiB/s   
+    OK
+[38] https://www.youtube.com/watch?v=WPIGlxRqmJ8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=WPIGlxRqmJ8
+[youtube] WPIGlxRqmJ8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] WPIGlxRqmJ8: Downloading android vr player API JSON
+ERROR: [youtube] WPIGlxRqmJ8: Video unavailable
+    OK
+[39] https://www.youtube.com/watch?v=SJFo1YsGhzk
+[youtube] Extracting URL: https://www.youtube.com/watch?v=SJFo1YsGhzk
+[youtube] SJFo1YsGhzk: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] SJFo1YsGhzk: Downloading android vr player API JSON
+ERROR: [youtube] SJFo1YsGhzk: Video unavailable
+    OK
+[40] https://www.youtube.com/watch?v=xMzGMb0yq5w
+[youtube] Extracting URL: https://www.youtube.com/watch?v=xMzGMb0yq5w
+[youtube] xMzGMb0yq5w: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] xMzGMb0yq5w: Downloading android vr player API JSON
+ERROR: [youtube] xMzGMb0yq5w: Video unavailable
+    OK
+[41] https://www.youtube.com/watch?v=8g18jFHCLXk
+    SKIPPED (already exists)
+[42] https://www.youtube.com/watch?v=Way9Dexny3w
+    SKIPPED (already exists)
+[43] https://www.youtube.com/watch?v=gCcx85zbxz4
+[youtube] Extracting URL: https://www.youtube.com/watch?v=gCcx85zbxz4
+[youtube] gCcx85zbxz4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] gCcx85zbxz4: Downloading android vr player API JSON
+[info] gCcx85zbxz4: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/gCcx85zbxz4.mp4
+[download]   0.0% of    5.44MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.44MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.44MiB at    6.33MiB/s ETA 00:00  [download]   0.3% of    5.44MiB at    8.79MiB/s ETA 00:00[download]   0.6% of    5.44MiB at    7.14MiB/s ETA 00:00[download]   1.1% of    5.44MiB at    5.92MiB/s ETA 00:00[download]   2.3% of    5.44MiB at    7.38MiB/s ETA 00:00[download]   4.6% of    5.44MiB at    7.60MiB/s ETA 00:00[download]   9.2% of    5.44MiB at    5.50MiB/s ETA 00:00[download]  18.4% of    5.44MiB at    8.10MiB/s ETA 00:00[download]  36.7% of    5.44MiB at    7.91MiB/s ETA 00:00[download]  73.5% of    5.44MiB at    8.22MiB/s ETA 00:00[download] 100.0% of    5.44MiB at    9.34MiB/s ETA 00:00[download] 100% of    5.44MiB in 00:00:00 at 7.40MiB/s   
+    OK
+[44] https://www.youtube.com/watch?v=tFMo3UJ4B4g
+[youtube] Extracting URL: https://www.youtube.com/watch?v=tFMo3UJ4B4g
+[youtube] tFMo3UJ4B4g: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] tFMo3UJ4B4g: Downloading android vr player API JSON
+[info] tFMo3UJ4B4g: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/tFMo3UJ4B4g.mp4
+[download]   0.0% of    5.88MiB at  132.42KiB/s ETA 00:45[download]   0.0% of    5.88MiB at  367.59KiB/s ETA 00:16[download]   0.1% of    5.88MiB at  828.96KiB/s ETA 00:07[download]   0.2% of    5.88MiB at    1.71MiB/s ETA 00:03[download]   0.5% of    5.88MiB at  693.13KiB/s ETA 00:08[download]   1.0% of    5.88MiB at  798.64KiB/s ETA 00:07[download]   2.1% of    5.88MiB at    1.05MiB/s ETA 00:05[download]   4.2% of    5.88MiB at    1.48MiB/s ETA 00:03[download]   8.5% of    5.88MiB at    2.13MiB/s ETA 00:02[download]  17.0% of    5.88MiB at    3.37MiB/s ETA 00:01[download]  34.0% of    5.88MiB at    5.40MiB/s ETA 00:00[download]  68.0% of    5.88MiB at    8.31MiB/s ETA 00:00[download] 100.0% of    5.88MiB at    7.94MiB/s ETA 00:00[download] 100% of    5.88MiB in 00:00:01 at 5.17MiB/s   
+    OK
+[45] https://www.youtube.com/watch?v=ej3ioOneTy8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=ej3ioOneTy8
+[youtube] ej3ioOneTy8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] ej3ioOneTy8: Downloading android vr player API JSON
+[info] ej3ioOneTy8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/ej3ioOneTy8.mp4
+[download]   0.0% of    9.00MiB at   77.86KiB/s ETA 01:58[download]   0.0% of    9.00MiB at  225.05KiB/s ETA 00:40[download]   0.1% of    9.00MiB at  518.79KiB/s ETA 00:17[download]   0.2% of    9.00MiB at    1.07MiB/s ETA 00:08[download]   0.3% of    9.00MiB at  409.44KiB/s ETA 00:22[download]   0.7% of    9.00MiB at  484.37KiB/s ETA 00:18[download]   1.4% of    9.00MiB at  645.49KiB/s ETA 00:14[download]   2.8% of    9.00MiB at  910.84KiB/s ETA 00:09[download]   5.5% of    9.00MiB at    1.27MiB/s ETA 00:06[download]  11.1% of    9.00MiB at    2.05MiB/s ETA 00:03[download]  22.2% of    9.00MiB at    3.29MiB/s ETA 00:02[download]  44.4% of    9.00MiB at    5.46MiB/s ETA 00:00[download]  88.9% of    9.00MiB at    8.49MiB/s ETA 00:00[download] 100.0% of    9.00MiB at    7.47MiB/s ETA 00:00[download] 100% of    9.00MiB in 00:00:01 at 5.21MiB/s   
+    OK
+[46] https://www.youtube.com/watch?v=zSWdZVtXT7E
+[youtube] Extracting URL: https://www.youtube.com/watch?v=zSWdZVtXT7E
+[youtube] zSWdZVtXT7E: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] zSWdZVtXT7E: Downloading android vr player API JSON
+[info] zSWdZVtXT7E: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/zSWdZVtXT7E.mp4
+[download]   0.0% of    6.59MiB at   80.46KiB/s ETA 01:23[download]   0.0% of    6.59MiB at  232.46KiB/s ETA 00:29[download]   0.1% of    6.59MiB at  536.71KiB/s ETA 00:12[download]   0.2% of    6.59MiB at    1.11MiB/s ETA 00:05[download]   0.5% of    6.59MiB at  417.68KiB/s ETA 00:16[download]   0.9% of    6.59MiB at  483.21KiB/s ETA 00:13[download]   1.9% of    6.59MiB at  650.52KiB/s ETA 00:10[download]   3.8% of    6.59MiB at  924.01KiB/s ETA 00:07[download]   7.6% of    6.59MiB at    1.29MiB/s ETA 00:04[download]  15.2% of    6.59MiB at    2.04MiB/s ETA 00:02[download]  30.4% of    6.59MiB at    3.30MiB/s ETA 00:01[download]  60.7% of    6.59MiB at    5.33MiB/s ETA 00:00[download] 100.0% of    6.59MiB at    6.94MiB/s ETA 00:00[download] 100% of    6.59MiB in 00:00:01 at 5.09MiB/s   
+    OK
+[47] https://www.youtube.com/watch?v=d9MyW72ELq0
+    SKIPPED (already exists)
+[48] https://www.youtube.com/watch?v=cqGjhVJWtEg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=cqGjhVJWtEg
+[youtube] cqGjhVJWtEg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] cqGjhVJWtEg: Downloading android vr player API JSON
+[info] cqGjhVJWtEg: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/cqGjhVJWtEg.mp4
+[download]   0.0% of   14.53MiB at  Unknown B/s ETA Unknown[download]   0.0% of   14.53MiB at  Unknown B/s ETA Unknown[download]   0.0% of   14.53MiB at  Unknown B/s ETA Unknown[download]   0.1% of   14.53MiB at    8.68MiB/s ETA 00:01  [download]   0.2% of   14.53MiB at    4.03MiB/s ETA 00:03[download]   0.4% of   14.53MiB at    5.92MiB/s ETA 00:02[download]   0.9% of   14.53MiB at    6.07MiB/s ETA 00:02[download]   1.7% of   14.53MiB at    7.34MiB/s ETA 00:01[download]   3.4% of   14.53MiB at    7.86MiB/s ETA 00:01[download]   6.9% of   14.53MiB at    8.19MiB/s ETA 00:01[download]  13.8% of   14.53MiB at    8.20MiB/s ETA 00:01[download]  27.5% of   14.53MiB at    8.47MiB/s ETA 00:01[download]  55.1% of   14.53MiB at    6.26MiB/s ETA 00:01[download]  66.9% of   14.53MiB at    7.30MiB/s ETA 00:00[download]  66.9% of   14.53MiB at  Unknown B/s ETA Unknown[download]  66.9% of   14.53MiB at  Unknown B/s ETA Unknown[download]  66.9% of   14.53MiB at  Unknown B/s ETA Unknown[download]  67.0% of   14.53MiB at    8.78MiB/s ETA 00:00  [download]  67.1% of   14.53MiB at    9.37MiB/s ETA 00:00[download]  67.3% of   14.53MiB at    9.49MiB/s ETA 00:00[download]  67.7% of   14.53MiB at    9.78MiB/s ETA 00:00[download]  68.6% of   14.53MiB at    9.77MiB/s ETA 00:00[download]  70.3% of   14.53MiB at    9.83MiB/s ETA 00:00[download]  73.7% of   14.53MiB at    9.92MiB/s ETA 00:00[download]  80.6% of   14.53MiB at    9.92MiB/s ETA 00:00[download]  94.4% of   14.53MiB at    3.39MiB/s ETA 00:00[download] 100.0% of   14.53MiB at    4.08MiB/s ETA 00:00[download] 100% of   14.53MiB in 00:00:03 at 4.81MiB/s   
+    OK
+[49] https://www.youtube.com/watch?v=wxN1T1qdQ0
+[youtube:truncated_id] Extracting URL: https://www.youtube.com/watch?v=wxN1T1qdQ0
+ERROR: [youtube:truncated_id] wxN1T1qdQ0: Incomplete YouTube ID wxN1T1qdQ0. URL https://www.youtube.com/watch?v=wxN1T1qdQ0 looks truncated.
+    OK
+[50] https://www.youtube.com/watch?v=89OP78l9oF0
+[youtube] Extracting URL: https://www.youtube.com/watch?v=89OP78l9oF0
+[youtube] 89OP78l9oF0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 89OP78l9oF0: Downloading android vr player API JSON
+[info] 89OP78l9oF0: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/89OP78l9oF0.mp4
+[download]   0.0% of    5.14MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.14MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.14MiB at    6.58MiB/s ETA 00:00  [download]   0.3% of    5.14MiB at    7.49MiB/s ETA 00:00[download]   0.6% of    5.14MiB at    2.65MiB/s ETA 00:01[download]   1.2% of    5.14MiB at    3.96MiB/s ETA 00:01[download]   2.4% of    5.14MiB at    4.21MiB/s ETA 00:01[download]   4.8% of    5.14MiB at    5.60MiB/s ETA 00:00[download]   9.7% of    5.14MiB at    6.57MiB/s ETA 00:00[download]  19.4% of    5.14MiB at    6.96MiB/s ETA 00:00[download]  38.9% of    5.14MiB at    7.10MiB/s ETA 00:00[download]  77.8% of    5.14MiB at    4.49MiB/s ETA 00:00[download] 100.0% of    5.14MiB at    5.48MiB/s ETA 00:00[download] 100% of    5.14MiB in 00:00:01 at 4.30MiB/s   
+    OK
+[51] https://www.youtube.com/watch?v=EoQuVnKhxaM
+[youtube] Extracting URL: https://www.youtube.com/watch?v=EoQuVnKhxaM
+[youtube] EoQuVnKhxaM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] EoQuVnKhxaM: Downloading android vr player API JSON
+[info] EoQuVnKhxaM: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/EoQuVnKhxaM.mp4
+[download]   0.0% of    7.27MiB at  Unknown B/s ETA Unknown[download]   0.0% of    7.27MiB at  Unknown B/s ETA Unknown[download]   0.1% of    7.27MiB at  Unknown B/s ETA Unknown[download]   0.2% of    7.27MiB at    8.87MiB/s ETA 00:00  [download]   0.4% of    7.27MiB at    5.72MiB/s ETA 00:01[download]   0.8% of    7.27MiB at    7.38MiB/s ETA 00:00[download]   1.7% of    7.27MiB at    7.61MiB/s ETA 00:00[download]   3.4% of    7.27MiB at    7.85MiB/s ETA 00:00[download]   6.9% of    7.27MiB at    7.64MiB/s ETA 00:00[download]  13.7% of    7.27MiB at    6.85MiB/s ETA 00:00[download]  27.5% of    7.27MiB at    6.86MiB/s ETA 00:00[download]  55.0% of    7.27MiB at    4.66MiB/s ETA 00:00[download] 100.0% of    7.27MiB at    6.57MiB/s ETA 00:00[download] 100% of    7.27MiB in 00:00:01 at 5.58MiB/s   
+    OK
+[52] https://www.youtube.com/watch?v=9ix7TUGVYIo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=9ix7TUGVYIo
+[youtube] 9ix7TUGVYIo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 9ix7TUGVYIo: Downloading android vr player API JSON
+[info] 9ix7TUGVYIo: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/9ix7TUGVYIo.mp4
+[download]   0.0% of    9.48MiB at  Unknown B/s ETA Unknown[download]   0.0% of    9.48MiB at  Unknown B/s ETA Unknown[download]   0.1% of    9.48MiB at  Unknown B/s ETA Unknown[download]   0.2% of    9.48MiB at    8.52MiB/s ETA 00:01  [download]   0.3% of    9.48MiB at    5.27MiB/s ETA 00:01[download]   0.6% of    9.48MiB at    8.68MiB/s ETA 00:01[download]   1.3% of    9.48MiB at    6.59MiB/s ETA 00:01[download]   2.6% of    9.48MiB at    7.87MiB/s ETA 00:01[download]   5.3% of    9.48MiB at    7.94MiB/s ETA 00:01[download]  10.5% of    9.48MiB at    7.76MiB/s ETA 00:01[download]  21.1% of    9.48MiB at    8.02MiB/s ETA 00:00[download]  42.2% of    9.48MiB at    8.06MiB/s ETA 00:00[download]  84.4% of    9.48MiB at    7.89MiB/s ETA 00:00[download] 100.0% of    9.48MiB at    9.33MiB/s ETA 00:00[download] 100% of    9.48MiB in 00:00:02 at 3.39MiB/s   
+    OK
+[53] https://www.youtube.com/watch?v=x_me3xsvDgk
+[youtube] Extracting URL: https://www.youtube.com/watch?v=x_me3xsvDgk
+[youtube] x_me3xsvDgk: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] x_me3xsvDgk: Downloading android vr player API JSON
+[info] x_me3xsvDgk: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/x_me3xsvDgk.mp4
+[download]   0.0% of    7.01MiB at  Unknown B/s ETA Unknown[download]   0.0% of    7.01MiB at    2.61MiB/s ETA 00:02  [download]   0.1% of    7.01MiB at    5.18MiB/s ETA 00:01[download]   0.2% of    7.01MiB at    8.51MiB/s ETA 00:00[download]   0.4% of    7.01MiB at    5.40MiB/s ETA 00:01[download]   0.9% of    7.01MiB at    8.06MiB/s ETA 00:00[download]   1.8% of    7.01MiB at    2.23MiB/s ETA 00:03[download]   3.6% of    7.01MiB at    2.25MiB/s ETA 00:03[download]   7.1% of    7.01MiB at    2.89MiB/s ETA 00:02[download]  14.3% of    7.01MiB at    4.01MiB/s ETA 00:01[download]  28.5% of    7.01MiB at    5.63MiB/s ETA 00:00[download]  57.1% of    7.01MiB at    6.19MiB/s ETA 00:00[download] 100.0% of    7.01MiB at    7.98MiB/s ETA 00:00[download] 100% of    7.01MiB in 00:00:01 at 5.36MiB/s   
+    OK
+[54] https://www.youtube.com/watch?v=aWzlQ2N6qqg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=aWzlQ2N6qqg
+[youtube] aWzlQ2N6qqg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] aWzlQ2N6qqg: Downloading android vr player API JSON
+[info] aWzlQ2N6qqg: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/aWzlQ2N6qqg.mp4
+[download]   0.0% of   10.34MiB at  Unknown B/s ETA Unknown[download]   0.0% of   10.34MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.34MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.34MiB at    8.84MiB/s ETA 00:01  [download]   0.3% of   10.34MiB at    5.24MiB/s ETA 00:01[download]   0.6% of   10.34MiB at    6.91MiB/s ETA 00:01[download]   1.2% of   10.34MiB at    7.65MiB/s ETA 00:01[download]   2.4% of   10.34MiB at    8.15MiB/s ETA 00:01[download]   4.8% of   10.34MiB at    8.56MiB/s ETA 00:01[download]   9.7% of   10.34MiB at    7.25MiB/s ETA 00:01[download]  19.3% of   10.34MiB at    7.07MiB/s ETA 00:01[download]  38.7% of   10.34MiB at    7.99MiB/s ETA 00:00[download]  77.4% of   10.34MiB at    7.37MiB/s ETA 00:00[download]  94.1% of   10.34MiB at    8.45MiB/s ETA 00:00[download]  94.1% of   10.34MiB at  Unknown B/s ETA Unknown[download]  94.1% of   10.34MiB at  Unknown B/s ETA Unknown[download]  94.1% of   10.34MiB at  Unknown B/s ETA Unknown[download]  94.2% of   10.34MiB at    8.87MiB/s ETA 00:00  [download]  94.4% of   10.34MiB at    9.29MiB/s ETA 00:00[download]  94.7% of   10.34MiB at    9.64MiB/s ETA 00:00[download]  95.3% of   10.34MiB at    9.20MiB/s ETA 00:00[download]  96.5% of   10.34MiB at    8.98MiB/s ETA 00:00[download]  98.9% of   10.34MiB at    8.96MiB/s ETA 00:00[download] 100.0% of   10.34MiB at    9.89MiB/s ETA 00:00[download] 100% of   10.34MiB in 00:00:06 at 1.60MiB/s   
+    OK
+[55] https://www.youtube.com/watch?v=In_DIJb4PzI
+[youtube] Extracting URL: https://www.youtube.com/watch?v=In_DIJb4PzI
+[youtube] In_DIJb4PzI: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] In_DIJb4PzI: Downloading android vr player API JSON
+ERROR: [youtube] In_DIJb4PzI: Video unavailable
+    OK
+[56] https://www.youtube.com/watch?v=LdOM0x0XDMo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=LdOM0x0XDMo
+[youtube] LdOM0x0XDMo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] LdOM0x0XDMo: Downloading android vr player API JSON
+[info] LdOM0x0XDMo: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/LdOM0x0XDMo.mp4
+[download]   0.0% of    5.61MiB at  166.85KiB/s ETA 00:34[download]   0.1% of    5.61MiB at  449.39KiB/s ETA 00:12[download]   0.1% of    5.61MiB at  991.93KiB/s ETA 00:05[download]   0.3% of    5.61MiB at    2.00MiB/s ETA 00:02[download]   0.5% of    5.61MiB at  439.68KiB/s ETA 00:12[download]   1.1% of    5.61MiB at  465.25KiB/s ETA 00:12[download]   2.2% of    5.61MiB at  648.20KiB/s ETA 00:08[download]   4.4% of    5.61MiB at  932.34KiB/s ETA 00:05[download]   8.9% of    5.61MiB at    1.30MiB/s ETA 00:03[download]  17.8% of    5.61MiB at    2.09MiB/s ETA 00:02[download]  35.6% of    5.61MiB at    3.34MiB/s ETA 00:01[download]  71.3% of    5.61MiB at    5.47MiB/s ETA 00:00[download] 100.0% of    5.61MiB at    6.91MiB/s ETA 00:00[download] 100% of    5.61MiB in 00:00:01 at 4.48MiB/s   
+    OK
+[57] https://www.youtube.com/watch?v=sGbxmsDFVnE
+[youtube] Extracting URL: https://www.youtube.com/watch?v=sGbxmsDFVnE
+[youtube] sGbxmsDFVnE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] sGbxmsDFVnE: Downloading android vr player API JSON
+[info] sGbxmsDFVnE: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/sGbxmsDFVnE.mp4
+[download]   0.0% of   10.59MiB at  Unknown B/s ETA Unknown[download]   0.0% of   10.59MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.59MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.59MiB at    8.84MiB/s ETA 00:01  [download]   0.3% of   10.59MiB at    5.43MiB/s ETA 00:01[download]   0.6% of   10.59MiB at    7.59MiB/s ETA 00:01[download]   1.2% of   10.59MiB at    7.04MiB/s ETA 00:01[download]   2.4% of   10.59MiB at    8.22MiB/s ETA 00:01[download]   4.7% of   10.59MiB at    8.78MiB/s ETA 00:01[download]   9.4% of   10.59MiB at    8.46MiB/s ETA 00:01[download]  18.9% of   10.59MiB at    8.47MiB/s ETA 00:01[download]  37.7% of   10.59MiB at    8.59MiB/s ETA 00:00[download]  75.5% of   10.59MiB at    8.80MiB/s ETA 00:00[download]  92.2% of   10.59MiB at    9.97MiB/s ETA 00:00[download]  92.2% of   10.59MiB at  Unknown B/s ETA Unknown[download]  92.2% of   10.59MiB at  Unknown B/s ETA Unknown[download]  92.2% of   10.59MiB at  Unknown B/s ETA Unknown[download]  92.3% of   10.59MiB at    8.82MiB/s ETA 00:00  [download]  92.4% of   10.59MiB at    9.29MiB/s ETA 00:00[download]  92.7% of   10.59MiB at    9.67MiB/s ETA 00:00[download]  93.3% of   10.59MiB at    9.79MiB/s ETA 00:00[download]  94.5% of   10.59MiB at    9.87MiB/s ETA 00:00[download]  96.9% of   10.59MiB at    9.83MiB/s ETA 00:00[download] 100.0% of   10.59MiB at    9.88MiB/s ETA 00:00[download] 100% of   10.59MiB in 00:00:01 at 8.99MiB/s   
+    OK
+[58] https://www.youtube.com/watch?v=Q0CbN8sfihY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=Q0CbN8sfihY
+[youtube] Q0CbN8sfihY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] Q0CbN8sfihY: Downloading android vr player API JSON
+[info] Q0CbN8sfihY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/Q0CbN8sfihY.mp4
+[download]   0.0% of    6.31MiB at   72.97KiB/s ETA 01:28[download]   0.0% of    6.31MiB at  213.44KiB/s ETA 00:30[download]   0.1% of    6.31MiB at  493.12KiB/s ETA 00:13[download]   0.2% of    6.31MiB at    1.02MiB/s ETA 00:06[download]   0.5% of    6.31MiB at  407.79KiB/s ETA 00:15[download]   1.0% of    6.31MiB at  467.73KiB/s ETA 00:13[download]   2.0% of    6.31MiB at  636.74KiB/s ETA 00:09[download]   3.9% of    6.31MiB at  904.82KiB/s ETA 00:06[download]   7.9% of    6.31MiB at    1.25MiB/s ETA 00:04[download]  15.8% of    6.31MiB at    2.01MiB/s ETA 00:02[download]  31.7% of    6.31MiB at    3.18MiB/s ETA 00:01[download]  63.3% of    6.31MiB at    5.28MiB/s ETA 00:00[download] 100.0% of    6.31MiB at    5.51MiB/s ETA 00:00[download] 100% of    6.31MiB in 00:00:01 at 3.85MiB/s   
+    OK
+[59] https://www.youtube.com/watch?v=X0tOpBuYasI
+[youtube] Extracting URL: https://www.youtube.com/watch?v=X0tOpBuYasI
+[youtube] X0tOpBuYasI: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] X0tOpBuYasI: Downloading android vr player API JSON
+[info] X0tOpBuYasI: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/X0tOpBuYasI.mp4
+[download]   0.0% of    8.37MiB at   74.90KiB/s ETA 01:54[download]   0.0% of    8.37MiB at  214.11KiB/s ETA 00:40[download]   0.1% of    8.37MiB at  492.88KiB/s ETA 00:17[download]   0.2% of    8.37MiB at    1.02MiB/s ETA 00:08[download]   0.4% of    8.37MiB at  406.82KiB/s ETA 00:20[download]   0.7% of    8.37MiB at  464.11KiB/s ETA 00:18[download]   1.5% of    8.37MiB at  629.59KiB/s ETA 00:13[download]   3.0% of    8.37MiB at  890.68KiB/s ETA 00:09[download]   6.0% of    8.37MiB at    1.22MiB/s ETA 00:06[download]  11.9% of    8.37MiB at    1.96MiB/s ETA 00:03[download]  23.9% of    8.37MiB at    3.14MiB/s ETA 00:02[download]  47.8% of    8.37MiB at    5.20MiB/s ETA 00:00[download]  95.6% of    8.37MiB at    3.81MiB/s ETA 00:00[download] 100.0% of    8.37MiB at    3.20MiB/s ETA 00:00[download] 100% of    8.37MiB in 00:00:04 at 1.93MiB/s   
+    OK
+[60] https://www.youtube.com/watch?v=UGc5Tzz19UY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=UGc5Tzz19UY
+[youtube] UGc5Tzz19UY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] UGc5Tzz19UY: Downloading android vr player API JSON
+[info] UGc5Tzz19UY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/UGc5Tzz19UY.mp4
+[download]   0.0% of   21.72MiB at   68.23KiB/s ETA 05:26[download]   0.0% of   21.72MiB at  198.47KiB/s ETA 01:52[download]   0.0% of   21.72MiB at  456.82KiB/s ETA 00:48[download]   0.1% of   21.72MiB at  964.75KiB/s ETA 00:23[download]   0.1% of   21.72MiB at  369.80KiB/s ETA 01:00[download]   0.3% of   21.72MiB at  423.02KiB/s ETA 00:52[download]   0.6% of   21.72MiB at  570.25KiB/s ETA 00:38[download]   1.1% of   21.72MiB at  814.05KiB/s ETA 00:27[download]   2.3% of   21.72MiB at    1.13MiB/s ETA 00:18[download]   4.6% of   21.72MiB at    1.78MiB/s ETA 00:11[download]   9.2% of   21.72MiB at    2.87MiB/s ETA 00:06[download]  18.4% of   21.72MiB at    4.73MiB/s ETA 00:03[download]  36.8% of   21.72MiB at    7.86MiB/s ETA 00:01[download]  45.0% of   21.72MiB at    9.06MiB/s ETA 00:01[download]  45.0% of   21.72MiB at  Unknown B/s ETA Unknown[download]  45.0% of   21.72MiB at  Unknown B/s ETA Unknown[download]  45.0% of   21.72MiB at  Unknown B/s ETA Unknown[download]  45.1% of   21.72MiB at    8.76MiB/s ETA 00:01  [download]  45.1% of   21.72MiB at    9.31MiB/s ETA 00:01[download]  45.3% of   21.72MiB at    9.60MiB/s ETA 00:01[download]  45.6% of   21.72MiB at    9.73MiB/s ETA 00:01[download]  46.1% of   21.72MiB at  538.28KiB/s ETA 00:22[download]  47.3% of   21.72MiB at    1.04MiB/s ETA 00:10[download]  49.6% of   21.72MiB at    1.95MiB/s ETA 00:05[download]  54.2% of   21.72MiB at    3.45MiB/s ETA 00:02[download]  63.4% of   21.72MiB at    5.96MiB/s ETA 00:01[download]  81.8% of   21.72MiB at    5.48MiB/s ETA 00:00[download]  88.9% of   21.72MiB at    5.95MiB/s ETA 00:00[download]  88.9% of   21.72MiB at  Unknown B/s ETA Unknown[download]  88.9% of   21.72MiB at  Unknown B/s ETA Unknown[download]  88.9% of   21.72MiB at  Unknown B/s ETA Unknown[download]  89.0% of   21.72MiB at    8.71MiB/s ETA 00:00  [download]  89.0% of   21.72MiB at    9.16MiB/s ETA 00:00[download]  89.2% of   21.72MiB at    9.60MiB/s ETA 00:00[download]  89.5% of   21.72MiB at    9.24MiB/s ETA 00:00[download]  90.0% of   21.72MiB at    8.94MiB/s ETA 00:00[download]  91.2% of   21.72MiB at    9.53MiB/s ETA 00:00[download]  93.5% of   21.72MiB at    9.18MiB/s ETA 00:00[download]  98.1% of   21.72MiB at    9.93MiB/s ETA 00:00[download] 100.0% of   21.72MiB at    9.95MiB/s ETA 00:00[download] 100% of   21.72MiB in 00:00:04 at 4.88MiB/s   
+    OK
+[61] https://www.youtube.com/watch?v=DzfpyUB60YY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=DzfpyUB60YY
+[youtube] DzfpyUB60YY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] DzfpyUB60YY: Downloading android vr player API JSON
+[info] DzfpyUB60YY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/DzfpyUB60YY.mp4
+[download]   0.0% of    7.69MiB at  133.07KiB/s ETA 00:59[download]   0.0% of    7.69MiB at  382.27KiB/s ETA 00:20[download]   0.1% of    7.69MiB at  875.01KiB/s ETA 00:08[download]   0.2% of    7.69MiB at    1.80MiB/s ETA 00:04[download]   0.4% of    7.69MiB at  643.43KiB/s ETA 00:12[download]   0.8% of    7.69MiB at  731.29KiB/s ETA 00:10[download]   1.6% of    7.69MiB at  980.54KiB/s ETA 00:07[download]   3.2% of    7.69MiB at    1.36MiB/s ETA 00:05[download]   6.5% of    7.69MiB at    1.90MiB/s ETA 00:03[download]  13.0% of    7.69MiB at    2.91MiB/s ETA 00:02[download]  26.0% of    7.69MiB at    4.10MiB/s ETA 00:01[download]  52.0% of    7.69MiB at    6.68MiB/s ETA 00:00[download] 100.0% of    7.69MiB at    7.36MiB/s ETA 00:00[download] 100% of    7.69MiB in 00:00:01 at 5.32MiB/s   
+    OK
+[62] https://www.youtube.com/watch?v=hNCmb-4oXJA
+[youtube] Extracting URL: https://www.youtube.com/watch?v=hNCmb-4oXJA
+[youtube] hNCmb-4oXJA: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] hNCmb-4oXJA: Downloading android vr player API JSON
+[info] hNCmb-4oXJA: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/hNCmb-4oXJA.mp4
+[download]   0.0% of    6.39MiB at  148.86KiB/s ETA 00:44[download]   0.0% of    6.39MiB at  431.31KiB/s ETA 00:15[download]   0.1% of    6.39MiB at  987.82KiB/s ETA 00:06[download]   0.2% of    6.39MiB at    2.03MiB/s ETA 00:03[download]   0.5% of    6.39MiB at  365.64KiB/s ETA 00:17[download]   1.0% of    6.39MiB at  415.59KiB/s ETA 00:15[download]   1.9% of    6.39MiB at  559.93KiB/s ETA 00:11[download]   3.9% of    6.39MiB at  795.43KiB/s ETA 00:07[download]   7.8% of    6.39MiB at    1.14MiB/s ETA 00:05[download]  15.6% of    6.39MiB at    1.78MiB/s ETA 00:03[download]  31.3% of    6.39MiB at    2.85MiB/s ETA 00:01[download]  62.6% of    6.39MiB at    4.66MiB/s ETA 00:00[download] 100.0% of    6.39MiB at    6.41MiB/s ETA 00:00[download] 100% of    6.39MiB in 00:00:01 at 3.83MiB/s   
+    OK
+[63] https://www.youtube.com/watch?v=WR7cc5t7tv8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=WR7cc5t7tv8
+[youtube] WR7cc5t7tv8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] WR7cc5t7tv8: Downloading android vr player API JSON
+[info] WR7cc5t7tv8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/WR7cc5t7tv8.mp4
+[download]   0.0% of    6.14MiB at  Unknown B/s ETA Unknown[download]   0.0% of    6.14MiB at  Unknown B/s ETA Unknown[download]   0.1% of    6.14MiB at  Unknown B/s ETA Unknown[download]   0.2% of    6.14MiB at    8.85MiB/s ETA 00:00  [download]   0.5% of    6.14MiB at    5.51MiB/s ETA 00:01[download]   1.0% of    6.14MiB at    8.16MiB/s ETA 00:00[download]   2.0% of    6.14MiB at    7.53MiB/s ETA 00:00[download]   4.1% of    6.14MiB at    8.08MiB/s ETA 00:00[download]   8.1% of    6.14MiB at    8.24MiB/s ETA 00:00[download]  16.3% of    6.14MiB at    8.40MiB/s ETA 00:00[download]  32.5% of    6.14MiB at    8.40MiB/s ETA 00:00[download]  65.1% of    6.14MiB at    8.44MiB/s ETA 00:00[download] 100.0% of    6.14MiB at    8.84MiB/s ETA 00:00[download] 100% of    6.14MiB in 00:00:00 at 7.35MiB/s   
+    OK
+[64] https://www.youtube.com/watch?v=XEMwSdne6UE
+[youtube] Extracting URL: https://www.youtube.com/watch?v=XEMwSdne6UE
+[youtube] XEMwSdne6UE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] XEMwSdne6UE: Downloading android vr player API JSON
+[info] XEMwSdne6UE: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/XEMwSdne6UE.mp4
+[download]   0.0% of    8.57MiB at  Unknown B/s ETA Unknown[download]   0.0% of    8.57MiB at  Unknown B/s ETA Unknown[download]   0.1% of    8.57MiB at  Unknown B/s ETA Unknown[download]   0.2% of    8.57MiB at    8.47MiB/s ETA 00:01  [download]   0.4% of    8.57MiB at    9.13MiB/s ETA 00:00[download]   0.7% of    8.57MiB at    6.71MiB/s ETA 00:01[download]   1.4% of    8.57MiB at    1.44MiB/s ETA 00:05[download]   2.9% of    8.57MiB at    1.51MiB/s ETA 00:05[download]   5.8% of    8.57MiB at    1.97MiB/s ETA 00:04[download]  11.7% of    8.57MiB at    2.63MiB/s ETA 00:02[download]  23.3% of    8.57MiB at    4.03MiB/s ETA 00:01[download]  46.7% of    8.57MiB at    3.42MiB/s ETA 00:01[download]  81.3% of    8.57MiB at    3.14MiB/s ETA 00:00[download] 100.0% of    8.57MiB at    3.09MiB/s ETA 00:00[download] 100% of    8.57MiB in 00:00:03 at 2.45MiB/s   
+    OK
+[65] https://www.youtube.com/watch?v=V6wWKNij_1M
+[youtube] Extracting URL: https://www.youtube.com/watch?v=V6wWKNij_1M
+[youtube] V6wWKNij_1M: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] V6wWKNij_1M: Downloading android vr player API JSON
+[info] V6wWKNij_1M: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/V6wWKNij_1M.mp4
+[download]   0.0% of    4.74MiB at  175.55KiB/s ETA 00:27[download]   0.1% of    4.74MiB at  498.99KiB/s ETA 00:09[download]   0.1% of    4.74MiB at    1.11MiB/s ETA 00:04[download]   0.3% of    4.74MiB at    2.32MiB/s ETA 00:02[download]   0.6% of    4.74MiB at  449.19KiB/s ETA 00:10[download]   1.3% of    4.74MiB at  492.81KiB/s ETA 00:09[download]   2.6% of    4.74MiB at  678.74KiB/s ETA 00:06[download]   5.2% of    4.74MiB at  966.99KiB/s ETA 00:04[download]  10.5% of    4.74MiB at    1.34MiB/s ETA 00:03[download]  21.1% of    4.74MiB at    2.16MiB/s ETA 00:01[download]  42.1% of    4.74MiB at    3.44MiB/s ETA 00:00[download]  84.3% of    4.74MiB at    5.49MiB/s ETA 00:00[download] 100.0% of    4.74MiB at    6.12MiB/s ETA 00:00[download] 100% of    4.74MiB in 00:00:01 at 3.80MiB/s   
+    OK
+[66] https://www.youtube.com/watch?v=1Vnghdsjmd0
+[youtube] Extracting URL: https://www.youtube.com/watch?v=1Vnghdsjmd0
+[youtube] 1Vnghdsjmd0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 1Vnghdsjmd0: Downloading android vr player API JSON
+[info] 1Vnghdsjmd0: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/1Vnghdsjmd0.mp4
+[download]   0.0% of    8.34MiB at  139.62KiB/s ETA 01:01[download]   0.0% of    8.34MiB at  398.18KiB/s ETA 00:21[download]   0.1% of    8.34MiB at  900.20KiB/s ETA 00:09[download]   0.2% of    8.34MiB at    1.81MiB/s ETA 00:04[download]   0.4% of    8.34MiB at  375.19KiB/s ETA 00:22[download]   0.7% of    8.34MiB at  425.68KiB/s ETA 00:19[download]   1.5% of    8.34MiB at  580.92KiB/s ETA 00:14[download]   3.0% of    8.34MiB at  827.60KiB/s ETA 00:10[download]   6.0% of    8.34MiB at    1.14MiB/s ETA 00:06[download]  12.0% of    8.34MiB at    1.83MiB/s ETA 00:04[download]  24.0% of    8.34MiB at    2.90MiB/s ETA 00:02[download]  47.9% of    8.34MiB at    4.78MiB/s ETA 00:00[download]  95.9% of    8.34MiB at    7.85MiB/s ETA 00:00[download] 100.0% of    8.34MiB at    8.09MiB/s ETA 00:00[download] 100% of    8.34MiB in 00:00:01 at 4.96MiB/s   
+    OK
+[67] https://www.youtube.com/watch?v=WO_FJdiY9dA
+[youtube] Extracting URL: https://www.youtube.com/watch?v=WO_FJdiY9dA
+[youtube] WO_FJdiY9dA: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] WO_FJdiY9dA: Downloading android vr player API JSON
+[info] WO_FJdiY9dA: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/WO_FJdiY9dA.mp4
+[download]   0.0% of    4.37MiB at  Unknown B/s ETA Unknown[download]   0.1% of    4.37MiB at    2.48MiB/s ETA 00:01  [download]   0.2% of    4.37MiB at    5.07MiB/s ETA 00:00[download]   0.3% of    4.37MiB at    8.76MiB/s ETA 00:00[download]   0.7% of    4.37MiB at    4.33MiB/s ETA 00:01[download]   1.4% of    4.37MiB at    6.13MiB/s ETA 00:00[download]   2.8% of    4.37MiB at    5.90MiB/s ETA 00:00[download]   5.7% of    4.37MiB at    6.62MiB/s ETA 00:00[download]  11.4% of    4.37MiB at    7.25MiB/s ETA 00:00[download]  22.9% of    4.37MiB at    7.72MiB/s ETA 00:00[download]  45.8% of    4.37MiB at    6.71MiB/s ETA 00:00[download]  91.5% of    4.37MiB at    4.74MiB/s ETA 00:00[download] 100.0% of    4.37MiB at    5.17MiB/s ETA 00:00[download] 100% of    4.37MiB in 00:00:01 at 3.49MiB/s   
+    OK
+[68] https://www.youtube.com/watch?v=76yBTNDB6vU
+[youtube] Extracting URL: https://www.youtube.com/watch?v=76yBTNDB6vU
+[youtube] 76yBTNDB6vU: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 76yBTNDB6vU: Downloading android vr player API JSON
+[info] 76yBTNDB6vU: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/76yBTNDB6vU.mp4
+[download]   0.0% of    5.43MiB at  423.62KiB/s ETA 00:13[download]   0.1% of    5.43MiB at    1.14MiB/s ETA 00:04[download]   0.1% of    5.43MiB at    2.53MiB/s ETA 00:02[download]   0.3% of    5.43MiB at    5.18MiB/s ETA 00:01[download]   0.6% of    5.43MiB at    2.87MiB/s ETA 00:01[download]   1.1% of    5.43MiB at    3.94MiB/s ETA 00:01[download]   2.3% of    5.43MiB at    3.95MiB/s ETA 00:01[download]   4.6% of    5.43MiB at    6.02MiB/s ETA 00:00[download]   9.2% of    5.43MiB at    7.44MiB/s ETA 00:00[download]  18.4% of    5.43MiB at    6.34MiB/s ETA 00:00[download]  36.8% of    5.43MiB at    7.84MiB/s ETA 00:00[download]  73.6% of    5.43MiB at    7.81MiB/s ETA 00:00[download] 100.0% of    5.43MiB at    9.28MiB/s ETA 00:00[download] 100% of    5.43MiB in 00:00:00 at 6.81MiB/s   
+    OK
+[69] https://www.youtube.com/watch?v=FnCdOQsX5kc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=FnCdOQsX5kc
+[youtube] FnCdOQsX5kc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] FnCdOQsX5kc: Downloading android vr player API JSON
+[info] FnCdOQsX5kc: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/FnCdOQsX5kc.mp4
+[download]   0.0% of    9.02MiB at   83.62KiB/s ETA 01:50[download]   0.0% of    9.02MiB at  240.74KiB/s ETA 00:38[download]   0.1% of    9.02MiB at  530.04KiB/s ETA 00:17[download]   0.2% of    9.02MiB at    1.09MiB/s ETA 00:08[download]   0.3% of    9.02MiB at  433.54KiB/s ETA 00:21[download]   0.7% of    9.02MiB at  493.24KiB/s ETA 00:18[download]   1.4% of    9.02MiB at  668.70KiB/s ETA 00:13[download]   2.8% of    9.02MiB at  937.92KiB/s ETA 00:09[download]   5.5% of    9.02MiB at    1.29MiB/s ETA 00:06[download]  11.1% of    9.02MiB at    2.05MiB/s ETA 00:03[download]  22.2% of    9.02MiB at    3.30MiB/s ETA 00:02[download]  44.3% of    9.02MiB at    5.22MiB/s ETA 00:00[download]  88.7% of    9.02MiB at    7.77MiB/s ETA 00:00[download] 100.0% of    9.02MiB at    8.74MiB/s ETA 00:00[download] 100% of    9.02MiB in 00:00:01 at 6.19MiB/s   
+    OK
+[70] https://www.youtube.com/watch?v=h9Q4rdMOsBo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=h9Q4rdMOsBo
+[youtube] h9Q4rdMOsBo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] h9Q4rdMOsBo: Downloading android vr player API JSON
+ERROR: [youtube] h9Q4rdMOsBo: Video unavailable
+    OK
+[71] https://www.youtube.com/watch?v=TPBH3XO8YEU
+[youtube] Extracting URL: https://www.youtube.com/watch?v=TPBH3XO8YEU
+[youtube] TPBH3XO8YEU: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] TPBH3XO8YEU: Downloading android vr player API JSON
+[info] TPBH3XO8YEU: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/TPBH3XO8YEU.mp4
+[download]   0.0% of    5.14MiB at   59.55KiB/s ETA 01:28[download]   0.1% of    5.14MiB at  173.84KiB/s ETA 00:30[download]   0.1% of    5.14MiB at  400.08KiB/s ETA 00:13[download]   0.3% of    5.14MiB at  851.13KiB/s ETA 00:06[download]   0.6% of    5.14MiB at  339.80KiB/s ETA 00:15[download]   1.2% of    5.14MiB at  389.68KiB/s ETA 00:13[download]   2.4% of    5.14MiB at  518.10KiB/s ETA 00:09[download]   4.8% of    5.14MiB at  740.03KiB/s ETA 00:06[download]   9.7% of    5.14MiB at    1.03MiB/s ETA 00:04[download]  19.5% of    5.14MiB at    1.65MiB/s ETA 00:02[download]  38.9% of    5.14MiB at    1.98MiB/s ETA 00:01[download]  77.9% of    5.14MiB at    3.42MiB/s ETA 00:00[download] 100.0% of    5.14MiB at    3.60MiB/s ETA 00:00[download] 100% of    5.14MiB in 00:00:02 at 2.33MiB/s   
+    OK
+[72] https://www.youtube.com/watch?v=beToTslH17s
+[youtube] Extracting URL: https://www.youtube.com/watch?v=beToTslH17s
+[youtube] beToTslH17s: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] beToTslH17s: Downloading android vr player API JSON
+[info] beToTslH17s: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/beToTslH17s.mp4
+[download]   0.0% of    4.90MiB at  Unknown B/s ETA Unknown[download]   0.1% of    4.90MiB at  Unknown B/s ETA Unknown[download]   0.1% of    4.90MiB at  Unknown B/s ETA Unknown[download]   0.3% of    4.90MiB at    8.76MiB/s ETA 00:00  [download]   0.6% of    4.90MiB at    4.23MiB/s ETA 00:01[download]   1.3% of    4.90MiB at    6.22MiB/s ETA 00:00[download]   2.5% of    4.90MiB at    1.81MiB/s ETA 00:02[download]   5.1% of    4.90MiB at    1.77MiB/s ETA 00:02[download]  10.2% of    4.90MiB at    2.32MiB/s ETA 00:01[download]  20.4% of    4.90MiB at    3.21MiB/s ETA 00:01[download]  40.8% of    4.90MiB at    4.49MiB/s ETA 00:00[download]  81.7% of    4.90MiB at    3.12MiB/s ETA 00:00[download] 100.0% of    4.90MiB at    2.58MiB/s ETA 00:00[download] 100% of    4.90MiB in 00:00:02 at 1.92MiB/s   
+    OK
+[73] https://www.youtube.com/watch?v=L5PW5r0piqE
+[youtube] Extracting URL: https://www.youtube.com/watch?v=L5PW5r0piqE
+[youtube] L5PW5r0piqE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] L5PW5r0piqE: Downloading android vr player API JSON
+ERROR: [youtube] L5PW5r0piqE: Video unavailable
+    OK
+[74] https://www.youtube.com/watch?v=MYNVQOhGRMo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=MYNVQOhGRMo
+[youtube] MYNVQOhGRMo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] MYNVQOhGRMo: Downloading android vr player API JSON
+ERROR: [youtube] MYNVQOhGRMo: Video unavailable
+    OK
+[75] https://www.youtube.com/watch?v=BRb4U99OU80
+[youtube] Extracting URL: https://www.youtube.com/watch?v=BRb4U99OU80
+[youtube] BRb4U99OU80: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] BRb4U99OU80: Downloading android vr player API JSON
+[info] BRb4U99OU80: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/BRb4U99OU80.mp4
+[download]   0.0% of    4.63MiB at  Unknown B/s ETA Unknown[download]   0.1% of    4.63MiB at  Unknown B/s ETA Unknown[download]   0.1% of    4.63MiB at  Unknown B/s ETA Unknown[download]   0.3% of    4.63MiB at    7.99MiB/s ETA 00:00  [download]   0.7% of    4.63MiB at    5.35MiB/s ETA 00:00[download]   1.3% of    4.63MiB at    7.67MiB/s ETA 00:00[download]   2.7% of    4.63MiB at    7.15MiB/s ETA 00:00[download]   5.4% of    4.63MiB at    7.66MiB/s ETA 00:00[download]  10.8% of    4.63MiB at    8.25MiB/s ETA 00:00[download]  21.6% of    4.63MiB at    8.20MiB/s ETA 00:00[download]  43.2% of    4.63MiB at    8.05MiB/s ETA 00:00[download]  86.4% of    4.63MiB at    6.38MiB/s ETA 00:00[download] 100.0% of    4.63MiB at    3.56MiB/s ETA 00:00[download] 100% of    4.63MiB in 00:00:02 at 2.04MiB/s   
+    OK
+[76] https://www.youtube.com/watch?v=aLAKMx0sU7I
+[youtube] Extracting URL: https://www.youtube.com/watch?v=aLAKMx0sU7I
+[youtube] aLAKMx0sU7I: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] aLAKMx0sU7I: Downloading android vr player API JSON
+ERROR: [youtube] aLAKMx0sU7I: Video unavailable
+    OK
+[77] https://www.youtube.com/watch?v=C_sfy4y_yxo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=C_sfy4y_yxo
+[youtube] C_sfy4y_yxo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] C_sfy4y_yxo: Downloading android vr player API JSON
+ERROR: [youtube] C_sfy4y_yxo: Video unavailable
+    OK
+[78] https://www.youtube.com/watch?v=2-_-1nJf8Vg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=2-_-1nJf8Vg
+[youtube] 2-_-1nJf8Vg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 2-_-1nJf8Vg: Downloading android vr player API JSON
+WARNING: [youtube] 2-_-1nJf8Vg: Some android_vr client https formats have been skipped as they are missing a URL. YouTube may have enabled the SABR-only streaming experiment for the current session. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+ERROR: [youtube] 2-_-1nJf8Vg: Requested format is not available. Use --list-formats for a list of available formats
+    OK
+[79] https://www.youtube.com/watch?v=G8tlEbzrWOc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=G8tlEbzrWOc
+[youtube] G8tlEbzrWOc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] G8tlEbzrWOc: Downloading android vr player API JSON
+ERROR: [youtube] G8tlEbzrWOc: Video unavailable
+    OK
+[80] https://www.youtube.com/watch?v=bpXfcTF6iVk
+[youtube] Extracting URL: https://www.youtube.com/watch?v=bpXfcTF6iVk
+[youtube] bpXfcTF6iVk: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] bpXfcTF6iVk: Downloading android vr player API JSON
+[info] bpXfcTF6iVk: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/bpXfcTF6iVk.mp4
+[download]   0.0% of    8.85MiB at  171.81KiB/s ETA 00:52[download]   0.0% of    8.85MiB at  491.71KiB/s ETA 00:18[download]   0.1% of    8.85MiB at    1.10MiB/s ETA 00:08[download]   0.2% of    8.85MiB at    2.29MiB/s ETA 00:03[download]   0.3% of    8.85MiB at  443.02KiB/s ETA 00:20[download]   0.7% of    8.85MiB at  495.68KiB/s ETA 00:18[download]   1.4% of    8.85MiB at  685.59KiB/s ETA 00:13[download]   2.8% of    8.85MiB at  972.70KiB/s ETA 00:09[download]   5.6% of    8.85MiB at    1.35MiB/s ETA 00:06[download]  11.3% of    8.85MiB at    2.12MiB/s ETA 00:03[download]  22.6% of    8.85MiB at    3.25MiB/s ETA 00:02[download]  45.2% of    8.85MiB at    5.41MiB/s ETA 00:00[download]  90.4% of    8.85MiB at    6.01MiB/s ETA 00:00[download] 100.0% of    8.85MiB at    6.63MiB/s ETA 00:00[download] 100% of    8.85MiB in 00:00:01 at 4.53MiB/s   
+    OK
+[81] https://www.youtube.com/watch?v=ZQ-YX-5bAs0
+[youtube] Extracting URL: https://www.youtube.com/watch?v=ZQ-YX-5bAs0
+[youtube] ZQ-YX-5bAs0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] ZQ-YX-5bAs0: Downloading android vr player API JSON
+WARNING: [youtube] ZQ-YX-5bAs0: Some android_vr client https formats have been skipped as they are missing a URL. YouTube may have enabled the SABR-only streaming experiment for the current session. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+ERROR: [youtube] ZQ-YX-5bAs0: Requested format is not available. Use --list-formats for a list of available formats
+    OK
+[82] https://www.youtube.com/watch?v=555oiY9RWM4
+[youtube] Extracting URL: https://www.youtube.com/watch?v=555oiY9RWM4
+[youtube] 555oiY9RWM4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 555oiY9RWM4: Downloading android vr player API JSON
+[info] 555oiY9RWM4: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/555oiY9RWM4.mp4
+[download]   0.0% of    5.42MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.42MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.42MiB at  Unknown B/s ETA Unknown[download]   0.3% of    5.42MiB at    8.49MiB/s ETA 00:00  [download]   0.6% of    5.42MiB at    5.94MiB/s ETA 00:00[download]   1.1% of    5.42MiB at    6.76MiB/s ETA 00:00[download]   2.3% of    5.42MiB at    2.03MiB/s ETA 00:02[download]   4.6% of    5.42MiB at    2.08MiB/s ETA 00:02[download]   9.2% of    5.42MiB at    2.77MiB/s ETA 00:01[download]  18.4% of    5.42MiB at    3.80MiB/s ETA 00:01[download]  36.9% of    5.42MiB at    5.42MiB/s ETA 00:00[download]  73.8% of    5.42MiB at    8.45MiB/s ETA 00:00[download] 100.0% of    5.42MiB at    5.84MiB/s ETA 00:00[download] 100% of    5.42MiB in 00:00:01 at 3.45MiB/s   
+    OK
+[83] https://www.youtube.com/watch?v=jcD0gVemVEo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=jcD0gVemVEo
+[youtube] jcD0gVemVEo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] jcD0gVemVEo: Downloading android vr player API JSON
+ERROR: [youtube] jcD0gVemVEo: Video unavailable
+    OK
+[84] https://www.youtube.com/watch?v=Fd0_KOTYZHQ
+[youtube] Extracting URL: https://www.youtube.com/watch?v=Fd0_KOTYZHQ
+[youtube] Fd0_KOTYZHQ: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] Fd0_KOTYZHQ: Downloading android vr player API JSON
+ERROR: [youtube] Fd0_KOTYZHQ: Video unavailable
+    OK
+[85] https://www.youtube.com/watch?v=qGqiGp562tc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=qGqiGp562tc
+[youtube] qGqiGp562tc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] qGqiGp562tc: Downloading android vr player API JSON
+ERROR: [youtube] qGqiGp562tc: Video unavailable
+    OK
+[86] https://www.youtube.com/watch?v=w7aG-DPrVTY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=w7aG-DPrVTY
+[youtube] w7aG-DPrVTY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] w7aG-DPrVTY: Downloading android vr player API JSON
+ERROR: [youtube] w7aG-DPrVTY: Video unavailable
+    OK
+[87] https://www.youtube.com/watch?v=1Fg5iWmQjwk
+[youtube] Extracting URL: https://www.youtube.com/watch?v=1Fg5iWmQjwk
+[youtube] 1Fg5iWmQjwk: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 1Fg5iWmQjwk: Downloading android vr player API JSON
+[info] 1Fg5iWmQjwk: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/1Fg5iWmQjwk.mp4
+[download]   0.0% of    5.22MiB at  Unknown B/s ETA Unknown[download]   0.1% of    5.22MiB at    2.39MiB/s ETA 00:02  [download]   0.1% of    5.22MiB at    5.01MiB/s ETA 00:01[download]   0.3% of    5.22MiB at    8.79MiB/s ETA 00:00[download]   0.6% of    5.22MiB at    7.20MiB/s ETA 00:00[download]   1.2% of    5.22MiB at    5.89MiB/s ETA 00:00[download]   2.4% of    5.22MiB at    7.61MiB/s ETA 00:00[download]   4.8% of    5.22MiB at    8.44MiB/s ETA 00:00[download]   9.6% of    5.22MiB at    6.90MiB/s ETA 00:00[download]  19.1% of    5.22MiB at    6.96MiB/s ETA 00:00[download]  38.3% of    5.22MiB at    6.74MiB/s ETA 00:00[download]  76.6% of    5.22MiB at    8.48MiB/s ETA 00:00[download] 100.0% of    5.22MiB at    8.51MiB/s ETA 00:00[download] 100% of    5.22MiB in 00:00:00 at 6.50MiB/s   
+    OK
+[88] https://www.youtube.com/watch?v=tL4McUzXfFI
+[youtube] Extracting URL: https://www.youtube.com/watch?v=tL4McUzXfFI
+[youtube] tL4McUzXfFI: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] tL4McUzXfFI: Downloading android vr player API JSON
+WARNING: [youtube] tL4McUzXfFI: Some android_vr client https formats have been skipped as they are missing a URL. YouTube may have enabled the SABR-only streaming experiment for the current session. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+ERROR: [youtube] tL4McUzXfFI: Requested format is not available. Use --list-formats for a list of available formats
+    OK
+[89] https://www.youtube.com/watch?v=pBk4NYhWNMM
+[youtube] Extracting URL: https://www.youtube.com/watch?v=pBk4NYhWNMM
+[youtube] pBk4NYhWNMM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] pBk4NYhWNMM: Downloading android vr player API JSON
+[info] pBk4NYhWNMM: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/pBk4NYhWNMM.mp4
+[download]   0.0% of   16.99MiB at  123.06KiB/s ETA 02:21[download]   0.0% of   16.99MiB at  358.14KiB/s ETA 00:48[download]   0.0% of   16.99MiB at  811.95KiB/s ETA 00:21[download]   0.1% of   16.99MiB at    1.67MiB/s ETA 00:10[download]   0.2% of   16.99MiB at  624.41KiB/s ETA 00:27[download]   0.4% of   16.99MiB at  708.26KiB/s ETA 00:24[download]   0.7% of   16.99MiB at  962.13KiB/s ETA 00:17[download]   1.5% of   16.99MiB at    1.32MiB/s ETA 00:12[download]   2.9% of   16.99MiB at    1.97MiB/s ETA 00:08[download]   5.9% of   16.99MiB at    3.03MiB/s ETA 00:05[download]  11.8% of   16.99MiB at    4.85MiB/s ETA 00:03[download]  23.5% of   16.99MiB at    7.96MiB/s ETA 00:01[download]  47.1% of   16.99MiB at    6.82MiB/s ETA 00:01[download]  56.9% of   16.99MiB at    8.22MiB/s ETA 00:00[download]  56.9% of   16.99MiB at  Unknown B/s ETA Unknown[download]  56.9% of   16.99MiB at  Unknown B/s ETA Unknown[download]  56.9% of   16.99MiB at  Unknown B/s ETA Unknown[download]  56.9% of   16.99MiB at    8.56MiB/s ETA 00:00  [download]  57.0% of   16.99MiB at    9.13MiB/s ETA 00:00[download]  57.2% of   16.99MiB at    9.50MiB/s ETA 00:00[download]  57.6% of   16.99MiB at    9.40MiB/s ETA 00:00[download]  58.3% of   16.99MiB at    9.78MiB/s ETA 00:00[download]  59.8% of   16.99MiB at    9.42MiB/s ETA 00:00[download]  62.7% of   16.99MiB at    9.88MiB/s ETA 00:00[download]  68.6% of   16.99MiB at    9.92MiB/s ETA 00:00[download]  80.4% of   16.99MiB at    9.94MiB/s ETA 00:00[download] 100.0% of   16.99MiB at    9.94MiB/s ETA 00:00[download] 100% of   16.99MiB in 00:00:02 at 7.33MiB/s   
+    OK
+[90] https://www.youtube.com/watch?v=MJHsOPH2018
+[youtube] Extracting URL: https://www.youtube.com/watch?v=MJHsOPH2018
+[youtube] MJHsOPH2018: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] MJHsOPH2018: Downloading android vr player API JSON
+ERROR: [youtube] MJHsOPH2018: Video unavailable
+    OK
+[91] https://www.youtube.com/watch?v=nfKO9rYDmE8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=nfKO9rYDmE8
+[youtube] nfKO9rYDmE8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] nfKO9rYDmE8: Downloading android vr player API JSON
+[info] nfKO9rYDmE8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/nfKO9rYDmE8.mp4
+[download]   0.0% of   10.70MiB at  Unknown B/s ETA Unknown[download]   0.0% of   10.70MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.70MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.70MiB at    8.53MiB/s ETA 00:01  [download]   0.3% of   10.70MiB at    5.33MiB/s ETA 00:02[download]   0.6% of   10.70MiB at    6.81MiB/s ETA 00:01[download]   1.2% of   10.70MiB at    7.08MiB/s ETA 00:01[download]   2.3% of   10.70MiB at    7.97MiB/s ETA 00:01[download]   4.7% of   10.70MiB at    8.37MiB/s ETA 00:01[download]   9.3% of   10.70MiB at    8.24MiB/s ETA 00:01[download]  18.7% of   10.70MiB at    6.83MiB/s ETA 00:01[download]  37.4% of   10.70MiB at    3.93MiB/s ETA 00:01[download]  63.1% of   10.70MiB at    2.10MiB/s ETA 00:01[download]  76.0% of   10.70MiB at    2.21MiB/s ETA 00:01[download]  91.4% of   10.70MiB at    2.52MiB/s ETA 00:00[download]  91.4% of   10.70MiB at  Unknown B/s ETA Unknown[download]  91.4% of   10.70MiB at  Unknown B/s ETA Unknown[download]  91.5% of   10.70MiB at  Unknown B/s ETA Unknown[download]  91.6% of   10.70MiB at    8.81MiB/s ETA 00:00  [download]  91.7% of   10.70MiB at    9.36MiB/s ETA 00:00[download]  92.0% of   10.70MiB at    9.61MiB/s ETA 00:00[download]  92.6% of   10.70MiB at    9.63MiB/s ETA 00:00[download]  93.7% of   10.70MiB at  696.91KiB/s ETA 00:00[download]  96.1% of   10.70MiB at    1.35MiB/s ETA 00:00[download] 100.0% of   10.70MiB at    2.31MiB/s ETA 00:00[download] 100% of   10.70MiB in 00:00:04 at 2.27MiB/s   
+    OK
+[92] https://www.youtube.com/watch?v=X2m-08cOAbc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=X2m-08cOAbc
+[youtube] X2m-08cOAbc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] X2m-08cOAbc: Downloading android vr player API JSON
+[info] X2m-08cOAbc: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/X2m-08cOAbc.mp4
+[download]   0.0% of   13.20MiB at  Unknown B/s ETA Unknown[download]   0.0% of   13.20MiB at  Unknown B/s ETA Unknown[download]   0.1% of   13.20MiB at  Unknown B/s ETA Unknown[download]   0.1% of   13.20MiB at    8.49MiB/s ETA 00:01  [download]   0.2% of   13.20MiB at    4.60MiB/s ETA 00:02[download]   0.5% of   13.20MiB at    6.26MiB/s ETA 00:02[download]   0.9% of   13.20MiB at    7.50MiB/s ETA 00:01[download]   1.9% of   13.20MiB at    7.46MiB/s ETA 00:01[download]   3.8% of   13.20MiB at    7.74MiB/s ETA 00:01[download]   7.6% of   13.20MiB at    8.09MiB/s ETA 00:01[download]  15.1% of   13.20MiB at    8.04MiB/s ETA 00:01[download]  30.3% of   13.20MiB at    8.32MiB/s ETA 00:01[download]  60.6% of   13.20MiB at    8.64MiB/s ETA 00:00[download]  73.9% of   13.20MiB at    9.98MiB/s ETA 00:00[download]  74.0% of   13.20MiB at  Unknown B/s ETA Unknown[download]  74.0% of   13.20MiB at  Unknown B/s ETA Unknown[download]  74.0% of   13.20MiB at  Unknown B/s ETA Unknown[download]  74.1% of   13.20MiB at    8.82MiB/s ETA 00:00  [download]  74.2% of   13.20MiB at    9.31MiB/s ETA 00:00[download]  74.4% of   13.20MiB at    9.40MiB/s ETA 00:00[download]  74.9% of   13.20MiB at    9.67MiB/s ETA 00:00[download]  75.8% of   13.20MiB at    1.55MiB/s ETA 00:02[download]  77.7% of   13.20MiB at    3.00MiB/s ETA 00:00[download]  81.5% of   13.20MiB at    5.09MiB/s ETA 00:00[download]  89.1% of   13.20MiB at    7.40MiB/s ETA 00:00[download] 100.0% of   13.20MiB at    8.30MiB/s ETA 00:00[download] 100% of   13.20MiB in 00:00:01 at 8.62MiB/s   
+    OK
+[93] https://www.youtube.com/watch?v=7i5kiFDunk8
+[youtube] Extracting URL: https://www.youtube.com/watch?v=7i5kiFDunk8
+[youtube] 7i5kiFDunk8: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 7i5kiFDunk8: Downloading android vr player API JSON
+[info] 7i5kiFDunk8: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/7i5kiFDunk8.mp4
+[download]   0.0% of    5.61MiB at   70.85KiB/s ETA 01:21[download]   0.1% of    5.61MiB at  207.70KiB/s ETA 00:27[download]   0.1% of    5.61MiB at  479.64KiB/s ETA 00:11[download]   0.3% of    5.61MiB at 1010.68KiB/s ETA 00:05[download]   0.5% of    5.61MiB at  380.52KiB/s ETA 00:15[download]   1.1% of    5.61MiB at  423.19KiB/s ETA 00:13[download]   2.2% of    5.61MiB at  574.64KiB/s ETA 00:09[download]   4.4% of    5.61MiB at  811.57KiB/s ETA 00:06[download]   8.9% of    5.61MiB at    1.16MiB/s ETA 00:04[download]  17.8% of    5.61MiB at    1.83MiB/s ETA 00:02[download]  35.6% of    5.61MiB at    2.91MiB/s ETA 00:01[download]  71.3% of    5.61MiB at    4.76MiB/s ETA 00:00[download] 100.0% of    5.61MiB at    5.98MiB/s ETA 00:00[download] 100% of    5.61MiB in 00:00:01 at 3.77MiB/s   
+    OK
+[94] https://www.youtube.com/watch?v=CpBLtXOQ6MM
+[youtube] Extracting URL: https://www.youtube.com/watch?v=CpBLtXOQ6MM
+[youtube] CpBLtXOQ6MM: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] CpBLtXOQ6MM: Downloading android vr player API JSON
+ERROR: [youtube] CpBLtXOQ6MM: Video unavailable
+    OK
+[95] https://www.youtube.com/watch?v=hkP84MjMPYI
+[youtube] Extracting URL: https://www.youtube.com/watch?v=hkP84MjMPYI
+[youtube] hkP84MjMPYI: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] hkP84MjMPYI: Downloading android vr player API JSON
+ERROR: [youtube] hkP84MjMPYI: Video unavailable
+    OK
+[96] https://www.youtube.com/watch?v=AhKLpJmHhIg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=AhKLpJmHhIg
+[youtube] AhKLpJmHhIg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] AhKLpJmHhIg: Downloading android vr player API JSON
+[info] AhKLpJmHhIg: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/AhKLpJmHhIg.mp4
+[download]   0.0% of    7.01MiB at  117.24KiB/s ETA 01:01[download]   0.0% of    7.01MiB at  340.94KiB/s ETA 00:21[download]   0.1% of    7.01MiB at  782.94KiB/s ETA 00:09[download]   0.2% of    7.01MiB at    1.61MiB/s ETA 00:04[download]   0.4% of    7.01MiB at  610.48KiB/s ETA 00:11[download]   0.9% of    7.01MiB at  695.21KiB/s ETA 00:10[download]   1.8% of    7.01MiB at  943.68KiB/s ETA 00:07[download]   3.6% of    7.01MiB at    1.32MiB/s ETA 00:05[download]   7.1% of    7.01MiB at    1.97MiB/s ETA 00:03[download]  14.3% of    7.01MiB at    3.04MiB/s ETA 00:01[download]  28.5% of    7.01MiB at    4.86MiB/s ETA 00:01[download]  57.1% of    7.01MiB at    7.85MiB/s ETA 00:00[download] 100.0% of    7.01MiB at    8.56MiB/s ETA 00:00[download] 100% of    7.01MiB in 00:00:01 at 5.25MiB/s   
+    OK
+[97] https://www.youtube.com/watch?v=_IH_JZG0Vws
+[youtube] Extracting URL: https://www.youtube.com/watch?v=_IH_JZG0Vws
+[youtube] _IH_JZG0Vws: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] _IH_JZG0Vws: Downloading android vr player API JSON
+ERROR: [youtube] _IH_JZG0Vws: Video unavailable
+    OK
+[98] https://www.youtube.com/watch?v=nfKO9rYDmE4
+[youtube] Extracting URL: https://www.youtube.com/watch?v=nfKO9rYDmE4
+[youtube] nfKO9rYDmE4: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] nfKO9rYDmE4: Downloading android vr player API JSON
+ERROR: [youtube] nfKO9rYDmE4: Video unavailable
+    OK
+[99] https://www.youtube.com/watch?v=2skM1DLGSFA
+[youtube] Extracting URL: https://www.youtube.com/watch?v=2skM1DLGSFA
+[youtube] 2skM1DLGSFA: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 2skM1DLGSFA: Downloading android vr player API JSON
+ERROR: [youtube] 2skM1DLGSFA: Video unavailable
+    OK
+[100] https://www.youtube.com/watch?v=RlbR5N6veqw
+[youtube] Extracting URL: https://www.youtube.com/watch?v=RlbR5N6veqw
+[youtube] RlbR5N6veqw: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] RlbR5N6veqw: Downloading android vr player API JSON
+[info] RlbR5N6veqw: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/RlbR5N6veqw.mp4
+[download]   0.0% of    5.15MiB at  116.56KiB/s ETA 00:45[download]   0.1% of    5.15MiB at  331.84KiB/s ETA 00:15[download]   0.1% of    5.15MiB at  755.52KiB/s ETA 00:06[download]   0.3% of    5.15MiB at    1.55MiB/s ETA 00:03[download]   0.6% of    5.15MiB at  638.82KiB/s ETA 00:08[download]   1.2% of    5.15MiB at  705.64KiB/s ETA 00:07[download]   2.4% of    5.15MiB at  966.70KiB/s ETA 00:05[download]   4.8% of    5.15MiB at    1.35MiB/s ETA 00:03[download]   9.7% of    5.15MiB at    1.91MiB/s ETA 00:02[download]  19.4% of    5.15MiB at    3.08MiB/s ETA 00:01[download]  38.8% of    5.15MiB at    4.89MiB/s ETA 00:00[download]  77.6% of    5.15MiB at    8.10MiB/s ETA 00:00[download] 100.0% of    5.15MiB at    9.28MiB/s ETA 00:00[download] 100% of    5.15MiB in 00:00:01 at 4.85MiB/s   
+    OK
+[101] https://www.youtube.com/watch?v=NgBoMJy386M
+[youtube] Extracting URL: https://www.youtube.com/watch?v=NgBoMJy386M
+[youtube] NgBoMJy386M: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] NgBoMJy386M: Downloading android vr player API JSON
+[info] NgBoMJy386M: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/NgBoMJy386M.mp4
+[download]   0.0% of   25.70MiB at  256.61KiB/s ETA 01:42[download]   0.0% of   25.70MiB at  721.04KiB/s ETA 00:36[download]   0.0% of   25.70MiB at    1.59MiB/s ETA 00:16[download]   0.1% of   25.70MiB at    3.26MiB/s ETA 00:07[download]   0.1% of   25.70MiB at  611.46KiB/s ETA 00:43[download]   0.2% of   25.70MiB at  660.54KiB/s ETA 00:39[download]   0.5% of   25.70MiB at  920.15KiB/s ETA 00:28[download]   1.0% of   25.70MiB at    1.27MiB/s ETA 00:19[download]   1.9% of   25.70MiB at    1.85MiB/s ETA 00:13[download]   3.9% of   25.70MiB at    2.92MiB/s ETA 00:08[download]   7.8% of   25.70MiB at    4.58MiB/s ETA 00:05[download]  15.6% of   25.70MiB at    7.64MiB/s ETA 00:02[download]  31.1% of   25.70MiB at    8.45MiB/s ETA 00:02[download]  38.7% of   25.70MiB at    9.95MiB/s ETA 00:01[download]  38.7% of   25.70MiB at  Unknown B/s ETA Unknown[download]  38.7% of   25.70MiB at  Unknown B/s ETA Unknown[download]  38.7% of   25.70MiB at    6.02MiB/s ETA 00:02  [download]  38.8% of   25.70MiB at    8.24MiB/s ETA 00:01[download]  38.8% of   25.70MiB at    8.96MiB/s ETA 00:01[download]  39.0% of   25.70MiB at    9.44MiB/s ETA 00:01[download]  39.2% of   25.70MiB at    9.67MiB/s ETA 00:01[download]  39.7% of   25.70MiB at    9.80MiB/s ETA 00:01[download]  40.7% of   25.70MiB at    9.82MiB/s ETA 00:01[download]  42.6% of   25.70MiB at    9.85MiB/s ETA 00:01[download]  46.5% of   25.70MiB at    9.89MiB/s ETA 00:01[download]  54.3% of   25.70MiB at    9.91MiB/s ETA 00:01[download]  69.8% of   25.70MiB at    7.01MiB/s ETA 00:01[download]  76.0% of   25.70MiB at    8.39MiB/s ETA 00:00[download]  76.0% of   25.70MiB at  Unknown B/s ETA Unknown[download]  76.0% of   25.70MiB at  Unknown B/s ETA Unknown[download]  76.1% of   25.70MiB at    6.64MiB/s ETA 00:00  [download]  76.1% of   25.70MiB at    8.65MiB/s ETA 00:00[download]  76.1% of   25.70MiB at    9.47MiB/s ETA 00:00[download]  76.3% of   25.70MiB at    9.60MiB/s ETA 00:00[download]  76.5% of   25.70MiB at    9.62MiB/s ETA 00:00[download]  77.0% of   25.70MiB at    9.75MiB/s ETA 00:00[download]  78.0% of   25.70MiB at    9.85MiB/s ETA 00:00[download]  79.9% of   25.70MiB at    9.91MiB/s ETA 00:00[download]  83.8% of   25.70MiB at    9.93MiB/s ETA 00:00[download]  91.6% of   25.70MiB at    9.94MiB/s ETA 00:00[download] 100.0% of   25.70MiB at    9.96MiB/s ETA 00:00[download] 100% of   25.70MiB in 00:00:03 at 7.99MiB/s   
+    OK
+[102] https://www.youtube.com/watch?v=wxN1T1qdQ0U
+[youtube] Extracting URL: https://www.youtube.com/watch?v=wxN1T1qdQ0U
+[youtube] wxN1T1qdQ0U: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] wxN1T1qdQ0U: Downloading android vr player API JSON
+ERROR: [youtube] wxN1T1qdQ0U: Video unavailable
+    OK
+[103] https://www.youtube.com/watch?v=XdKzUbAiswE
+[youtube] Extracting URL: https://www.youtube.com/watch?v=XdKzUbAiswE
+[youtube] XdKzUbAiswE: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] XdKzUbAiswE: Downloading android vr player API JSON
+[info] XdKzUbAiswE: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/XdKzUbAiswE.mp4
+[download]   0.0% of   11.67MiB at  Unknown B/s ETA Unknown[download]   0.0% of   11.67MiB at  Unknown B/s ETA Unknown[download]   0.1% of   11.67MiB at  Unknown B/s ETA Unknown[download]   0.1% of   11.67MiB at    8.49MiB/s ETA 00:01  [download]   0.3% of   11.67MiB at    5.13MiB/s ETA 00:02[download]   0.5% of   11.67MiB at    7.13MiB/s ETA 00:01[download]   1.1% of   11.67MiB at    2.89MiB/s ETA 00:03[download]   2.1% of   11.67MiB at    3.03MiB/s ETA 00:03[download]   4.3% of   11.67MiB at    4.01MiB/s ETA 00:02[download]   8.6% of   11.67MiB at    5.52MiB/s ETA 00:01[download]  17.1% of   11.67MiB at    7.18MiB/s ETA 00:01[download]  34.3% of   11.67MiB at    7.63MiB/s ETA 00:01[download]  68.5% of   11.67MiB at    7.68MiB/s ETA 00:00[download]  83.0% of   11.67MiB at    8.66MiB/s ETA 00:00[download]  83.0% of   11.67MiB at  Unknown B/s ETA Unknown[download]  83.1% of   11.67MiB at  Unknown B/s ETA Unknown[download]  83.1% of   11.67MiB at  Unknown B/s ETA Unknown[download]  83.2% of   11.67MiB at    8.67MiB/s ETA 00:00  [download]  83.3% of   11.67MiB at    9.04MiB/s ETA 00:00[download]  83.6% of   11.67MiB at    9.56MiB/s ETA 00:00[download]  84.1% of   11.67MiB at    9.13MiB/s ETA 00:00[download]  85.2% of   11.67MiB at    9.27MiB/s ETA 00:00[download]  87.3% of   11.67MiB at    8.80MiB/s ETA 00:00[download]  91.6% of   11.67MiB at    8.63MiB/s ETA 00:00[download] 100.0% of   11.67MiB at    8.92MiB/s ETA 00:00[download] 100% of   11.67MiB in 00:00:01 at 7.09MiB/s   
+    OK
+[104] https://www.youtube.com/watch?v=CaimKeDcudo
+[youtube] Extracting URL: https://www.youtube.com/watch?v=CaimKeDcudo
+[youtube] CaimKeDcudo: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] CaimKeDcudo: Downloading android vr player API JSON
+[info] CaimKeDcudo: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/CaimKeDcudo.mp4
+[download]   0.0% of    9.25MiB at  265.80KiB/s ETA 00:35[download]   0.0% of    9.25MiB at  712.39KiB/s ETA 00:13[download]   0.1% of    9.25MiB at    1.57MiB/s ETA 00:05[download]   0.2% of    9.25MiB at    3.27MiB/s ETA 00:02[download]   0.3% of    9.25MiB at  617.39KiB/s ETA 00:15[download]   0.7% of    9.25MiB at  668.19KiB/s ETA 00:14[download]   1.3% of    9.25MiB at  918.15KiB/s ETA 00:10[download]   2.7% of    9.25MiB at    1.23MiB/s ETA 00:07[download]   5.4% of    9.25MiB at    1.82MiB/s ETA 00:04[download]  10.8% of    9.25MiB at    2.79MiB/s ETA 00:02[download]  21.6% of    9.25MiB at    4.58MiB/s ETA 00:01[download]  43.2% of    9.25MiB at    7.48MiB/s ETA 00:00[download]  86.5% of    9.25MiB at    8.57MiB/s ETA 00:00[download] 100.0% of    9.25MiB at    9.89MiB/s ETA 00:00[download] 100% of    9.25MiB in 00:00:01 at 7.21MiB/s   
+    OK
+[105] https://www.youtube.com/watch?v=U0CL-ZSuCrQ
+[youtube] Extracting URL: https://www.youtube.com/watch?v=U0CL-ZSuCrQ
+[youtube] U0CL-ZSuCrQ: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] U0CL-ZSuCrQ: Downloading android vr player API JSON
+[info] U0CL-ZSuCrQ: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/U0CL-ZSuCrQ.mp4
+[download]   0.0% of   13.41MiB at  180.36KiB/s ETA 01:16[download]   0.0% of   13.41MiB at  507.07KiB/s ETA 00:27[download]   0.1% of   13.41MiB at    1.13MiB/s ETA 00:11[download]   0.1% of   13.41MiB at    2.37MiB/s ETA 00:05[download]   0.2% of   13.41MiB at  445.86KiB/s ETA 00:30[download]   0.5% of   13.41MiB at  489.31KiB/s ETA 00:27[download]   0.9% of   13.41MiB at  675.71KiB/s ETA 00:20[download]   1.9% of   13.41MiB at  962.43KiB/s ETA 00:14[download]   3.7% of   13.41MiB at    1.33MiB/s ETA 00:09[download]   7.5% of   13.41MiB at    2.15MiB/s ETA 00:05[download]  14.9% of   13.41MiB at    3.41MiB/s ETA 00:03[download]  29.8% of   13.41MiB at    5.40MiB/s ETA 00:01[download]  59.7% of   13.41MiB at    6.34MiB/s ETA 00:00[download]  74.4% of   13.41MiB at    6.91MiB/s ETA 00:00[download]  74.4% of   13.41MiB at  Unknown B/s ETA Unknown[download]  74.4% of   13.41MiB at  Unknown B/s ETA Unknown[download]  74.4% of   13.41MiB at  Unknown B/s ETA Unknown[download]  74.5% of   13.41MiB at    8.71MiB/s ETA 00:00  [download]  74.6% of   13.41MiB at    9.09MiB/s ETA 00:00[download]  74.8% of   13.41MiB at    9.52MiB/s ETA 00:00[download]  75.3% of   13.41MiB at    9.75MiB/s ETA 00:00[download]  76.2% of   13.41MiB at    8.96MiB/s ETA 00:00[download]  78.1% of   13.41MiB at    9.09MiB/s ETA 00:00[download]  81.8% of   13.41MiB at    6.41MiB/s ETA 00:00[download]  89.3% of   13.41MiB at    7.12MiB/s ETA 00:00[download] 100.0% of   13.41MiB at    6.38MiB/s ETA 00:00[download] 100% of   13.41MiB in 00:00:02 at 4.47MiB/s   
+    OK
+[106] https://www.youtube.com/watch?v=2lcQ31kOJQg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=2lcQ31kOJQg
+[youtube] 2lcQ31kOJQg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 2lcQ31kOJQg: Downloading android vr player API JSON
+ERROR: [youtube] 2lcQ31kOJQg: Video unavailable
+    OK
+[107] https://www.youtube.com/watch?v=DSCKfXpAGHc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=DSCKfXpAGHc
+[youtube] DSCKfXpAGHc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] DSCKfXpAGHc: Downloading android vr player API JSON
+WARNING: [youtube] DSCKfXpAGHc: Some android_vr client https formats have been skipped as they are missing a URL. YouTube may have enabled the SABR-only streaming experiment for the current session. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+ERROR: [youtube] DSCKfXpAGHc: Requested format is not available. Use --list-formats for a list of available formats
+    OK
+[108] https://www.youtube.com/watch?v=xOsLIiBStEs
+[youtube] Extracting URL: https://www.youtube.com/watch?v=xOsLIiBStEs
+[youtube] xOsLIiBStEs: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] xOsLIiBStEs: Downloading android vr player API JSON
+[info] xOsLIiBStEs: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/xOsLIiBStEs.mp4
+[download]   0.0% of    6.89MiB at  104.21KiB/s ETA 01:07[download]   0.0% of    6.89MiB at  297.52KiB/s ETA 00:23[download]   0.1% of    6.89MiB at  682.67KiB/s ETA 00:10[download]   0.2% of    6.89MiB at    1.41MiB/s ETA 00:04[download]   0.4% of    6.89MiB at  647.10KiB/s ETA 00:10[download]   0.9% of    6.89MiB at  698.39KiB/s ETA 00:10[download]   1.8% of    6.89MiB at  937.89KiB/s ETA 00:07[download]   3.6% of    6.89MiB at    1.29MiB/s ETA 00:05[download]   7.2% of    6.89MiB at    1.84MiB/s ETA 00:03[download]  14.5% of    6.89MiB at    2.94MiB/s ETA 00:02[download]  29.0% of    6.89MiB at    4.73MiB/s ETA 00:01[download]  58.1% of    6.89MiB at    7.81MiB/s ETA 00:00[download] 100.0% of    6.89MiB at    7.74MiB/s ETA 00:00[download] 100% of    6.89MiB in 00:00:01 at 5.57MiB/s   
+    OK
+[109] https://www.youtube.com/watch?v=3RDaPV_rJ1Y
+[youtube] Extracting URL: https://www.youtube.com/watch?v=3RDaPV_rJ1Y
+[youtube] 3RDaPV_rJ1Y: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 3RDaPV_rJ1Y: Downloading android vr player API JSON
+[info] 3RDaPV_rJ1Y: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/3RDaPV_rJ1Y.mp4
+[download]   0.0% of    8.42MiB at  175.85KiB/s ETA 00:49[download]   0.0% of    8.42MiB at  494.20KiB/s ETA 00:17[download]   0.1% of    8.42MiB at    1.10MiB/s ETA 00:07[download]   0.2% of    8.42MiB at    2.31MiB/s ETA 00:03[download]   0.4% of    8.42MiB at  640.34KiB/s ETA 00:13[download]   0.7% of    8.42MiB at  745.45KiB/s ETA 00:11[download]   1.5% of    8.42MiB at 1013.60KiB/s ETA 00:08[download]   3.0% of    8.42MiB at    1.42MiB/s ETA 00:05[download]   5.9% of    8.42MiB at    2.01MiB/s ETA 00:03[download]  11.9% of    8.42MiB at    3.14MiB/s ETA 00:02[download]  23.7% of    8.42MiB at    5.01MiB/s ETA 00:01[download]  47.5% of    8.42MiB at    7.43MiB/s ETA 00:00[download]  95.0% of    8.42MiB at    6.86MiB/s ETA 00:00[download] 100.0% of    8.42MiB at    7.22MiB/s ETA 00:00[download] 100% of    8.42MiB in 00:00:01 at 5.73MiB/s   
+    OK
+[110] https://www.youtube.com/watch?v=SaFr-MOrVNg
+[youtube] Extracting URL: https://www.youtube.com/watch?v=SaFr-MOrVNg
+[youtube] SaFr-MOrVNg: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] SaFr-MOrVNg: Downloading android vr player API JSON
+ERROR: [youtube] SaFr-MOrVNg: Video unavailable
+    OK
+[111] https://www.youtube.com/watch?v=VDvfFIZQIuQ
+[youtube] Extracting URL: https://www.youtube.com/watch?v=VDvfFIZQIuQ
+[youtube] VDvfFIZQIuQ: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] VDvfFIZQIuQ: Downloading android vr player API JSON
+[info] VDvfFIZQIuQ: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/VDvfFIZQIuQ.mp4
+[download]   0.0% of    6.23MiB at  Unknown B/s ETA Unknown[download]   0.0% of    6.23MiB at  Unknown B/s ETA Unknown[download]   0.1% of    6.23MiB at    6.20MiB/s ETA 00:01  [download]   0.2% of    6.23MiB at    8.61MiB/s ETA 00:00[download]   0.5% of    6.23MiB at    4.33MiB/s ETA 00:01[download]   1.0% of    6.23MiB at    5.39MiB/s ETA 00:01[download]   2.0% of    6.23MiB at    6.53MiB/s ETA 00:00[download]   4.0% of    6.23MiB at    7.72MiB/s ETA 00:00[download]   8.0% of    6.23MiB at    7.88MiB/s ETA 00:00[download]  16.0% of    6.23MiB at    8.13MiB/s ETA 00:00[download]  32.1% of    6.23MiB at    8.27MiB/s ETA 00:00[download]  64.1% of    6.23MiB at    7.59MiB/s ETA 00:00[download] 100.0% of    6.23MiB at    7.83MiB/s ETA 00:00[download] 100% of    6.23MiB in 00:00:01 at 6.16MiB/s   
+    OK
+[112] https://www.youtube.com/watch?v=hfMjSGd3kH0
+[youtube] Extracting URL: https://www.youtube.com/watch?v=hfMjSGd3kH0
+[youtube] hfMjSGd3kH0: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] hfMjSGd3kH0: Downloading android vr player API JSON
+ERROR: [youtube] hfMjSGd3kH0: Video unavailable
+    OK
+[113] https://www.youtube.com/watch?v=uRu3zLOJN2c
+[youtube] Extracting URL: https://www.youtube.com/watch?v=uRu3zLOJN2c
+[youtube] uRu3zLOJN2c: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] uRu3zLOJN2c: Downloading android vr player API JSON
+[info] uRu3zLOJN2c: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/uRu3zLOJN2c.mp4
+[download]   0.0% of    3.31MiB at  105.46KiB/s ETA 00:32[download]   0.1% of    3.31MiB at  296.75KiB/s ETA 00:11[download]   0.2% of    3.31MiB at  681.97KiB/s ETA 00:04[download]   0.4% of    3.31MiB at    1.41MiB/s ETA 00:02[download]   0.9% of    3.31MiB at  607.64KiB/s ETA 00:05[download]   1.9% of    3.31MiB at  694.60KiB/s ETA 00:04[download]   3.7% of    3.31MiB at  775.37KiB/s ETA 00:04[download]   7.5% of    3.31MiB at  936.23KiB/s ETA 00:03[download]  15.1% of    3.31MiB at    1.43MiB/s ETA 00:01[download]  30.2% of    3.31MiB at    2.39MiB/s ETA 00:00[download]  60.4% of    3.31MiB at  961.34KiB/s ETA 00:01[download]  78.0% of    3.31MiB at    1.20MiB/s ETA 00:00[download] 100.0% of    3.31MiB at    1.50MiB/s ETA 00:00[download] 100% of    3.31MiB in 00:00:02 at 1.23MiB/s   
+    OK
+[114] https://www.youtube.com/watch?v=hf8EYbVxtCY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=hf8EYbVxtCY
+[youtube] hf8EYbVxtCY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] hf8EYbVxtCY: Downloading android vr player API JSON
+[info] hf8EYbVxtCY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/hf8EYbVxtCY.mp4
+[download]   0.0% of    9.21MiB at  Unknown B/s ETA Unknown[download]   0.0% of    9.21MiB at  Unknown B/s ETA Unknown[download]   0.1% of    9.21MiB at  Unknown B/s ETA Unknown[download]   0.2% of    9.21MiB at    8.63MiB/s ETA 00:01  [download]   0.3% of    9.21MiB at    5.84MiB/s ETA 00:01[download]   0.7% of    9.21MiB at    7.39MiB/s ETA 00:01[download]   1.3% of    9.21MiB at    7.49MiB/s ETA 00:01[download]   2.7% of    9.21MiB at    7.77MiB/s ETA 00:01[download]   5.4% of    9.21MiB at    8.11MiB/s ETA 00:01[download]  10.8% of    9.21MiB at    8.16MiB/s ETA 00:01[download]  21.7% of    9.21MiB at    8.21MiB/s ETA 00:00[download]  43.4% of    9.21MiB at    8.07MiB/s ETA 00:00[download]  86.8% of    9.21MiB at    7.84MiB/s ETA 00:00[download] 100.0% of    9.21MiB at    9.02MiB/s ETA 00:00[download] 100% of    9.21MiB in 00:00:01 at 8.06MiB/s   
+    OK
+[115] https://www.youtube.com/watch?v=oMSdFM12hOw
+[youtube] Extracting URL: https://www.youtube.com/watch?v=oMSdFM12hOw
+[youtube] oMSdFM12hOw: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] oMSdFM12hOw: Downloading android vr player API JSON
+[info] oMSdFM12hOw: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/oMSdFM12hOw.mp4
+[download]   0.0% of    6.95MiB at  Unknown B/s ETA Unknown[download]   0.0% of    6.95MiB at    2.45MiB/s ETA 00:02  [download]   0.1% of    6.95MiB at    5.14MiB/s ETA 00:01[download]   0.2% of    6.95MiB at    8.84MiB/s ETA 00:00[download]   0.4% of    6.95MiB at    4.22MiB/s ETA 00:01[download]   0.9% of    6.95MiB at    7.03MiB/s ETA 00:00[download]   1.8% of    6.95MiB at    6.39MiB/s ETA 00:01[download]   3.6% of    6.95MiB at    7.90MiB/s ETA 00:00[download]   7.2% of    6.95MiB at    8.61MiB/s ETA 00:00[download]  14.4% of    6.95MiB at    7.72MiB/s ETA 00:00[download]  28.7% of    6.95MiB at    6.70MiB/s ETA 00:00[download]  57.5% of    6.95MiB at    9.00MiB/s ETA 00:00[download] 100.0% of    6.95MiB at    7.19MiB/s ETA 00:00[download] 100% of    6.95MiB in 00:00:01 at 5.67MiB/s   
+    OK
+[116] https://www.youtube.com/watch?v=oQMc7Sq36mI
+[youtube] Extracting URL: https://www.youtube.com/watch?v=oQMc7Sq36mI
+[youtube] oQMc7Sq36mI: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] oQMc7Sq36mI: Downloading android vr player API JSON
+[info] oQMc7Sq36mI: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/oQMc7Sq36mI.mp4
+[download]   0.0% of   10.87MiB at  Unknown B/s ETA Unknown[download]   0.0% of   10.87MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.87MiB at  Unknown B/s ETA Unknown[download]   0.1% of   10.87MiB at    8.47MiB/s ETA 00:01  [download]   0.3% of   10.87MiB at    9.25MiB/s ETA 00:01[download]   0.6% of   10.87MiB at    5.96MiB/s ETA 00:01[download]   1.1% of   10.87MiB at    8.84MiB/s ETA 00:01[download]   2.3% of   10.87MiB at    7.18MiB/s ETA 00:01[download]   4.6% of   10.87MiB at    8.00MiB/s ETA 00:01[download]   9.2% of   10.87MiB at    6.76MiB/s ETA 00:01[download]  18.4% of   10.87MiB at    6.92MiB/s ETA 00:01[download]  36.8% of   10.87MiB at    6.35MiB/s ETA 00:01[download]  73.6% of   10.87MiB at    7.90MiB/s ETA 00:00[download]  87.5% of   10.87MiB at    9.38MiB/s ETA 00:00[download]  87.6% of   10.87MiB at  Unknown B/s ETA Unknown[download]  87.6% of   10.87MiB at  Unknown B/s ETA Unknown[download]  87.6% of   10.87MiB at  Unknown B/s ETA Unknown[download]  87.7% of   10.87MiB at    8.86MiB/s ETA 00:00  [download]  87.8% of   10.87MiB at    9.30MiB/s ETA 00:00[download]  88.1% of   10.87MiB at    9.62MiB/s ETA 00:00[download]  88.7% of   10.87MiB at    9.27MiB/s ETA 00:00[download]  89.8% of   10.87MiB at    9.31MiB/s ETA 00:00[download]  92.1% of   10.87MiB at    8.83MiB/s ETA 00:00[download]  96.7% of   10.87MiB at    9.01MiB/s ETA 00:00[download] 100.0% of   10.87MiB at    9.94MiB/s ETA 00:00[download] 100% of   10.87MiB in 00:00:01 at 7.86MiB/s   
+    OK
+[117] https://www.youtube.com/watch?v=4wJl3LSR_14
+[youtube] Extracting URL: https://www.youtube.com/watch?v=4wJl3LSR_14
+[youtube] 4wJl3LSR_14: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 4wJl3LSR_14: Downloading android vr player API JSON
+ERROR: [youtube] 4wJl3LSR_14: Video unavailable
+    OK
+[118] https://www.youtube.com/watch?v=TFRCrvEvJ1I
+[youtube] Extracting URL: https://www.youtube.com/watch?v=TFRCrvEvJ1I
+[youtube] TFRCrvEvJ1I: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] TFRCrvEvJ1I: Downloading android vr player API JSON
+ERROR: [youtube] TFRCrvEvJ1I: Video unavailable
+    OK
+[119] https://www.youtube.com/watch?v=aX-SB1Grhzc
+[youtube] Extracting URL: https://www.youtube.com/watch?v=aX-SB1Grhzc
+[youtube] aX-SB1Grhzc: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] aX-SB1Grhzc: Downloading android vr player API JSON
+ERROR: [youtube] aX-SB1Grhzc: Video unavailable
+    OK
+[120] https://www.youtube.com/watch?v=5PSNL1qE6VY
+[youtube] Extracting URL: https://www.youtube.com/watch?v=5PSNL1qE6VY
+[youtube] 5PSNL1qE6VY: Downloading webpage
+WARNING: [youtube] No supported JavaScript runtime could be found. Only deno is enabled by default; to use another runtime add  --js-runtimes RUNTIME[:PATH]  to your command/config. YouTube extraction without a JS runtime has been deprecated, and some formats may be missing. See  https://github.com/yt-dlp/yt-dlp/wiki/EJS  for details on installing one
+[youtube] 5PSNL1qE6VY: Downloading android vr player API JSON
+[info] 5PSNL1qE6VY: Downloading 1 format(s): 136
+[download] Destination: data/raw_videos/trailers/5PSNL1qE6VY.mp4
+[download]   0.0% of   31.33MiB at  Unknown B/s ETA Unknown[download]   0.0% of   31.33MiB at  Unknown B/s ETA Unknown[download]   0.0% of   31.33MiB at  Unknown B/s ETA Unknown[download]   0.0% of   31.33MiB at    8.90MiB/s ETA 00:03  [download]   0.1% of   31.33MiB at    2.85MiB/s ETA 00:11[download]   0.2% of   31.33MiB at    3.86MiB/s ETA 00:08[download]   0.4% of   31.33MiB at    3.03MiB/s ETA 00:10[download]   0.8% of   31.33MiB at    2.99MiB/s ETA 00:10[download]   1.6% of   31.33MiB at    4.02MiB/s ETA 00:07[download]   3.2% of   31.33MiB at    5.67MiB/s ETA 00:05[download]   6.4% of   31.33MiB at    7.27MiB/s ETA 00:04[download]  12.8% of   31.33MiB at    7.67MiB/s ETA 00:03[download]  25.5% of   31.33MiB at    7.90MiB/s ETA 00:02[download]  30.7% of   31.33MiB at    9.49MiB/s ETA 00:02[download]  30.7% of   31.33MiB at  Unknown B/s ETA Unknown[download]  30.7% of   31.33MiB at  Unknown B/s ETA Unknown[download]  30.8% of   31.33MiB at  Unknown B/s ETA Unknown[download]  30.8% of   31.33MiB at    8.87MiB/s ETA 00:02  [download]  30.8% of   31.33MiB at    9.32MiB/s ETA 00:02[download]  30.9% of   31.33MiB at    9.30MiB/s ETA 00:02[download]  31.1% of   31.33MiB at    9.14MiB/s ETA 00:02[download]  31.5% of   31.33MiB at    9.15MiB/s ETA 00:02[download]  32.3% of   31.33MiB at    8.68MiB/s ETA 00:02[download]  33.9% of   31.33MiB at    8.99MiB/s ETA 00:02[download]  37.1% of   31.33MiB at    8.88MiB/s ETA 00:02[download]  43.5% of   31.33MiB at    9.17MiB/s ETA 00:01[download]  56.3% of   31.33MiB at    9.35MiB/s ETA 00:01[download]  62.3% of   31.33MiB at    9.98MiB/s ETA 00:01[download]  62.3% of   31.33MiB at  Unknown B/s ETA Unknown[download]  62.3% of   31.33MiB at  Unknown B/s ETA Unknown[download]  62.3% of   31.33MiB at  Unknown B/s ETA Unknown[download]  62.3% of   31.33MiB at    8.78MiB/s ETA 00:01  [download]  62.4% of   31.33MiB at    9.30MiB/s ETA 00:01[download]  62.5% of   31.33MiB at    9.61MiB/s ETA 00:01[download]  62.7% of   31.33MiB at    8.86MiB/s ETA 00:01[download]  63.1% of   31.33MiB at    9.26MiB/s ETA 00:01[download]  63.9% of   31.33MiB at    8.90MiB/s ETA 00:01[download]  65.5% of   31.33MiB at    9.00MiB/s ETA 00:01[download]  68.6% of   31.33MiB at    8.92MiB/s ETA 00:01[download]  75.0% of   31.33MiB at    9.21MiB/s ETA 00:00[download]  87.8% of   31.33MiB at    9.62MiB/s ETA 00:00[download]  93.3% of   31.33MiB at    9.98MiB/s ETA 00:00[download]  93.3% of   31.33MiB at  Unknown B/s ETA Unknown[download]  93.3% of   31.33MiB at  Unknown B/s ETA Unknown[download]  93.3% of   31.33MiB at  Unknown B/s ETA Unknown[download]  93.3% of   31.33MiB at    8.75MiB/s ETA 00:00  [download]  93.4% of   31.33MiB at    9.35MiB/s ETA 00:00[download]  93.5% of   31.33MiB at    9.62MiB/s ETA 00:00[download]  93.7% of   31.33MiB at    9.30MiB/s ETA 00:00[download]  94.1% of   31.33MiB at    9.25MiB/s ETA 00:00[download]  94.9% of   31.33MiB at    8.99MiB/s ETA 00:00[download]  96.5% of   31.33MiB at    8.83MiB/s ETA 00:00[download]  99.6% of   31.33MiB at    9.02MiB/s ETA 00:00[download] 100.0% of   31.33MiB at    9.49MiB/s ETA 00:00[download] 100% of   31.33MiB in 00:00:03 at 8.67MiB/s   
+    OK
+
+========================================
+Finished at Fri Mar 13 03:25:21 PM KST 2026
+Total URLs: 120
+Downloaded: 115
+Skipped: 5
+Failed: 0
+========================================
+
+Files in output directory:
+89

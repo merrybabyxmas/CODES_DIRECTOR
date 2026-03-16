@@ -1,0 +1,94 @@
+# ==========================================
+# 1. Multi-Shot & Storytelling (멀티 샷 & 서사 생성)
+# ==========================================
+# 1. OneStory (적응형 메모리 기반 멀티 샷 - 필수 참고)
+git clone https://github.com/zhaochongan/OneStory.git
+wget -O OneStory.pdf https://arxiv.org/pdf/2512.07802.pdf
+
+# 2. StoryDiffusion (일관된 캐릭터 유지)
+git clone https://github.com/HVision-NKU/StoryDiffusion.git
+wget -O StoryDiffusion.pdf https://arxiv.org/pdf/2405.01434.pdf
+
+# 3. Mask2DiT (듀얼 마스크 기반 롱 비디오 생성)
+git clone https://github.com/tianhao-qi/Mask2DiTProject.git
+wget -O Mask2DiT.pdf https://arxiv.org/pdf/2503.19881.pdf
+
+# 4. Captain Cinema (영화적 서사 키프레임 생성)
+git clone https://github.com/YingqingHe/CaptainCinema.git
+wget -O CaptainCinema.pdf https://arxiv.org/pdf/2507.18634.pdf
+
+# 5. Zigzag StoryDiffusion (비대칭 지그재그 샘플링)
+git clone https://github.com/Mingxiao-Li/Asymmetry-Zigzag-StoryDiffusion.git
+wget -O ZigzagStoryDiffusion.pdf https://arxiv.org/pdf/2506.09612.pdf
+
+
+# ==========================================
+# 2. SOTA Video Foundation Models (DiT 기반 비디오 모델)
+# ==========================================
+# 6. Wan2.1 (Alibaba의 최신 SOTA 오픈소스 비디오 모델)
+git clone https://github.com/Wan-Video/Wan2.1.git
+
+# 7. CogVideoX (긴 프롬프트 및 비디오 생성 최적화)
+git clone https://github.com/THUDM/CogVideo.git
+wget -O CogVideoX.pdf https://arxiv.org/pdf/2408.06072.pdf
+
+# 8. LTX-Video (Lightricks의 고효율 비디오 모델)
+git clone https://github.com/Lightricks/LTX-Video.git
+
+# 9. Open-Sora (가장 구조가 깔끔하여 코드 참고하기 좋음)
+git clone https://github.com/hpcaitech/Open-Sora.git
+
+# 10. Latte (비디오 생성을 위한 Latent DiT의 정석)
+git clone https://github.com/Vchitect/Latte.git
+wget -O Latte.pdf https://arxiv.org/pdf/2401.03048.pdf
+
+
+# ==========================================
+# 3. Foundational Flow Matching & DiT (QSFM 코어 이론)
+# ==========================================
+# 11. Flow Matching for Generative Modeling (Lipman et al.)
+wget -O FlowMatching.pdf https://arxiv.org/pdf/2210.02747.pdf
+
+# 12. Rectified Flow (Liu et al. - Flow Straight and Fast)
+wget -O RectifiedFlow.pdf https://arxiv.org/pdf/2209.03003.pdf
+
+# 13. DiT 원본 (Scalable Diffusion Models with Transformers)
+git clone https://github.com/facebookresearch/DiT.git
+wget -O DiT_Original.pdf https://arxiv.org/pdf/2212.09748.pdf
+
+# 14. MM-DiT (Stable Diffusion 3 아키텍처 - 멀티모달 컨텍스트 결합용)
+wget -O MM-DiT.pdf https://arxiv.org/pdf/2403.03206.pdf
+
+
+# ==========================================
+# 4. Motion Control & Dynamics (로컬 모션 제어 참고용)
+# ==========================================
+# 15. AnimateDiff (T2I 모델에 모션 모듈 플러그인)
+git clone https://github.com/guoyww/AnimateDiff.git
+wget -O AnimateDiff.pdf https://arxiv.org/pdf/2307.04725.pdf
+
+# 16. DynamiCrafter (이미지 기반 동적 비디오 생성)
+git clone https://github.com/Doubiiu/DynamiCrafter.git
+wget -O DynamiCrafter.pdf https://arxiv.org/pdf/2310.12190.pdf
+
+# 17. VideoCrafter2 (고품질 비디오 확산 모델)
+git clone https://github.com/AILab-CVC/VideoCrafter.git
+wget -O VideoCrafter2.pdf https://arxiv.org/pdf/2401.09047.pdf
+
+
+# ==========================================
+# 5. Data Processing & Evaluation (데이터 구축 및 평가 파이프라인)
+# ==========================================
+# 18. TransNet V2 (샷 전환 감지 알고리즘 - 데이터 전처리용)
+git clone https://github.com/soCzech/TransNetV2.git
+wget -O TransNetV2.pdf https://arxiv.org/pdf/2008.04838.pdf
+
+# 19. SAM 2 (글로벌 캐릭터 에셋 추출용 배경 제거 모델)
+git clone https://github.com/facebookresearch/segment-anything-2.git
+wget -O SAM2.pdf https://arxiv.org/pdf/2408.00714.pdf
+
+# 20. VBench (생성된 비디오 품질 및 서사 평가 프레임워크)
+git clone https://github.com/Vchitect/VBench.git
+wget -O VBench.pdf https://arxiv.org/pdf/2311.17982.pdf
+
+echo "다운로드 완료! 본격적인 분석을 시작하세요."

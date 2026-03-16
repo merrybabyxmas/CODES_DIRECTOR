@@ -1,0 +1,268 @@
+# DIRECTOR Dataset - Large Trailer URL List
+# ~120 diverse movie trailers (2015-2025) for training pipeline
+# Categories: Action, Drama, Sci-Fi/Fantasy, Thriller/Horror, Romance/Comedy
+# Focus: diverse ethnicities, genders, lighting, shot types, action types
+
+# ============================================================================
+# ACTION (diverse fight scenes, chases, explosions)
+# ============================================================================
+# Mad Max: Fury Road (2015)
+https://www.youtube.com/watch?v=hEJnMQG9ev8
+# Mission: Impossible - Fallout (2018)
+https://www.youtube.com/watch?v=wb49-oV0F78
+# John Wick: Chapter 3 (2019)
+https://www.youtube.com/watch?v=M7XM597XO94
+# Fast & Furious 9 (2021)
+https://www.youtube.com/watch?v=aSiDu3Ywi8E
+# Top Gun: Maverick (2022)
+https://www.youtube.com/watch?v=giXco2jaZ_4
+# The Batman (2022)
+https://www.youtube.com/watch?v=mqqft2x_Aa4
+# Black Panther (2018)
+https://www.youtube.com/watch?v=xjDjIWPwcPU
+# Black Panther: Wakanda Forever (2022)
+https://www.youtube.com/watch?v=_Z3QKkl1WyM
+# Shang-Chi (2021)
+https://www.youtube.com/watch?v=giWIr7U1deA
+# Wonder Woman (2017)
+https://www.youtube.com/watch?v=1Q8fG0TtVAY
+# Extraction (2020)
+https://www.youtube.com/watch?v=L6P3nI6VnlY
+# Nobody (2021)
+https://www.youtube.com/watch?v=wZti8QKBWPo
+# Bullet Train (2022)
+https://www.youtube.com/watch?v=0IOsk2Vlc4o
+# The Equalizer 3 (2023)
+https://www.youtube.com/watch?v=19ikl8vy4zs
+# Creed III (2023)
+https://www.youtube.com/watch?v=AHmCH7iB_wM
+# Furiosa (2024)
+https://www.youtube.com/watch?v=XJMuhwVlca4
+# John Wick: Chapter 4 (2023)
+https://www.youtube.com/watch?v=qEVUtrk8_B4
+# Guardians of the Galaxy Vol. 3 (2023)
+https://www.youtube.com/watch?v=u3V5KDHRQvk
+# Kill Bill Volume 1 - 20th Anniversary Trailer
+https://www.youtube.com/watch?v=7kSuas6mRpk
+# The Raid 2 (2014)
+https://www.youtube.com/watch?v=MG9uFX3uYq4
+
+# ============================================================================
+# DRAMA (dialogue, close-ups, emotional scenes)
+# ============================================================================
+# Moonlight (2016)
+https://www.youtube.com/watch?v=9NJj12tiBzc
+# Parasite (2019)
+https://www.youtube.com/watch?v=5xH0HfJHsaY
+# The Farewell (2019)
+https://www.youtube.com/watch?v=RofpAjqwMa8
+# Nomadland (2020)
+https://www.youtube.com/watch?v=6sxCFZ8_d84
+# Minari (2020)
+https://www.youtube.com/watch?v=KQ0gFidlro8
+# Marriage Story (2019)
+https://www.youtube.com/watch?v=BHi-a1n8t7M
+# Manchester by the Sea (2016)
+https://www.youtube.com/watch?v=gsVoD0pTge0
+# Fences (2016)
+https://www.youtube.com/watch?v=a2m5VLaSO8U
+# Lady Bird (2017)
+https://www.youtube.com/watch?v=cNi_HC839Wo
+# The Power of the Dog (2021)
+https://www.youtube.com/watch?v=ELvKuuXdfCU
+# CODA (2021)
+https://www.youtube.com/watch?v=0pmfrE1YL4I
+# King Richard (2021)
+https://www.youtube.com/watch?v=BKP_0z52ZAw
+# The Whale (2022)
+https://www.youtube.com/watch?v=nWiQodhMvOE
+# Tar (2022)
+https://www.youtube.com/watch?v=xGSmwWm-MnA
+# Past Lives (2023)
+https://www.youtube.com/watch?v=kA244xewjcI
+# Killers of the Flower Moon (2023)
+https://www.youtube.com/watch?v=EG0si5bSd6I
+# Oppenheimer (2023)
+https://www.youtube.com/watch?v=uYPbbksJxIg
+# The Color Purple (2023)
+https://www.youtube.com/watch?v=WPIGlxRqmJ8
+# American Fiction (2023)
+https://www.youtube.com/watch?v=SJFo1YsGhzk
+# Anora (2024)
+https://www.youtube.com/watch?v=xMzGMb0yq5w
+
+# ============================================================================
+# SCI-FI / FANTASY (diverse visual settings, VFX-heavy)
+# ============================================================================
+# Dune (2021)
+https://www.youtube.com/watch?v=8g18jFHCLXk
+# Dune: Part Two (2024)
+https://www.youtube.com/watch?v=Way9Dexny3w
+# Blade Runner 2049 (2017)
+https://www.youtube.com/watch?v=gCcx85zbxz4
+# Arrival (2016)
+https://www.youtube.com/watch?v=tFMo3UJ4B4g
+# The Martian (2015)
+https://www.youtube.com/watch?v=ej3ioOneTy8
+# Interstellar (reissue trailer)
+https://www.youtube.com/watch?v=zSWdZVtXT7E
+# Avatar: The Way of Water (2022)
+https://www.youtube.com/watch?v=d9MyW72ELq0
+# Spider-Man: Across the Spider-Verse (2023)
+https://www.youtube.com/watch?v=cqGjhVJWtEg
+# Everything Everywhere All at Once (2022)
+https://www.youtube.com/watch?v=wxN1T1qdQ0
+# Annihilation (2018)
+https://www.youtube.com/watch?v=89OP78l9oF0
+# Ex Machina (2015)
+https://www.youtube.com/watch?v=EoQuVnKhxaM
+# The Matrix Resurrections (2021)
+https://www.youtube.com/watch?v=9ix7TUGVYIo
+# Eternals (2021)
+https://www.youtube.com/watch?v=x_me3xsvDgk
+# Doctor Strange: Multiverse of Madness (2022)
+https://www.youtube.com/watch?v=aWzlQ2N6qqg
+# Nope (2022)
+https://www.youtube.com/watch?v=In_DIJb4PzI
+# Tenet (2020)
+https://www.youtube.com/watch?v=LdOM0x0XDMo
+# Star Wars: The Force Awakens (2015)
+https://www.youtube.com/watch?v=sGbxmsDFVnE
+# Star Wars: The Last Jedi (2017)
+https://www.youtube.com/watch?v=Q0CbN8sfihY
+# Black Adam (2022)
+https://www.youtube.com/watch?v=X0tOpBuYasI
+# Aquaman and the Lost Kingdom (2023)
+https://www.youtube.com/watch?v=UGc5Tzz19UY
+
+# ============================================================================
+# THRILLER / HORROR (dark lighting, suspense, varied settings)
+# ============================================================================
+# Get Out (2017)
+https://www.youtube.com/watch?v=DzfpyUB60YY
+# Us (2019)
+https://www.youtube.com/watch?v=hNCmb-4oXJA
+# A Quiet Place (2018)
+https://www.youtube.com/watch?v=WR7cc5t7tv8
+# A Quiet Place Part II (2021)
+https://www.youtube.com/watch?v=XEMwSdne6UE
+# Hereditary (2018)
+https://www.youtube.com/watch?v=V6wWKNij_1M
+# Midsommar (2019)
+https://www.youtube.com/watch?v=1Vnghdsjmd0
+# The Invisible Man (2020)
+https://www.youtube.com/watch?v=WO_FJdiY9dA
+# Don't Breathe (2016)
+https://www.youtube.com/watch?v=76yBTNDB6vU
+# It (2017)
+https://www.youtube.com/watch?v=FnCdOQsX5kc
+# The Conjuring 3 (2021)
+https://www.youtube.com/watch?v=h9Q4rdMOsBo
+# Candyman (2021)
+https://www.youtube.com/watch?v=TPBH3XO8YEU
+# Scream (2022)
+https://www.youtube.com/watch?v=beToTslH17s
+# Pearl (2022)
+https://www.youtube.com/watch?v=L5PW5r0piqE
+# Barbarian (2022)
+https://www.youtube.com/watch?v=MYNVQOhGRMo
+# M3GAN (2023)
+https://www.youtube.com/watch?v=BRb4U99OU80
+# Talk to Me (2023)
+https://www.youtube.com/watch?v=aLAKMx0sU7I
+# The Menu (2022)
+https://www.youtube.com/watch?v=C_sfy4y_yxo
+# Gone Girl (2014)
+https://www.youtube.com/watch?v=2-_-1nJf8Vg
+# Sicario (2015)
+https://www.youtube.com/watch?v=G8tlEbzrWOc
+# Prisoners (2013)
+https://www.youtube.com/watch?v=bpXfcTF6iVk
+
+# ============================================================================
+# ROMANCE / COMEDY (casual clothing, indoor/outdoor, lighter tones)
+# ============================================================================
+# Crazy Rich Asians (2018)
+https://www.youtube.com/watch?v=ZQ-YX-5bAs0
+# To All the Boys I've Loved Before (2018)
+https://www.youtube.com/watch?v=555oiY9RWM4
+# The Big Sick (2017)
+https://www.youtube.com/watch?v=jcD0gVemVEo
+# Booksmart (2019)
+https://www.youtube.com/watch?v=Fd0_KOTYZHQ
+# Knives Out (2019)
+https://www.youtube.com/watch?v=qGqiGp562tc
+# Glass Onion (2022)
+https://www.youtube.com/watch?v=w7aG-DPrVTY
+# The Grand Budapest Hotel (2014)
+https://www.youtube.com/watch?v=1Fg5iWmQjwk
+# Jojo Rabbit (2019)
+https://www.youtube.com/watch?v=tL4McUzXfFI
+# Barbie (2023)
+https://www.youtube.com/watch?v=pBk4NYhWNMM
+# Bros (2022)
+https://www.youtube.com/watch?v=MJHsOPH2018
+# The Lost City (2022)
+https://www.youtube.com/watch?v=nfKO9rYDmE8
+# Free Guy (2021)
+https://www.youtube.com/watch?v=X2m-08cOAbc
+# Promising Young Woman (2020)
+https://www.youtube.com/watch?v=7i5kiFDunk8
+# Palm Springs (2020)
+https://www.youtube.com/watch?v=CpBLtXOQ6MM
+# Ticket to Paradise (2022)
+https://www.youtube.com/watch?v=hkP84MjMPYI
+# The Holdovers (2023)
+https://www.youtube.com/watch?v=AhKLpJmHhIg
+# May December (2023)
+https://www.youtube.com/watch?v=_IH_JZG0Vws
+# Anyone But You (2023)
+https://www.youtube.com/watch?v=nfKO9rYDmE4
+# Bottoms (2023)
+https://www.youtube.com/watch?v=2skM1DLGSFA
+# Poor Things (2023)
+https://www.youtube.com/watch?v=RlbR5N6veqw
+
+# ============================================================================
+# ADDITIONAL DIVERSE PICKS (international, animated, musicals)
+# ============================================================================
+# RRR (2022) - Indian action epic
+https://www.youtube.com/watch?v=NgBoMJy386M
+# Everything Everywhere All at Once - Official Trailer
+https://www.youtube.com/watch?v=wxN1T1qdQ0U
+# Turning Red (2022)
+https://www.youtube.com/watch?v=XdKzUbAiswE
+# Encanto (2021)
+https://www.youtube.com/watch?v=CaimKeDcudo
+# In the Heights (2021)
+https://www.youtube.com/watch?v=U0CL-ZSuCrQ
+# West Side Story (2021)
+https://www.youtube.com/watch?v=2lcQ31kOJQg
+# Hamilton (2020 film)
+https://www.youtube.com/watch?v=DSCKfXpAGHc
+# Soul (2020)
+https://www.youtube.com/watch?v=xOsLIiBStEs
+# The Woman King (2022)
+https://www.youtube.com/watch?v=3RDaPV_rJ1Y
+# Elvis (2022)
+https://www.youtube.com/watch?v=SaFr-MOrVNg
+# Triangle of Sadness (2022)
+https://www.youtube.com/watch?v=VDvfFIZQIuQ
+# Decision to Leave (2022) - Korean thriller
+https://www.youtube.com/watch?v=hfMjSGd3kH0
+# The Banshees of Inisherin (2022)
+https://www.youtube.com/watch?v=uRu3zLOJN2c
+# All Quiet on the Western Front (2022)
+https://www.youtube.com/watch?v=hf8EYbVxtCY
+# The Northman (2022)
+https://www.youtube.com/watch?v=oMSdFM12hOw
+# Beast (2022)
+https://www.youtube.com/watch?v=oQMc7Sq36mI
+# Devotion (2022)
+https://www.youtube.com/watch?v=4wJl3LSR_14
+# Bones and All (2022)
+https://www.youtube.com/watch?v=TFRCrvEvJ1I
+# Aftersun (2022)
+https://www.youtube.com/watch?v=aX-SB1Grhzc
+# Avatar (2009) - still widely available
+https://www.youtube.com/watch?v=5PSNL1qE6VY

@@ -1,0 +1,54 @@
+1. 설계: 통합 시각 컨텍스트 공간 (Unified Visual Context Space)직전 샷(Motion/Local)과 캐싱된 캐릭터 이미지(Identity/Global)의 태생이 다르지만, 이것들을 DiT(Diffusion Transformer)가 동일한 비중으로 인식하게 만들어야 합니다.
+토큰화 및 차원 통일: * 직전 샷(예: $t-1$ 샷의 마지막 프레임)을 VAE 인코더에 통과시켜 $N_{local}$ 개의 토큰으로 만듭니다.캐싱된 캐릭터 이미지들도 이미지 인코더(예: CLIP Vision Encoder + Projection layer)를 거쳐 $N_{global}$ 개의 토큰으로 만듭니다.
+두 토큰 모두 DiT의 내부 채널 차원($D$)과 완벽하게 동일한 차원 길이를 갖도록 Linear Projection을 거칩니다.
+컨텍스트 결합 (Concatenation):이 두 그룹의 토큰을 시퀀스 차원(Sequence dimension)에서 하나로 이어 붙입니다.Unified Context Tokens = [Local Tokens (직전 샷)] + [Global Tokens (캐싱 캐릭터 A)] + [Global Tokens (캐싱 캐릭터 B)]
+
+2. 메커니즘: 텍스트 주도형 어텐션 경쟁 (Text-Guided Attention Competition)이제 이 하나로 묶인 긴 시각적 힌트 토큰들이 DiT 블록 내부의 Cross-Attention Layer로 들어갑니다.
+ 여기서 님이 말씀하신 '경쟁'이 수학적으로 일어납니다.Query (Q): 현재 만들고자 하는 샷의 텍스트 프롬프트 
+ (예: "카메라가 줌인되며 남자의 얼굴을 비춘다")Key (K) / Value (V): 우리가 이어 붙인 Unified Context Tokens경쟁의 결과 (Softmax): 프롬프트에 "줌인(Zoom-in)"이나 "이어진 동작" 같은 텍스트가 있으면, 어텐션 메커니즘이 스스로 Local Tokens(직전 샷)과의 유사도(Dot product)를 높게 평가합니다. 
+ 반면, "새로운 등장인물 여성"이라는 텍스트가 들어오면 Global Tokens(여성 캐릭터 캐싱) 쪽의 어텐션 스코어(Weight)가 지배적으로 커집니다.결과적으로 프롬프트의 의미에 따라 모델 스스로 어떤 시각적 정보를 끌어다 쓸지 가중치를 분배하게 됩니다.
+ 
+ 
+ 3. 필수 학습 전략: '게으른 복사' 방지 (Preventing Shortcut Learning)이 아이디어를 학습시킬 때 마주칠 유일하고 가장 치명적인 문제는 **모델의 게으름(Mode Collapse)**입니다.모델이 "어차피 캐싱 이미지에 캐릭터 얼굴 다 있네? 직전 샷의 모션은 무시하고 그냥 캐싱 이미지만 
+ 복붙(Copy & Paste)해야지"라고 꼼수를 부릴 수 있습니다. 이를 막기 위한 정교한 학습 트릭이 필요합니다.조건부 드롭아웃 (Conditioning Dropout / Multi-CFG):학습 과정에서 의도적으로 정보에 구멍을 냅니다.10% 확률: Global Tokens(캐싱 이미지)를 빈 토큰으로 만듭니다. $\rightarrow$ 모델이 
+ 억지로라도 Local Tokens(직전 샷)을 보고 맥락과 모션을 이어가는 법을 배웁니다.10% 확률: Local Tokens(직전 샷)을 빈 토큰으로 만듭니다. $\rightarrow$ 이전 샷 없이도 Global Tokens만으로 캐릭터 정체성을 확실히 그리는 법을 배웁니다.나머지 80%: 두 가지를 모두 주고 '경쟁' 시킵니다.
+ 이렇게 학습하면 추론 시점에 CFG(Classifier-Free Guidance) Scale을 조절해서, "이번 샷은 직전 샷의 동작을 더 강하게 따라가라" 혹은 "이번 샷은 글로벌 캐릭터 얼굴 묘사에 더 집중하라"고 사용자가 슬라이더를 조절하듯 통제할 수도 있게 됩니다.
+
+
+
+
+
+ 세계 최고 수준의 T2MSV 엔지니어 시각에서, 이 아키텍처가 실제로 작동하고 SOTA(State-of-the-Art)를 찍을 수 있도록 4가지 핵심 파이프라인을 구체적으로 디자인해 보았습니다. 
+ 트렌드에 맞춰 확산 모델(Diffusion) 대신 최근 비디오 생성의 표준으로 자리 잡고 있는 플로우 매칭(Flow Matching) 기반으로 수식을 전개하겠습니다.
+ 1. 데이터셋 구축 (Dataset Construction): 다이나믹 서사 데이터셋모델이 '직전 샷(Local)'과 '캐릭터 캐시(Global)' 사이에서 스스로 가중치를 조절(경쟁)하게 하려면, 일반적인 캡션으로는 부족합니다. 
+ 텍스트에 카메라 워크와 씬 트랜지션이 명시적으로 담겨야 합니다.글로벌 앵커(Global Anchor) 추출:원본 비디오에서 각 캐릭터의 가장 선명한 정면/측면 프레임을 찾아 SAM(Segment Anything)으로 배경을 제거하여 캐릭터 에셋 $I_{global}$을 만듭니다.
+ 디커플링 캡셔닝 (Decoupled Captioning):VLM(Vision-Language Model)을 사용하여 샷마다 두 가지 속성의 캡션을 강제로 분리해서 생성합니다.
+
+ Identity 속성: "파란 셔츠를 입은 남자 $A$가..." (Global 토큰 활성화 유도)Motion/Camera 속성: "카메라가 남자의 손으로 빠르게 줌인(Zoom-in)하며..." (Local 토큰 활성화 유도)
+ Triplet 구조 패키징:학습 데이터 1개는 $\{I_{global}, S_{t-1}, S_{t}, C_{t}\}$ 로 구성됩니다. ($I_{global}$: 캐싱된 캐릭터 이미지, $S_{t-1}$: 직전 샷, $S_{t}$: 타겟 샷, $C_{t}$: 현재 샷 캡션)
+ 
+ 2. 학습 전략 및 수식 (Training Strategy & Math)핵심은 DiT(Diffusion Transformer) 내부의 Cross-Attention Layer에서 Local과 Global 정보가 텍스트 $C_t$를 매개로 경쟁하도록 만드는 것입니다.
+ A. 조건부 토큰 결합 (Unified Context Formulation)직전 샷의 마지막 프레임 $f_{t-1}^{last}$와 글로벌 캐릭터 에셋 $I_{global}$을 인코딩하여 동일한 $D$ 차원으로 맞춥니다.
+ $$Z_{cond} = [\text{VAE}(f_{t-1}^{last}) \parallel \text{CLIP}_{v}(I_{global})] \in \mathbb{R}^{(N_{local} + N_{global}) \times D}$$B. 
+ 어텐션 경쟁 메커니즘 (Attention Competition)노이즈가 낀 타겟 잠재 변수 $X_t$와 텍스트 임베딩 $E_{text}$가 Query가 되고, 결합된 $Z_{cond}$가 Key/Value가 됩니다.
+ $$\text{Attention}(Q, K, V) = \text{Softmax}\left(\frac{Q K^T}{\sqrt{d}}\right) V$$이때 $\text{Softmax}$ 연산에 의해 모델은 프롬프트 $E_{text}$의 의미("줌인" vs "새로운 캐릭터 등장")에 따라 $N_{local}$ 구역과 $N_{global}$ 구역 중 어느 곳에 더 높은 Attention Weight를 줄지 스스로 학습합니다.
+ 
+ C. 조건부 드롭아웃 (Multi-Context Dropout)게으른 학습(Shortcut learning)을 막기 위해 3가지 독립적인 베르누이 마스킹(Bernoulli Masking)을 적용합니다.
+ $m_{text} \sim \text{Bernoulli}(1 - p_{text})$$m_{local} \sim \text{Bernoulli}(1 - p_{local})$$m_{global} \sim \text{Bernoulli}(1 - p_{global})$D. 플로우 매칭 목적 함수 (Flow Matching Objective)타겟 샷 $X_1$과 노이즈 $X_0$ 사이의 벡터장 $v_\theta$를 예측하도록 학습합니다.
+ $$\mathcal{L}(\theta) = \mathbb{E}_{t, X_0, X_1, C} \left\| v_\theta(X_t, t, m_{text}E_{text}, m_{local}Z_{local}, m_{global}Z_{global}) - (X_1 - X_0) \right\|^2$$여기서 $X_t = t X_1 + (1 - t) X_0$ 입니다.3. 추론 과정 (Inference Process: The $O(1)$ Loop)실제 생성을 할 때는 
+ 연산량이 샷의 개수에 상관없이 $O(1)$로 완벽하게 고정됩니다.Pre-production (Step 0): 전역 프롬프트를 분석하여 전체 스토리의 등장인물 $I_{global}$을 미리 T2I 모델로 생성하고 임베딩하여 캐시에 올려둡니다.Autoregressive Loop (Step $t$):직전 샷의 마지막 프레임을 캐치하여 $Z_{local}$을 만듭니다. 
+ (첫 샷인 경우 검은 화면이나 초기 노이즈로 대체)다중 CFG (Multi-Classifier-Free Guidance): 사용자가 텍스트, 로컬 모션, 글로벌 일관성의 강도를 직접 제어할 수 있도록 벡터장을 조합합니다.
+ $$v_{out} = v_{\emptyset} + \omega_{text}(v_{text} - v_{\emptyset}) + \omega_{local}(v_{loc} - v_{\emptyset}) + \omega_{global}(v_{glob} - v_{\emptyset})$$ODE Solver: 상미분방정식을 풀어 샷을 생성합니다.
+ $$X_1 = X_0 + \int_0^1 v_{out}(X_t, t, \dots) dt$$4. 성능 평가 디자인 (Evaluation Metrics)이 논문의 핵심 Contribution은 "연산량은 가벼운데, 장기 서사 일관성은 더 뛰어나고 움직임은 부드럽다"는 것을 증명하는 것입니다.
+ $O(1)$ Efficiency (가장 중요):X축을 '생성된 샷의 개수', Y축을 'GPU 메모리 사용량' 및 '1샷 당 생성 시간(FLOPs)'으로 두어 그래프를 그립니다. OneStory나 Mask DiT는 기하급수적으로 우상향하지만, 우리의 모델은 완벽한 **수평선(Flat line)**을 그림을 증명합니다.
+ 글로벌 일관성 (Inter-shot Identity Consistency):DINOv2를 사용하여 연속된 샷이 아닌, 샷 1과 샷 10처럼 멀리 떨어진 샷 사이의 캐릭터 임베딩 코사인 유사도를 측정합니다. 캐싱을 사용했기 때문에 이 수치가 압도적으로 높게 나와야 합니다.
+ 로컬 부드러움 (Intra-shot & Cross-shot Motion Coherence):직전 샷의 마지막 프레임과 생성된 샷의 첫 프레임 사이의 광학 흐름(Optical Flow)
+
+
+
+
+
+
+
+
+ 
