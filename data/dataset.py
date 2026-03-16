@@ -7,7 +7,8 @@ returns tensors suitable for DIRECTOR training.
 Expected on-disk layout:
   data/processed_dataset/
   ├── seq_00001/
-  │   ├── global_anchor.png         # RGBA character with transparent bg
+  │   ├── global_anchor_0.png       # RGBA character 0 with transparent bg
+  │   ├── global_anchor_1.png       # RGBA character 1 (optional)
   │   ├── prev_shot_last_frame.jpg  # Last frame of S_{t-1}
   │   ├── target_shot.mp4           # S_t video clip (8fps, max 49 frames)
   │   └── caption.json              # {"identity": "...", "motion": "...", "full": "..."}
@@ -15,13 +16,14 @@ Expected on-disk layout:
   └── metadata.jsonl
 
 Each __getitem__ returns:
-  target_video  : (T, 3, H, W)   float32 [0, 1]  – the target shot
-  prev_frame    : (3, H, W)      float32 [0, 1]  – last frame of previous shot
-  anchor_image  : (4, H_a, W_a)  float32 [0, 1]  – RGBA global anchor (resized)
-  anchor_rgb    : (3, 224, 224)   float32 [0, 1]  – anchor RGB for CLIP encoder
-  caption       : str                              – full caption text
-  identity_text : str                              – identity-only caption
-  motion_text   : str                              – motion-only caption
+  target_video     : (T, 3, H, W)         float32 [0, 1]  – the target shot
+  prev_frame       : (3, H, W)            float32 [0, 1]  – last frame of previous shot
+  anchor_rgb       : (K, 3, 224, 224)     float32          – CLIP-normalised per-character anchors
+  character_mask   : (K,)                 float32          – 1.0 for valid characters, 0.0 for padding
+  num_characters   : int                                   – number of valid characters
+  caption          : str                                   – full caption text
+  identity_text    : str                                   – identity-only caption
+  motion_text      : str                                   – motion-only caption
 """
 
 from __future__ import annotations
@@ -47,7 +49,7 @@ class DirectorDataset(Dataset):
     PyTorch Dataset for DIRECTOR training triplets (v2 flat layout).
 
     Reads seq_XXXXX/ directories, each containing:
-      global_anchor.png, prev_shot_last_frame.jpg, target_shot.mp4, caption.json
+      global_anchor_{k}.png (k=0..K-1), prev_shot_last_frame.jpg, target_shot.mp4, caption.json
     """
 
     def __init__(
@@ -58,6 +60,7 @@ class DirectorDataset(Dataset):
         target_frames: int = 49,
         anchor_size: int = 512,
         clip_image_size: int = 224,
+        max_characters: int = 4,
         augment: bool = True,
         split: str = "train",
         split_ratio: float = 0.9,
@@ -70,6 +73,7 @@ class DirectorDataset(Dataset):
         self.target_frames = target_frames
         self.anchor_size = anchor_size
         self.clip_image_size = clip_image_size
+        self.max_characters = max_characters
         self.augment = augment and split == "train"
 
         # Discover all seq_XXXXX directories
@@ -110,7 +114,7 @@ class DirectorDataset(Dataset):
         for entry in sorted(self.dataset_dir.iterdir()):
             if entry.is_dir() and entry.name.startswith("seq_"):
                 # Check required files exist
-                required = ["global_anchor.png", "prev_shot_last_frame.jpg",
+                required = ["global_anchor_0.png", "prev_shot_last_frame.jpg",
                             "target_shot.mp4", "caption.json"]
                 if all((entry / f).exists() for f in required):
                     seq_dirs.append(entry)
@@ -218,13 +222,24 @@ class DirectorDataset(Dataset):
             prev_prev_frame = torch.zeros_like(prev_frame)
             has_prev_prev = False
 
-        # Load global anchor
-        anchor_rgba = self._load_anchor(
-            str(seq_dir / "global_anchor.png")
-        )  # (4, anchor_size, anchor_size)
-
-        # CLIP-ready RGB anchor
-        anchor_rgb = self._anchor_to_clip_rgb(anchor_rgba)  # (3, 224, 224)
+        # Load global anchors (multi-character)
+        anchor_rgbs = []  # list of (3, 224, 224) CLIP-ready
+        num_characters = 0
+        for k in range(self.max_characters):
+            anchor_path = seq_dir / f"global_anchor_{k}.png"
+            if anchor_path.exists():
+                anchor_rgba = self._load_anchor(str(anchor_path))
+                anchor_rgb_k = self._anchor_to_clip_rgb(anchor_rgba)
+                anchor_rgbs.append(anchor_rgb_k)
+                num_characters += 1
+            else:
+                # Zero-pad missing character slots
+                anchor_rgbs.append(torch.zeros(3, self.clip_image_size, self.clip_image_size))
+        # (max_characters, 3, 224, 224)
+        anchor_rgb = torch.stack(anchor_rgbs)
+        # Character validity mask: (max_characters,)
+        character_mask = torch.zeros(self.max_characters)
+        character_mask[:num_characters] = 1.0
 
         # Load caption
         caption_path = seq_dir / "caption.json"
@@ -256,20 +271,20 @@ class DirectorDataset(Dataset):
             target_video = torch.flip(target_video, dims=[-1])
             prev_frame = torch.flip(prev_frame, dims=[-1])
             prev_prev_frame = torch.flip(prev_prev_frame, dims=[-1])
-            anchor_rgba = torch.flip(anchor_rgba, dims=[-1])
-            anchor_rgb = torch.flip(anchor_rgb, dims=[-1])
+            anchor_rgb = torch.flip(anchor_rgb, dims=[-1])  # (K, 3, 224, 224)
 
         return {
-            "target_video": target_video,        # (T, 3, H, W)
-            "prev_frame": prev_frame,            # (3, H, W) - t-1
-            "prev_prev_frame": prev_prev_frame,  # (3, H, W) - t-2
-            "has_prev_prev": has_prev_prev,       # bool
-            "anchor_image": anchor_rgba,         # (4, anchor_size, anchor_size)
-            "anchor_rgb": anchor_rgb,            # (3, 224, 224)
-            "caption": full_text,                # str
-            "identity_text": identity_text,      # str
-            "motion_text": motion_text,          # str
-            "seq_id": seq_dir.name,              # str
+            "target_video": target_video,          # (T, 3, H, W)
+            "prev_frame": prev_frame,              # (3, H, W) - t-1
+            "prev_prev_frame": prev_prev_frame,    # (3, H, W) - t-2
+            "has_prev_prev": has_prev_prev,         # bool
+            "anchor_rgb": anchor_rgb,              # (max_characters, 3, 224, 224)
+            "character_mask": character_mask,       # (max_characters,)
+            "num_characters": num_characters,       # int
+            "caption": full_text,                  # str
+            "identity_text": identity_text,        # str
+            "motion_text": motion_text,            # str
+            "seq_id": seq_dir.name,                # str
         }
 
 
@@ -287,12 +302,12 @@ class DirectorDataCollator:
 
     def __call__(self, batch: List[Dict[str, Any]]) -> Dict[str, Any]:
         result = {
-            "target_video": torch.stack([s["target_video"] for s in batch]),     # (B, T, 3, H, W)
-            "prev_frame": torch.stack([s["prev_frame"] for s in batch]),         # (B, 3, H, W)
-            "prev_prev_frame": torch.stack([s["prev_prev_frame"] for s in batch]),  # (B, 3, H, W)
-            "has_prev_prev": torch.tensor([s["has_prev_prev"] for s in batch]),  # (B,)
-            "anchor_image": torch.stack([s["anchor_image"] for s in batch]),     # (B, 4, Ha, Wa)
-            "anchor_rgb": torch.stack([s["anchor_rgb"] for s in batch]),         # (B, 3, 224, 224)
+            "target_video": torch.stack([s["target_video"] for s in batch]),         # (B, T, 3, H, W)
+            "prev_frame": torch.stack([s["prev_frame"] for s in batch]),             # (B, 3, H, W)
+            "prev_prev_frame": torch.stack([s["prev_prev_frame"] for s in batch]),   # (B, 3, H, W)
+            "has_prev_prev": torch.tensor([s["has_prev_prev"] for s in batch]),      # (B,)
+            "anchor_rgb": torch.stack([s["anchor_rgb"] for s in batch]),             # (B, K, 3, 224, 224)
+            "character_mask": torch.stack([s["character_mask"] for s in batch]),      # (B, K)
             "captions": [s["caption"] for s in batch],
             "identity_texts": [s["identity_text"] for s in batch],
             "motion_texts": [s["motion_text"] for s in batch],

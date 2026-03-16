@@ -301,10 +301,11 @@ class DirectorTrainer:
         prev_frame = batch["prev_frame"].to(self.device, dtype=torch.float32)
         prev_prev_frame = batch["prev_prev_frame"].to(self.device, dtype=torch.float32)
         has_prev_prev = batch["has_prev_prev"]  # (B,) bool
-        anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)
+        anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)  # (B, K, 3, 224, 224)
+        char_mask = batch["character_mask"].to(self.device, dtype=torch.float32)  # (B, K)
         captions = batch["captions"]
 
-        B = target_video.shape[0]
+        B, K = anchor_rgb.shape[:2]
 
         # Build prev_frames list: always [t-1, t-2] with per-sample validity mask
         prev_frames = [prev_frame, prev_prev_frame]
@@ -328,8 +329,8 @@ class DirectorTrainer:
                 text_embeds = torch.cat(text_embeds_list, dim=0)  # (B, S, D_text)
 
             # 3. Encode context (local + global) with multi-context dropout
-            char_list = [anchor_rgb]  # list of 1 character: [(B, 3, 224, 224)]
-            char_mask = torch.ones(B, 1, device=self.device, dtype=torch.float32)
+            # Decompose anchor_rgb (B, K, 3, 224, 224) -> list of K tensors [(B, 3, 224, 224)]
+            char_list = [anchor_rgb[:, k] for k in range(K)]
 
             unified_context, context_mask = self.pipeline.director_transformer.encode_context(
                 prev_frames=prev_frames,
@@ -387,9 +388,10 @@ class DirectorTrainer:
             prev_frame = batch["prev_frame"].to(self.device, dtype=torch.float32)
             prev_prev_frame = batch["prev_prev_frame"].to(self.device, dtype=torch.float32)
             has_prev_prev = batch["has_prev_prev"]
-            anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)
+            anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)  # (B, K, 3, 224, 224)
+            char_mask = batch["character_mask"].to(self.device, dtype=torch.float32)  # (B, K)
             captions = batch["captions"]
-            B = target_video.shape[0]
+            B, K = anchor_rgb.shape[:2]
 
             prev_frames = [prev_frame, prev_prev_frame]
             local_frame_valid = torch.stack([
@@ -402,8 +404,7 @@ class DirectorTrainer:
                 text_embeds_list = [self.pipeline.encode_text(c) for c in captions]
                 text_embeds = torch.cat(text_embeds_list, dim=0)
 
-                char_list = [anchor_rgb]
-                char_mask = torch.ones(B, 1, device=self.device, dtype=torch.float32)
+                char_list = [anchor_rgb[:, k] for k in range(K)]
                 unified_context, context_mask = self.pipeline.director_transformer.encode_context(
                     prev_frames=prev_frames,
                     character_images=char_list,

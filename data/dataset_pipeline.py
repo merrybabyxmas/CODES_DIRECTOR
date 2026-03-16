@@ -10,14 +10,15 @@ Full pipeline for constructing training triplets from raw video:
 Output structure:
   data/processed_dataset/
   ├── seq_00001/
-  │   ├── global_anchor.png              # RGBA, character with transparent bg
+  │   ├── global_anchor_0.png             # RGBA, character 0 with transparent bg
+  │   ├── global_anchor_1.png             # RGBA, character 1 (if multi-char scene)
   │   ├── prev_shot_last_frame.jpg        # Last frame of S_{t-1}
   │   ├── prev_prev_shot_last_frame.jpg   # Last frame of S_{t-2} (if available)
   │   ├── target_shot.mp4                 # S_t video clip (8fps, max 49 frames)
   │   └── caption.json                    # {"identity": "...", "motion": "...", "full": "..."}
   ├── seq_00002/
   │   └── ...
-  └── metadata.jsonl                # One JSON per line
+  └── metadata.jsonl                # One JSON per line (includes num_characters)
 
 Usage:
   CUDA_VISIBLE_DEVICES=3 python -m data.dataset_pipeline \\
@@ -98,6 +99,7 @@ class PipelineConfig:
     # DINOv2 identity matching
     dino_model: str = "facebook/dinov2-base"
     identity_similarity_threshold: float = 0.75
+    max_characters: int = 4  # max characters to extract per shot pair
 
     # Best frame selection
     face_aspect_ratio_target: float = 0.7  # ideal w/h for frontal face
@@ -260,6 +262,57 @@ class IdentityMatcher:
             return True, best_val, (pi, ci)
         return False, best_val, None
 
+    def match_consecutive_multi(
+        self,
+        crops_prev: List[np.ndarray],
+        crops_curr: List[np.ndarray],
+        max_characters: int = 4,
+    ) -> List[Tuple[int, int, float]]:
+        """
+        Find up to max_characters distinct matching pairs between two shots.
+
+        Uses greedy assignment: iterates similarity matrix entries in descending
+        order, assigning each pair only if neither crop index is already claimed.
+        This naturally deduplicates when multiple crops depict the same person
+        (from different representative frames).
+
+        Returns:
+            List of (prev_crop_idx, curr_crop_idx, similarity), sorted by
+            descending similarity.  Empty list if no match above threshold.
+        """
+        if len(crops_prev) == 0 or len(crops_curr) == 0:
+            return []
+
+        feats_prev = self.extract_features(crops_prev)  # (Np, D)
+        feats_curr = self.extract_features(crops_curr)  # (Nc, D)
+        sim_matrix = feats_prev @ feats_curr.T  # (Np, Nc)
+
+        # Flatten and sort descending
+        Np, Nc = sim_matrix.shape
+        flat = sim_matrix.reshape(-1)
+        sorted_indices = torch.argsort(flat, descending=True)
+
+        used_prev: set = set()
+        used_curr: set = set()
+        matches: List[Tuple[int, int, float]] = []
+
+        for flat_idx in sorted_indices:
+            if len(matches) >= max_characters:
+                break
+            flat_idx = flat_idx.item()
+            sim_val = flat[flat_idx].item()
+            if sim_val < self.threshold:
+                break  # all remaining are below threshold
+            pi = flat_idx // Nc
+            ci = flat_idx % Nc
+            if pi in used_prev or ci in used_curr:
+                continue
+            used_prev.add(pi)
+            used_curr.add(ci)
+            matches.append((pi, ci, sim_val))
+
+        return matches
+
 
 # ===========================================================================
 # Step 2: Global Anchor Extraction (Best Frame + SAM2)
@@ -365,6 +418,94 @@ class GlobalAnchorExtractor:
             best_frame = vr[mid_idx].numpy().astype(np.uint8)
             h, w = best_frame.shape[:2]
             best_bbox = np.array([w * 0.2, h * 0.1, w * 0.8, h * 0.9])
+            best_idx = mid_idx
+
+        return best_frame, best_bbox, best_idx
+
+    def select_best_frame_for_box(
+        self,
+        video_path: str,
+        start_frame: int,
+        end_frame: int,
+        person_detector: PersonDetector,
+        reference_box: np.ndarray,
+        iou_threshold: float = 0.2,
+    ) -> Tuple[np.ndarray, np.ndarray, int]:
+        """
+        Search frames for the best instance of a specific person identified by
+        reference_box.  Only considers detected boxes with IoU > iou_threshold
+        against the reference, then scores them identically to select_best_frame.
+
+        Args:
+            reference_box: (4,) [x1, y1, x2, y2] from the representative-frame detection.
+            iou_threshold: minimum IoU with reference_box to be considered the same person.
+
+        Returns:
+            (best_frame_rgb, best_bbox_xyxy, best_frame_idx)
+        """
+        import decord
+        decord.bridge.set_bridge("torch")
+        vr = decord.VideoReader(video_path)
+
+        stride = max(1, (end_frame - start_frame) // 50)
+        candidate_indices = list(range(start_frame, min(end_frame + 1, len(vr)), stride))
+        if not candidate_indices:
+            candidate_indices = [start_frame]
+
+        def _iou(a: np.ndarray, b: np.ndarray) -> float:
+            x1 = max(a[0], b[0]); y1 = max(a[1], b[1])
+            x2 = min(a[2], b[2]); y2 = min(a[3], b[3])
+            inter = max(0, x2 - x1) * max(0, y2 - y1)
+            area_a = (a[2] - a[0]) * (a[3] - a[1])
+            area_b = (b[2] - b[0]) * (b[3] - b[1])
+            union = area_a + area_b - inter
+            return inter / max(union, 1e-6)
+
+        best_score = -1.0
+        best_frame: Optional[np.ndarray] = None
+        best_bbox: Optional[np.ndarray] = None
+        best_idx = candidate_indices[0]
+        ref = reference_box.astype(float)
+
+        batch_size = 16
+        for batch_start in range(0, len(candidate_indices), batch_size):
+            batch_indices = candidate_indices[batch_start:batch_start + batch_size]
+            frames = vr.get_batch(batch_indices).numpy().astype(np.uint8)
+
+            for local_i, frame_rgb in enumerate(frames):
+                global_idx = batch_indices[local_i]
+                boxes = person_detector.detect_persons(frame_rgb)
+                if len(boxes) == 0:
+                    continue
+
+                frame_h, frame_w = frame_rgb.shape[:2]
+                total_area = float(frame_h * frame_w)
+                gray = cv2.cvtColor(frame_rgb, cv2.COLOR_RGB2GRAY)
+                sharpness = cv2.Laplacian(gray, cv2.CV_64F).var()
+
+                for box in boxes:
+                    if _iou(box, ref) < iou_threshold:
+                        continue
+                    x1, y1, x2, y2 = box
+                    bw = x2 - x1; bh = y2 - y1
+                    area_score = (bw * bh) / total_area
+                    aspect_ratio = bw / max(bh, 1.0)
+                    frontality_score = 1.0 - min(abs(aspect_ratio - self.face_ar_target), 1.0)
+                    sharp_score = min(np.log1p(sharpness) / 10.0, 1.0)
+                    combined = 0.4 * area_score + 0.3 * frontality_score + 0.3 * sharp_score
+
+                    if combined > best_score:
+                        best_score = combined
+                        best_frame = frame_rgb.copy()
+                        best_bbox = np.array([x1, y1, x2, y2])
+                        best_idx = global_idx
+
+        if best_frame is None:
+            # Fallback: use reference box on middle frame
+            mid_idx = (start_frame + end_frame) // 2
+            mid_idx = min(mid_idx, len(vr) - 1)
+            best_frame = vr[mid_idx].numpy().astype(np.uint8)
+            best_bbox = reference_box.copy()
             best_idx = mid_idx
 
         return best_frame, best_bbox, best_idx
@@ -773,28 +914,45 @@ class DatasetPipeline:
 
         logger.info(f"  Person crops per shot: {[len(shot_person_crops.get(i, [])) for i in range(len(shots))]}")
 
-        # -- Step 1c: Identity filtering (consecutive pairs) ----------------
-        logger.info("Step 1c: Identity filtering (DINOv2) ...")
+        # -- Step 1c: Identity filtering (consecutive pairs, multi-character) --
+        logger.info("Step 1c: Identity filtering (DINOv2, multi-character) ...")
         identity_matcher = self._get_identity_matcher()
 
-        valid_pairs: List[Dict[str, Any]] = []  # list of {prev_idx, curr_idx, similarity, matched_person_boxes}
+        valid_pairs: List[Dict[str, Any]] = []
 
         for i in range(1, len(shots)):
             prev_crops = shot_person_crops.get(i - 1, [])
             curr_crops = shot_person_crops.get(i, [])
 
-            is_match, sim, match_indices = identity_matcher.match_consecutive(prev_crops, curr_crops)
-            if is_match and match_indices is not None:
-                # Find the best bbox in current shot for anchor extraction
-                curr_box = shot_person_boxes[i][match_indices[1]] if match_indices[1] < len(shot_person_boxes.get(i, [])) else None
+            matches = identity_matcher.match_consecutive_multi(
+                prev_crops, curr_crops, max_characters=self.config.max_characters,
+            )
+            if len(matches) > 0:
+                # Build per-character info: each match has (prev_crop_idx, curr_crop_idx, sim)
+                matched_characters = []
+                for prev_ci, curr_ci, sim in matches:
+                    curr_box = (
+                        shot_person_boxes[i][curr_ci]
+                        if curr_ci < len(shot_person_boxes.get(i, []))
+                        else None
+                    )
+                    matched_characters.append({
+                        "prev_crop_idx": prev_ci,
+                        "curr_crop_idx": curr_ci,
+                        "similarity": sim,
+                        "curr_person_box": curr_box,
+                    })
                 valid_pairs.append({
                     "prev_shot_idx": i - 1,
                     "curr_shot_idx": i,
-                    "similarity": sim,
-                    "curr_person_box": curr_box,
+                    "matched_characters": matched_characters,
                 })
 
-        logger.info(f"  Valid consecutive pairs (sim>{self.config.identity_similarity_threshold}): {len(valid_pairs)}")
+        total_chars = sum(len(p["matched_characters"]) for p in valid_pairs)
+        logger.info(
+            f"  Valid consecutive pairs (sim>{self.config.identity_similarity_threshold}): "
+            f"{len(valid_pairs)} pairs, {total_chars} total character matches"
+        )
 
         if len(valid_pairs) == 0:
             logger.warning("  No valid identity-matched pairs found. Skipping video.")
@@ -804,32 +962,42 @@ class DatasetPipeline:
         # Free DINOv2
         self._unload_component("_identity_matcher")
 
-        # -- Step 2: Global anchor extraction --------------------------------
-        logger.info("Step 2: Global anchor extraction (SAM2) ...")
+        # -- Step 2: Global anchor extraction (multi-character SAM2) ----------
+        logger.info("Step 2: Global anchor extraction (SAM2, multi-character) ...")
         anchor_extractor = self._get_anchor_extractor()
 
-        pair_anchors: List[Optional[np.ndarray]] = []
+        # pair_anchors[i] = list of RGBA arrays (one per matched character)
+        pair_anchors: List[List[Optional[np.ndarray]]] = []
         for pair in valid_pairs:
             ci = pair["curr_shot_idx"]
-            s_start, s_end = shots[ci]
-
-            # Also include previous shot frames for best-frame search
             pi = pair["prev_shot_idx"]
+            cs_start, cs_end = shots[ci]
             ps_start, ps_end = shots[pi]
-            search_start = ps_start
-            search_end = s_end
 
-            best_frame, best_bbox, best_fidx = anchor_extractor.select_best_frame(
-                video_path, search_start, search_end, person_detector
-            )
+            char_anchors: List[Optional[np.ndarray]] = []
+            for char_info in pair["matched_characters"]:
+                curr_box = char_info.get("curr_person_box")
+                if curr_box is None:
+                    char_anchors.append(None)
+                    continue
 
-            # Segment with SAM2
-            try:
-                rgba = anchor_extractor.segment_character(best_frame, best_bbox)
-                pair_anchors.append(rgba)
-            except Exception as e:
-                logger.warning(f"  SAM2 segmentation failed for pair prev={pi} curr={ci}: {e}")
-                pair_anchors.append(None)
+                # Find the best frame for THIS character's bbox region
+                best_frame, best_bbox, best_fidx = (
+                    anchor_extractor.select_best_frame_for_box(
+                        video_path, ps_start, cs_end, person_detector, curr_box,
+                    )
+                )
+
+                try:
+                    rgba = anchor_extractor.segment_character(best_frame, best_bbox)
+                    char_anchors.append(rgba)
+                except Exception as e:
+                    logger.warning(
+                        f"  SAM2 failed for pair prev={pi} curr={ci} "
+                        f"char={char_info['curr_crop_idx']}: {e}"
+                    )
+                    char_anchors.append(None)
+            pair_anchors.append(char_anchors)
 
         # Free SAM2
         self._unload_component("_anchor_extractor")
@@ -856,25 +1024,29 @@ class DatasetPipeline:
         num_sequences = 0
 
         for pair_idx, pair in enumerate(valid_pairs):
-            anchor_rgba = pair_anchors[pair_idx]
+            char_anchors = pair_anchors[pair_idx]  # list of Optional[RGBA]
             caption = pair_captions[pair_idx]
             pi = pair["prev_shot_idx"]
             ci = pair["curr_shot_idx"]
             ps_start, ps_end = shots[pi]
             cs_start, cs_end = shots[ci]
 
-            # Skip if anchor extraction failed
-            if anchor_rgba is None:
-                logger.warning(f"  Skipping pair {pair_idx}: no anchor")
+            # Filter to successfully segmented characters
+            valid_anchors = [(k, a) for k, a in enumerate(char_anchors) if a is not None]
+            if len(valid_anchors) == 0:
+                logger.warning(f"  Skipping pair {pair_idx}: no valid anchors")
                 continue
 
             seq_id = self._next_seq_id()
             seq_dir = self.output_dir / seq_id
             seq_dir.mkdir(parents=True, exist_ok=True)
 
-            # (a) Save global_anchor.png
-            anchor_img = Image.fromarray(anchor_rgba, mode="RGBA")
-            anchor_img.save(str(seq_dir / "global_anchor.png"))
+            # (a) Save global_anchor_0.png, global_anchor_1.png, ...
+            num_chars_saved = 0
+            for k, (orig_idx, anchor_rgba) in enumerate(valid_anchors):
+                anchor_img = Image.fromarray(anchor_rgba, mode="RGBA")
+                anchor_img.save(str(seq_dir / f"global_anchor_{k}.png"))
+                num_chars_saved += 1
 
             # (b) Save prev_shot_last_frame.jpg (t-1)
             last_frame_idx = min(ps_end, total_frames - 1)
@@ -909,13 +1081,18 @@ class DatasetPipeline:
                 json.dump(caption, f, indent=2)
 
             # (e) Append to metadata.jsonl
+            char_sims = [
+                round(pair["matched_characters"][orig_idx]["similarity"], 4)
+                for orig_idx, _ in valid_anchors
+            ]
             meta_entry = {
                 "seq_id": seq_id,
                 "video_source": video_path,
                 "video_name": video_name,
                 "prev_shot": {"start": ps_start, "end": ps_end, "idx": pi},
                 "curr_shot": {"start": cs_start, "end": cs_end, "idx": ci},
-                "identity_similarity": round(pair["similarity"], 4),
+                "num_characters": num_chars_saved,
+                "identity_similarities": char_sims,
                 "target_shot_frames": n_written,
                 "target_fps": self.config.target_fps,
                 "src_fps": round(src_fps, 2),
