@@ -10,10 +10,11 @@ Full pipeline for constructing training triplets from raw video:
 Output structure:
   data/processed_dataset/
   ├── seq_00001/
-  │   ├── global_anchor.png        # RGBA, character with transparent bg
-  │   ├── prev_shot_last_frame.jpg  # Last frame of S_{t-1}
-  │   ├── target_shot.mp4           # S_t video clip (8fps, max 49 frames)
-  │   └── caption.json              # {"identity": "...", "motion": "...", "full": "..."}
+  │   ├── global_anchor.png              # RGBA, character with transparent bg
+  │   ├── prev_shot_last_frame.jpg        # Last frame of S_{t-1}
+  │   ├── prev_prev_shot_last_frame.jpg   # Last frame of S_{t-2} (if available)
+  │   ├── target_shot.mp4                 # S_t video clip (8fps, max 49 frames)
+  │   └── caption.json                    # {"identity": "...", "motion": "...", "full": "..."}
   ├── seq_00002/
   │   └── ...
   └── metadata.jsonl                # One JSON per line
@@ -875,13 +876,23 @@ class DatasetPipeline:
             anchor_img = Image.fromarray(anchor_rgba, mode="RGBA")
             anchor_img.save(str(seq_dir / "global_anchor.png"))
 
-            # (b) Save prev_shot_last_frame.jpg
+            # (b) Save prev_shot_last_frame.jpg (t-1)
             last_frame_idx = min(ps_end, total_frames - 1)
             last_frame = vr[last_frame_idx].numpy().astype(np.uint8)  # (H, W, 3) RGB
             cv2.imwrite(
                 str(seq_dir / "prev_shot_last_frame.jpg"),
                 cv2.cvtColor(last_frame, cv2.COLOR_RGB2BGR),
             )
+
+            # (b2) Save prev_prev_shot_last_frame.jpg (t-2) if available
+            if pi > 0:
+                pp_start, pp_end = shots[pi - 1]
+                pp_last_idx = min(pp_end, total_frames - 1)
+                pp_last_frame = vr[pp_last_idx].numpy().astype(np.uint8)
+                cv2.imwrite(
+                    str(seq_dir / "prev_prev_shot_last_frame.jpg"),
+                    cv2.cvtColor(pp_last_frame, cv2.COLOR_RGB2BGR),
+                )
 
             # (c) Save target_shot.mp4
             n_written = write_target_shot_mp4(

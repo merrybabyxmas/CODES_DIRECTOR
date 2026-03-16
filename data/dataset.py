@@ -188,6 +188,7 @@ class DirectorDataset(Dataset):
         white_bg = torch.ones_like(rgb)
         composited = rgb * alpha + white_bg * (1 - alpha)  # (3, H, W)
         composited = self.clip_resize(composited)  # (3, 224, 224)
+        composited = self.clip_normalize(composited)  # CLIP normalization
         return composited
 
     def __len__(self) -> int:
@@ -201,11 +202,21 @@ class DirectorDataset(Dataset):
             str(seq_dir / "target_shot.mp4")
         )  # (T, 3, H, W)
 
-        # Load previous shot's last frame
+        # Load previous shot's last frame (t-1)
         prev_frame = self._load_image(
             str(seq_dir / "prev_shot_last_frame.jpg")
         )  # (3, H, W)
         prev_frame = self.video_resize(prev_frame.unsqueeze(0)).squeeze(0)
+
+        # Load t-2 frame if available
+        prev_prev_path = seq_dir / "prev_prev_shot_last_frame.jpg"
+        if prev_prev_path.exists():
+            prev_prev_frame = self._load_image(str(prev_prev_path))
+            prev_prev_frame = self.video_resize(prev_prev_frame.unsqueeze(0)).squeeze(0)
+            has_prev_prev = True
+        else:
+            prev_prev_frame = torch.zeros_like(prev_frame)
+            has_prev_prev = False
 
         # Load global anchor
         anchor_rgba = self._load_anchor(
@@ -244,12 +255,15 @@ class DirectorDataset(Dataset):
         if self.augment and torch.rand(1).item() < 0.5:
             target_video = torch.flip(target_video, dims=[-1])
             prev_frame = torch.flip(prev_frame, dims=[-1])
+            prev_prev_frame = torch.flip(prev_prev_frame, dims=[-1])
             anchor_rgba = torch.flip(anchor_rgba, dims=[-1])
             anchor_rgb = torch.flip(anchor_rgb, dims=[-1])
 
         return {
             "target_video": target_video,        # (T, 3, H, W)
-            "prev_frame": prev_frame,            # (3, H, W)
+            "prev_frame": prev_frame,            # (3, H, W) - t-1
+            "prev_prev_frame": prev_prev_frame,  # (3, H, W) - t-2
+            "has_prev_prev": has_prev_prev,       # bool
             "anchor_image": anchor_rgba,         # (4, anchor_size, anchor_size)
             "anchor_rgb": anchor_rgb,            # (3, 224, 224)
             "caption": full_text,                # str
@@ -275,6 +289,8 @@ class DirectorDataCollator:
         result = {
             "target_video": torch.stack([s["target_video"] for s in batch]),     # (B, T, 3, H, W)
             "prev_frame": torch.stack([s["prev_frame"] for s in batch]),         # (B, 3, H, W)
+            "prev_prev_frame": torch.stack([s["prev_prev_frame"] for s in batch]),  # (B, 3, H, W)
+            "has_prev_prev": torch.tensor([s["has_prev_prev"] for s in batch]),  # (B,)
             "anchor_image": torch.stack([s["anchor_image"] for s in batch]),     # (B, 4, Ha, Wa)
             "anchor_rgb": torch.stack([s["anchor_rgb"] for s in batch]),         # (B, 3, 224, 224)
             "captions": [s["caption"] for s in batch],

@@ -31,6 +31,7 @@ from transformers import CLIPVisionModel, CLIPImageProcessor
 class ContextConfig:
     """Configuration for context encoding modules."""
     local_token_count: int = 256
+    num_local_frames: int = 2       # number of previous frames (t-1, t-2) for two-shot context
     global_token_count: int = 64
     max_characters: int = 4
     context_dim: int = 1920
@@ -43,19 +44,21 @@ class ContextConfig:
 
 class LocalContextEncoder(nn.Module):
     """
-    Encodes the last frame of the previous shot into local context tokens
-    using the CogVideoX VAE encoder.
+    Encodes previous shot frames into local context tokens using the CogVideoX VAE.
 
-    The frame is encoded via VAE -> latent -> spatial flatten -> project to D-dim.
+    Supports two-shot local context (t-1, t-2) for cinematic continuity
+    (e.g., shot-reverse-shot patterns). Each frame produces `target_token_count`
+    tokens; total output is `num_frames * target_token_count` tokens.
 
-    Input: (B, 3, H, W) RGB frame in [0, 1]
-    Output: (B, N_local, D) local context tokens
+    Input: list of (B, 3, H, W) RGB frames in [0, 1]
+    Output: (B, num_frames * N_local, D) local context tokens
     """
 
     def __init__(
         self,
         vae: nn.Module,
         target_token_count: int = 256,
+        num_local_frames: int = 2,
         context_dim: int = 1920,
         vae_latent_channels: int = 16,
         vae_spatial_scale: int = 8,
@@ -64,6 +67,7 @@ class LocalContextEncoder(nn.Module):
         super().__init__()
         self.vae = vae
         self.target_token_count = target_token_count
+        self.num_local_frames = num_local_frames
         self.context_dim = context_dim
         self.vae_latent_channels = vae_latent_channels
         self.vae_spatial_scale = vae_spatial_scale
@@ -77,10 +81,13 @@ class LocalContextEncoder(nn.Module):
             num_layers=2,
         )
 
-        # Learnable positional embeddings for local tokens
+        # Per-frame positional embeddings (spatial)
         self.pos_embedding = nn.Parameter(
             torch.randn(1, target_token_count, context_dim) * 0.02
         )
+
+        # Temporal embeddings to distinguish t-1 vs t-2
+        self.temporal_embedding = nn.Embedding(num_local_frames, context_dim)
 
     @torch.no_grad()
     def encode_frame_to_latent(self, frame: torch.Tensor) -> torch.Tensor:
@@ -93,6 +100,8 @@ class LocalContextEncoder(nn.Module):
         Returns:
             latent: (B, C_latent, H_lat, W_lat) VAE latent
         """
+        # CogVideoX VAE expects [-1, 1] input
+        frame = frame * 2.0 - 1.0  # [0, 1] -> [-1, 1]
         # CogVideoX VAE expects (B, C, T, H, W) with T frames
         # For a single frame, T=1
         frame_5d = frame.unsqueeze(2)  # (B, 3, 1, H, W)
@@ -112,39 +121,25 @@ class LocalContextEncoder(nn.Module):
 
         return latent
 
-    def forward(
-        self,
-        frame: torch.Tensor,
-        precomputed_latent: Optional[torch.Tensor] = None,
-    ) -> torch.Tensor:
-        """
-        Args:
-            frame: (B, 3, H, W) RGB frame in [0, 1], or None if precomputed_latent given
-            precomputed_latent: (B, C_lat, H_lat, W_lat) optional pre-encoded latent
-
-        Returns:
-            local_tokens: (B, N_local, D) local context tokens
-        """
+    def _encode_single_frame(self, frame: Optional[torch.Tensor] = None,
+                             precomputed_latent: Optional[torch.Tensor] = None,
+                             temporal_idx: int = 0) -> torch.Tensor:
+        """Encode a single frame to local tokens with spatial + temporal embeddings."""
         if precomputed_latent is not None:
-            latent = precomputed_latent  # (B, C_lat, H_lat, W_lat)
+            latent = precomputed_latent
         else:
-            latent = self.encode_frame_to_latent(frame)  # (B, C_lat, H_lat, W_lat)
+            latent = self.encode_frame_to_latent(frame)
 
         B, C, H_lat, W_lat = latent.shape
-        num_spatial = H_lat * W_lat  # total spatial positions
+        num_spatial = H_lat * W_lat
 
-        # Reshape to (B, num_spatial, C)
         tokens = latent.flatten(2).transpose(1, 2)  # (B, H_lat*W_lat, C_lat)
 
         # Adaptive pooling if spatial count != target_token_count
         if num_spatial != self.target_token_count:
-            # Reshape to 2D for adaptive pooling
-            tokens_2d = latent  # (B, C, H_lat, W_lat)
-
-            # Compute target spatial dimensions
+            tokens_2d = latent
             target_h = int(math.sqrt(self.target_token_count * H_lat / W_lat))
             target_w = self.target_token_count // target_h
-            # Adjust to match exactly
             while target_h * target_w != self.target_token_count:
                 target_h += 1
                 target_w = self.target_token_count // target_h
@@ -152,19 +147,59 @@ class LocalContextEncoder(nn.Module):
                     target_h = self.target_token_count
                     target_w = 1
                     break
+            tokens_2d = F.adaptive_avg_pool2d(tokens_2d, (target_h, target_w))
+            tokens = tokens_2d.flatten(2).transpose(1, 2)
 
-            tokens_2d = F.adaptive_avg_pool2d(
-                tokens_2d, (target_h, target_w)
-            )  # (B, C, target_h, target_w)
-            tokens = tokens_2d.flatten(2).transpose(1, 2)  # (B, N_local, C)
-
-        # Project to context_dim
         local_tokens = self.projection(tokens)  # (B, N_local, D)
 
-        # Add positional embeddings
+        # Add spatial positional embeddings
         local_tokens = local_tokens + self.pos_embedding[:, :local_tokens.size(1)]
 
+        # Add temporal embedding to distinguish t-1 from t-2
+        temp_emb = self.temporal_embedding(
+            torch.tensor(temporal_idx, device=local_tokens.device)
+        )  # (D,)
+        local_tokens = local_tokens + temp_emb.unsqueeze(0).unsqueeze(0)
+
         return local_tokens
+
+    def forward(
+        self,
+        frames: Optional[List[torch.Tensor]] = None,
+        precomputed_latents: Optional[List[torch.Tensor]] = None,
+        # Legacy single-frame interface
+        frame: Optional[torch.Tensor] = None,
+        precomputed_latent: Optional[torch.Tensor] = None,
+    ) -> torch.Tensor:
+        """
+        Encode one or more previous frames into local context tokens.
+
+        Args:
+            frames: list of (B, 3, H, W) RGB frames [t-1, t-2, ...], newest first
+            precomputed_latents: list of (B, C_lat, H_lat, W_lat) pre-encoded latents
+            frame: (B, 3, H, W) single frame (legacy, treated as [frame])
+            precomputed_latent: single pre-encoded latent (legacy)
+
+        Returns:
+            local_tokens: (B, num_frames * N_local, D) concatenated local context tokens
+        """
+        # Normalize to list interface
+        if frames is None and frame is not None:
+            frames = [frame]
+        if precomputed_latents is None and precomputed_latent is not None:
+            precomputed_latents = [precomputed_latent]
+
+        all_tokens = []
+        num_inputs = len(frames) if frames is not None else (
+            len(precomputed_latents) if precomputed_latents is not None else 0
+        )
+
+        for i in range(num_inputs):
+            f = frames[i] if frames is not None else None
+            pl = precomputed_latents[i] if precomputed_latents is not None else None
+            all_tokens.append(self._encode_single_frame(f, pl, temporal_idx=i))
+
+        return torch.cat(all_tokens, dim=1)  # (B, num_frames * N_local, D)
 
 
 class GlobalContextEncoder(nn.Module):

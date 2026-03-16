@@ -299,10 +299,20 @@ class DirectorTrainer:
         # Move batch to device
         target_video = batch["target_video"].to(self.device, dtype=torch.float32)
         prev_frame = batch["prev_frame"].to(self.device, dtype=torch.float32)
+        prev_prev_frame = batch["prev_prev_frame"].to(self.device, dtype=torch.float32)
+        has_prev_prev = batch["has_prev_prev"]  # (B,) bool
         anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)
         captions = batch["captions"]
 
         B = target_video.shape[0]
+
+        # Build prev_frames list: always [t-1, t-2] with per-sample validity mask
+        prev_frames = [prev_frame, prev_prev_frame]
+        # local_frame_valid: (num_frames, B) — t-1 always valid, t-2 per-sample
+        local_frame_valid = torch.stack([
+            torch.ones(B, device=self.device),                           # t-1: always valid
+            has_prev_prev.float().to(self.device),                       # t-2: per-sample
+        ], dim=0)  # (2, B)
 
         with torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
             # 1. Encode target video through VAE to get latents X_1
@@ -318,14 +328,14 @@ class DirectorTrainer:
                 text_embeds = torch.cat(text_embeds_list, dim=0)  # (B, S, D_text)
 
             # 3. Encode context (local + global) with multi-context dropout
-            # anchor_rgb is (B, 3, 224, 224) — single character reference per sample
             char_list = [anchor_rgb]  # list of 1 character: [(B, 3, 224, 224)]
             char_mask = torch.ones(B, 1, device=self.device, dtype=torch.float32)
 
             unified_context, context_mask = self.pipeline.director_transformer.encode_context(
-                prev_frame=prev_frame,
+                prev_frames=prev_frames,
                 character_images=char_list,
                 character_masks=char_mask,
+                local_frame_valid=local_frame_valid,
             )  # (B, N_ctx, D), (B, N_ctx)
 
             # 4. Compute flow matching loss
@@ -375,9 +385,17 @@ class DirectorTrainer:
         for batch in self.val_loader:
             target_video = batch["target_video"].to(self.device, dtype=torch.float32)
             prev_frame = batch["prev_frame"].to(self.device, dtype=torch.float32)
+            prev_prev_frame = batch["prev_prev_frame"].to(self.device, dtype=torch.float32)
+            has_prev_prev = batch["has_prev_prev"]
             anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)
             captions = batch["captions"]
             B = target_video.shape[0]
+
+            prev_frames = [prev_frame, prev_prev_frame]
+            local_frame_valid = torch.stack([
+                torch.ones(B, device=self.device),
+                has_prev_prev.float().to(self.device),
+            ], dim=0)
 
             with torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
                 x_1 = self.pipeline.encode_video(target_video)
@@ -387,9 +405,10 @@ class DirectorTrainer:
                 char_list = [anchor_rgb]
                 char_mask = torch.ones(B, 1, device=self.device, dtype=torch.float32)
                 unified_context, context_mask = self.pipeline.director_transformer.encode_context(
-                    prev_frame=prev_frame,
+                    prev_frames=prev_frames,
                     character_images=char_list,
                     character_masks=char_mask,
+                    local_frame_valid=local_frame_valid,
                 )
 
                 loss_dict = self.pipeline.compute_flow_matching_loss(
@@ -533,6 +552,7 @@ def main():
         num_layers=model_cfg.get("num_layers", 30),
         context=ContextConfig(
             local_token_count=ctx_cfg.get("local_token_count", 256),
+            num_local_frames=ctx_cfg.get("num_local_frames", 2),
             global_token_count=ctx_cfg.get("global_token_count", 64),
             max_characters=ctx_cfg.get("max_characters", 4),
             context_dim=ctx_cfg.get("context_dim", 1920),

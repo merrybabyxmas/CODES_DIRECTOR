@@ -301,6 +301,7 @@ class DirectorTransformer(nn.Module):
         self.local_encoder = LocalContextEncoder(
             vae=vae,
             target_token_count=self.config.context.local_token_count,
+            num_local_frames=self.config.context.num_local_frames,
             context_dim=self.config.context.context_dim,
             vae_latent_channels=self.config.context.vae_latent_channels,
             vae_spatial_scale=self.config.context.vae_spatial_scale,
@@ -310,56 +311,101 @@ class DirectorTransformer(nn.Module):
         """Return only DIRECTOR-added parameters (backbone stays frozen)."""
         trainable = []
         if self.local_encoder is not None:
-            trainable.extend(self.local_encoder.parameters())
-        trainable.extend(self.global_encoder.parameters())
-        trainable.extend(self.context_builder.parameters())
-        trainable.extend(self.adapters.parameters())
+            trainable.extend(p for p in self.local_encoder.parameters() if p.requires_grad)
+        trainable.extend(p for p in self.global_encoder.parameters() if p.requires_grad)
+        trainable.extend(p for p in self.context_builder.parameters() if p.requires_grad)
+        trainable.extend(p for p in self.adapters.parameters() if p.requires_grad)
         return trainable
 
     # ----- context encoding (unchanged) -----
 
     def encode_context(
         self,
-        prev_frame: Optional[torch.Tensor] = None,
+        prev_frames: Optional[List[torch.Tensor]] = None,
         character_images: Optional[List[torch.Tensor]] = None,
         character_masks: Optional[torch.Tensor] = None,
+        precomputed_local_latents: Optional[List[torch.Tensor]] = None,
+        local_frame_valid: Optional[torch.Tensor] = None,
+        # Legacy single-frame interface
+        prev_frame: Optional[torch.Tensor] = None,
         precomputed_local_latent: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Encode local + global context into unified context tokens.
 
+        Args:
+            prev_frames: list of (B, 3, H, W) frames [t-1, t-2], newest first
+            local_frame_valid: (num_frames, B) per-sample validity for each frame.
+                               If None, all provided frames are assumed valid.
+            prev_frame: (B, 3, H, W) single frame (legacy, treated as [frame])
+
         Returns:
             unified_context: (B, N_total, D)
             unified_mask:    (B, N_total)
         """
+        # Normalize legacy single-frame args to list
+        if prev_frames is None and prev_frame is not None:
+            prev_frames = [prev_frame]
+        if precomputed_local_latents is None and precomputed_local_latent is not None:
+            precomputed_local_latents = [precomputed_local_latent]
+
         # Determine B and device from any available tensor
         ref = None
-        if prev_frame is not None:
-            ref = prev_frame
+        if prev_frames is not None and len(prev_frames) > 0:
+            ref = prev_frames[0]
         elif character_images is not None and len(character_images) > 0:
             ref = character_images[0]
-        elif precomputed_local_latent is not None:
-            ref = precomputed_local_latent
+        elif precomputed_local_latents is not None and len(precomputed_local_latents) > 0:
+            ref = precomputed_local_latents[0]
         elif character_masks is not None:
             ref = character_masks
 
         if ref is None:
-            # Fallback: null context for batch=1
             B, device = 1, next(self.parameters()).device
         else:
             B, device = ref.shape[0], ref.device
         dtype = torch.bfloat16
 
+        N_per_frame = self.config.context.local_token_count
+        N_l_total = N_per_frame * self.config.context.num_local_frames
+
         # Local context
-        if prev_frame is not None or precomputed_local_latent is not None:
+        has_local = (prev_frames is not None and len(prev_frames) > 0) or \
+                    (precomputed_local_latents is not None and len(precomputed_local_latents) > 0)
+        if has_local:
             local_tokens = self.local_encoder(
-                frame=prev_frame, precomputed_latent=precomputed_local_latent,
+                frames=prev_frames, precomputed_latents=precomputed_local_latents,
             )
-            local_mask = torch.ones(B, local_tokens.size(1), device=device, dtype=dtype)
+            num_encoded_frames = local_tokens.size(1) // N_per_frame
+
+            # Pad if fewer frames than num_local_frames
+            if local_tokens.size(1) < N_l_total:
+                pad_size = N_l_total - local_tokens.size(1)
+                pad = torch.zeros(B, pad_size, self.config.context.context_dim, device=device, dtype=dtype)
+                local_tokens = torch.cat([local_tokens, pad], dim=1)
+
+            # Build per-sample, per-frame mask
+            if local_frame_valid is not None:
+                # local_frame_valid: (num_frames, B) -> expand to (B, N_l_total)
+                mask_parts = []
+                for fi in range(self.config.context.num_local_frames):
+                    if fi < local_frame_valid.size(0):
+                        # (B,) -> (B, N_per_frame)
+                        frame_mask = local_frame_valid[fi].to(device=device, dtype=dtype).unsqueeze(1).expand(-1, N_per_frame)
+                    else:
+                        frame_mask = torch.zeros(B, N_per_frame, device=device, dtype=dtype)
+                    mask_parts.append(frame_mask)
+                local_mask = torch.cat(mask_parts, dim=1)  # (B, N_l_total)
+            else:
+                # All encoded frames valid, padding frames invalid
+                valid_tokens = num_encoded_frames * N_per_frame
+                local_mask = torch.cat([
+                    torch.ones(B, valid_tokens, device=device, dtype=dtype),
+                    torch.zeros(B, N_l_total - valid_tokens, device=device, dtype=dtype),
+                ], dim=1) if valid_tokens < N_l_total else torch.ones(B, N_l_total, device=device, dtype=dtype)
         else:
-            N_l = self.config.context.local_token_count
-            local_tokens = torch.zeros(B, N_l, self.config.context.context_dim, device=device, dtype=dtype)
-            local_mask = torch.zeros(B, N_l, device=device, dtype=dtype)
+            local_tokens = torch.zeros(B, N_l_total, self.config.context.context_dim, device=device, dtype=dtype)
+            local_mask = torch.zeros(B, N_l_total, device=device, dtype=dtype)
 
         # Global context
         if character_images is not None and len(character_images) > 0:
@@ -429,6 +475,18 @@ class DirectorTransformer(nn.Module):
         text_seq_length = encoder_hidden_states.shape[1]
         encoder_hidden_states = hidden_states[:, :text_seq_length]
         hidden_states = hidden_states[:, text_seq_length:]
+
+        # 2.5. Prepare 3D RoPE if needed and not provided
+        if image_rotary_emb is None:
+            if getattr(backbone.config, 'use_rotary_positional_embeddings', False):
+                p = backbone.config.patch_size
+                p_t = getattr(backbone.config, 'patch_size_t', None)
+                post_patch_h = height // p
+                post_patch_w = width // p
+                post_patch_t = (num_frames + (p_t - 1)) // p_t if p_t else num_frames
+                image_rotary_emb = backbone._prepare_rotary_positional_embeddings(
+                    post_patch_t, post_patch_h, post_patch_w, hidden_states.device, hidden_states.dtype,
+                )
 
         # 3. Transformer blocks + adapters
         for i, block in enumerate(backbone.transformer_blocks):
@@ -534,6 +592,7 @@ class DirectorPipeline:
     @torch.no_grad()
     def encode_video(self, video: torch.Tensor) -> torch.Tensor:
         """Encode video (B, T, 3, H, W) [0,1] → latents (B, T_lat, C, H_lat, W_lat)."""
+        video = video * 2.0 - 1.0  # [0, 1] -> [-1, 1] for CogVideoX VAE
         B, T, C, H, W = video.shape
         video = video.permute(0, 2, 1, 3, 4)  # (B, 3, T, H, W)
         posterior = self.vae.encode(video)
@@ -548,6 +607,7 @@ class DirectorPipeline:
         """Decode latents → video (B, T, 3, H, W) [0,1]."""
         latent = latent.permute(0, 2, 1, 3, 4) / self.vae.config.scaling_factor
         video = self.vae.decode(latent).sample
+        video = (video + 1.0) / 2.0  # [-1, 1] -> [0, 1]
         return video.permute(0, 2, 1, 3, 4).clamp(0, 1)
 
     def compute_flow_matching_loss(
@@ -614,7 +674,7 @@ class DirectorPipeline:
     def generate_shot(
         self,
         prompt: str,
-        prev_frame: Optional[torch.Tensor] = None,
+        prev_frames: Optional[List[torch.Tensor]] = None,
         character_images: Optional[List[torch.Tensor]] = None,
         character_masks: Optional[torch.Tensor] = None,
         omega_text: float = 6.0,
@@ -625,11 +685,17 @@ class DirectorPipeline:
         width: int = 720,
         num_frames: int = 49,
         generator: Optional[torch.Generator] = None,
+        # Legacy single-frame interface
+        prev_frame: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         """
         Single shot generation with Multi-CFG:
-          v_out = v_null + w_t*(v_text - v_null) + w_l*(v_local - v_null) + w_g*(v_global - v_null)
+          v_out = v_null + w_t*(v_text - v_null) + w_l*(v_local - v_text) + w_g*(v_glob - v_text)
         """
+        # Normalize legacy single-frame to list
+        if prev_frames is None and prev_frame is not None:
+            prev_frames = [prev_frame]
+
         self.director_transformer.eval()
         self.director_transformer.to(torch.bfloat16)
 
@@ -637,19 +703,16 @@ class DirectorPipeline:
         null_text_embeds = self.encode_text("")
 
         with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
-            ctx_full, mask_full = self.director_transformer.encode_context(
-                prev_frame=prev_frame, character_images=character_images,
-                character_masks=character_masks,
-            )
+            # Multi-CFG requires 3 decomposed context variants (no ctx_full needed)
             ctx_local, mask_local = self.director_transformer.encode_context(
-                prev_frame=prev_frame, character_images=None,
+                prev_frames=prev_frames, character_images=None,
             )
             ctx_global, mask_global = self.director_transformer.encode_context(
-                prev_frame=None, character_images=character_images,
+                prev_frames=None, character_images=character_images,
                 character_masks=character_masks,
             )
             ctx_null, mask_null = self.director_transformer.encode_context(
-                prev_frame=None, character_images=None,
+                prev_frames=None, character_images=None,
             )
 
         latent_h, latent_w = height // 8, width // 8
@@ -678,9 +741,9 @@ class DirectorPipeline:
                 v_glob  = fwd(text_embeds, ctx_global, mask_global)
 
             v_out = (v_null
-                     + omega_text  * (v_text  - v_null)
-                     + omega_local * (v_local - v_null)
-                     + omega_global* (v_glob  - v_null))
+                     + omega_text   * (v_text  - v_null)
+                     + omega_local  * (v_local - v_text)
+                     + omega_global * (v_glob  - v_text))
 
             x = x + dt * v_out
 
@@ -703,21 +766,28 @@ class DirectorPipeline:
     ) -> List[torch.Tensor]:
         """Autoregressive multi-shot generation with O(1) memory per shot."""
         all_shots = []
-        prev_frame = None
+        # Maintain last N frames for two-shot local context
+        num_local = self.config.context.num_local_frames
+        prev_last_frames: List[torch.Tensor] = []  # [t-1, t-2, ...] newest first
 
         for shot_idx, prompt in enumerate(prompts):
             gen = torch.Generator(device=self.device)
             gen.manual_seed(seed + shot_idx)
 
             video = self.generate_shot(
-                prompt=prompt, prev_frame=prev_frame,
+                prompt=prompt,
+                prev_frames=prev_last_frames if prev_last_frames else None,
                 character_images=character_images, character_masks=character_masks,
                 omega_text=omega_text, omega_local=omega_local, omega_global=omega_global,
                 num_steps=num_steps, height=height, width=width, num_frames=num_frames,
                 generator=gen,
             )
             all_shots.append(video)
-            prev_frame = video[:, -1]
+
+            # Update frame history (newest first, keep up to num_local)
+            prev_last_frames.insert(0, video[:, -1])
+            prev_last_frames = prev_last_frames[:num_local]
+
             torch.cuda.empty_cache()
 
         return all_shots

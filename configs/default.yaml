@@ -24,7 +24,8 @@ model:
 
   # DIRECTOR-specific
   context:
-    local_token_count: 256     # tokens from VAE encoding of last frame
+    local_token_count: 256     # tokens per frame from VAE encoding
+    num_local_frames: 2        # two-shot context: t-1 and t-2 (total 512 local tokens)
     global_token_count: 64     # tokens per character from CLIP
     max_characters: 4          # max character references
     context_dim: 1920          # must match inner_dim

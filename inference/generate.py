@@ -169,6 +169,7 @@ class DirectorInferencePipeline:
             num_layers=model_cfg.get("num_layers", 30),
             context=ContextConfig(
                 local_token_count=ctx_cfg.get("local_token_count", 256),
+                num_local_frames=ctx_cfg.get("num_local_frames", 2),
                 global_token_count=ctx_cfg.get("global_token_count", 64),
                 max_characters=ctx_cfg.get("max_characters", 4),
                 context_dim=ctx_cfg.get("context_dim", 1920),
@@ -226,7 +227,7 @@ class DirectorInferencePipeline:
     def generate_single_shot(
         self,
         prompt: str,
-        prev_frame: Optional[torch.Tensor] = None,
+        prev_frames: Optional[List[torch.Tensor]] = None,
         omega_text: Optional[float] = None,
         omega_local: Optional[float] = None,
         omega_global: Optional[float] = None,
@@ -235,13 +236,15 @@ class DirectorInferencePipeline:
         width: Optional[int] = None,
         num_frames: Optional[int] = None,
         seed: int = 42,
+        # Legacy
+        prev_frame: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         """
         Generate a single video shot.
 
         Args:
             prompt: text description
-            prev_frame: (1, 3, H, W) previous shot's last frame, or None for first shot
+            prev_frames: list of (1, 3, H, W) frames [t-1, t-2], newest first
             omega_*: guidance scales (use config defaults if None)
             num_steps: ODE solver steps
             height, width, num_frames: video dimensions
@@ -250,6 +253,9 @@ class DirectorInferencePipeline:
         Returns:
             video: (1, T, 3, H, W) generated video in [0, 1]
         """
+        if prev_frames is None and prev_frame is not None:
+            prev_frames = [prev_frame]
+
         omega_text = omega_text or self.guidance_cfg.get("omega_text", 6.0)
         omega_local = omega_local or self.guidance_cfg.get("omega_local", 2.0)
         omega_global = omega_global or self.guidance_cfg.get("omega_global", 3.0)
@@ -266,7 +272,7 @@ class DirectorInferencePipeline:
 
         video = self.pipeline.generate_shot(
             prompt=prompt,
-            prev_frame=prev_frame,
+            prev_frames=prev_frames,
             character_images=char_images if any(m > 0 for m in char_mask[0]) else None,
             character_masks=char_mask,
             omega_text=omega_text,
@@ -324,7 +330,8 @@ class DirectorInferencePipeline:
             save_path.mkdir(parents=True, exist_ok=True)
 
         all_shots = []
-        prev_frame = None
+        prev_last_frames: List[torch.Tensor] = []  # [t-1, t-2] newest first
+        num_local = self.ar_cfg.get("num_local_frames", 2)
         total_time = 0.0
 
         for shot_idx, prompt in enumerate(shot_prompts):
@@ -334,7 +341,7 @@ class DirectorInferencePipeline:
 
             video = self.generate_single_shot(
                 prompt=prompt,
-                prev_frame=prev_frame,
+                prev_frames=prev_last_frames if prev_last_frames else None,
                 omega_text=omega_text,
                 omega_local=omega_local,
                 omega_global=omega_global,
@@ -351,8 +358,9 @@ class DirectorInferencePipeline:
 
             all_shots.append(video)
 
-            # Extract last frame for next shot (O(1) memory)
-            prev_frame = video[:, -1].clone()  # (1, 3, H, W)
+            # Update frame history (newest first, O(1) memory)
+            prev_last_frames.insert(0, video[:, -1].clone())
+            prev_last_frames = prev_last_frames[:num_local]
 
             # Save individual shot
             if save_dir:
