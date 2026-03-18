@@ -397,7 +397,8 @@ def main():
                 last_frame = ar_decode_last_frame(
                     pipeline, transformer, shot_latents[-1], device
                 )
-                prev_frames_ar = [last_frame.to(device)]
+                prev_frames_ar.insert(0, last_frame.to(device))
+                prev_frames_ar = prev_frames_ar[:2]  # Keep max 2 frames (t-1, t-2)
             print("done")
 
         scenarios[f"zoom_{cfg_name}"] = shot_latents
@@ -466,7 +467,8 @@ def main():
                 last_frame = ar_decode_last_frame(
                     pipeline, transformer, shot_latents[-1], device
                 )
-                prev_frames_ar = [last_frame.to(device)]
+                prev_frames_ar.insert(0, last_frame.to(device))
+                prev_frames_ar = prev_frames_ar[:2]  # Keep max 2 frames (t-1, t-2)
             print("done")
 
         scenarios[f"entity_{cfg_name}"] = shot_latents
@@ -520,7 +522,8 @@ def main():
                 last_frame = ar_decode_last_frame(
                     pipeline, transformer, shot_latents[-1], device
                 )
-                prev_frames_ar = [last_frame.to(device)]
+                prev_frames_ar.insert(0, last_frame.to(device))
+                prev_frames_ar = prev_frames_ar[:2]  # Keep max 2 frames (t-1, t-2)
             print("done")
 
         scenarios[f"baseline_{cfg_name}"] = shot_latents
