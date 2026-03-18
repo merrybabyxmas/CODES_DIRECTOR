@@ -1,0 +1,29 @@
+{
+  "checkpoint": "checkpoints/checkpoint_step_52000.pt",
+  "loaded_step": 52000,
+  "resolution": "512x320",
+  "num_frames_per_shot": 49,
+  "num_shots": 3,
+  "num_steps": 20,
+  "seed": 42,
+  "guidance": {
+    "omega_text": 6.0,
+    "omega_local": 2.0,
+    "omega_global": 3.0
+  },
+  "scenarios": {
+    "zoom": {
+      "sample": "seq_00485",
+      "caption": "{'gender': 'male', 'clothing': 'dark clothing', 'appearance': 'dark figure'} {'camera': 'zoom-in', 'person': 'standing', 'interaction': 'with environment'}"
+    },
+    "entity": {
+      "sample": "seq_01679",
+      "caption": "{'gender': 'male', 'clothing': 'white t-shirt with black bow-tie graphic', 'appearance': 'standing indoors, wearing a helmet'} {'camera': 'static', 'person': 'standing', 'interaction': 'looking direct",
+      "n_characters": 4
+    },
+    "baseline": {
+      "sample": "seq_01679",
+      "caption": "{'gender': 'male', 'clothing': 'white t-shirt with black bow-tie graphic', 'appearance': 'standing indoors, wearing a helmet'} {'camera': 'static', 'person': 'standing', 'interaction': 'looking direct"
+    }
+  }
+}

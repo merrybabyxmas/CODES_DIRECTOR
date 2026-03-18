@@ -100,7 +100,9 @@ training:
   # Optimization
   optimizer:
     type: "adamw"
-    lr: 1.0e-5
+    lr: 1.0e-5              # encoder (local/global/context_builder) LR
+    adapter_lr: 5.0e-5       # adapter cross-attention LR (5x base)
+    gate_lr: 1.0e-3          # gate parameter LR (100x base — kick gates open)
     weight_decay: 0.01
     betas: [0.9, 0.999]
     eps: 1.0e-8
@@ -111,9 +113,9 @@ training:
     min_lr_ratio: 0.1
 
   # Training loop
-  num_epochs: 50
+  num_epochs: 200
   max_steps: 100000
-  gradient_accumulation_steps: 4
+  gradient_accumulation_steps: 1  # 4-GPU DDP: 4 GPUs × accum 1 = effective batch 4 (same as single-GPU × accum 4)
   max_grad_norm: 1.0
 
   # Precision
@@ -136,7 +138,7 @@ training:
 
   # Checkpointing
   checkpoint:
-    save_every_steps: 5000
+    save_every_steps: 2000
     save_dir: "checkpoints"
     keep_last_n: 3
     save_best: true
@@ -147,6 +149,16 @@ training:
     log_every_steps: 50
     tensorboard_dir: "logs/tensorboard"
     log_grad_norm: true
+
+  # Sample generation (visual monitoring during training)
+  sample_generation:
+    every_steps: 2000            # generate samples every N steps
+    ablation_every_steps: 10000  # Multi-CFG ablation comparison every N steps
+    multishot_every_steps: 10000 # Multi-shot autoregressive ablation every N steps
+    multishot_num_shots: 2       # number of shots in multi-shot sequence
+    num_steps: 20                # ODE solver steps (fewer = faster, lower quality)
+    num_frames_to_log: 8         # number of frames in TensorBoard grid
+    save_dir: "samples"          # directory for saved MP4s
 
   # LoRA (optional fine-tuning mode)
   lora:

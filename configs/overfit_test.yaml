@@ -1,0 +1,117 @@
+# =============================================================================
+# DIRECTOR: 1-sample overfit test
+# Verifies that the diffusion loss is correctly implemented by overfitting
+# on a single training example. Loss should drop to ~0.000x by step 500.
+# =============================================================================
+
+seed: 42
+cuda_device: 1  # Use GPU 1 for testing
+
+# --- Model (same as default) ---
+model:
+  backbone: "THUDM/CogVideoX-2b"
+  inner_dim: 1920
+  text_embed_dim: 4096
+  num_heads: 30
+  head_dim: 64
+  num_layers: 30
+  max_text_seq_length: 226
+  patch_size: 2
+  vae_latent_channels: 16
+  vae_spatial_scale: 8
+  vae_temporal_compression: 4
+  vae_scaling_factor: 1.15258426
+
+  context:
+    local_token_count: 256
+    num_local_frames: 2
+    global_token_count: 64
+    max_characters: 4
+    context_dim: 1920
+    clip_vision_dim: 1024
+    local_proj_dim: 1920
+    global_proj_dim: 1920
+    clip_model: "openai/clip-vit-large-patch14"
+
+  # NO dropout for overfit test
+  dropout:
+    drop_global_prob: 0.0
+    drop_local_prob: 0.0
+    keep_both_prob: 1.0
+
+  attention:
+    inject_layers: "all"
+    context_gate_init: 0.0
+
+# --- Dataset ---
+dataset:
+  dataset_dir: "data/processed_dataset"
+  video:
+    num_frames: 49
+    fps: 8
+    height: 480
+    width: 720
+    latent_height: 60
+    latent_width: 90
+    latent_frames: 13
+  captioning:
+    model: "llava"
+    max_caption_length: 200
+  dataloader:
+    batch_size: 1
+    num_workers: 0    # no workers for single-sample overfit
+    pin_memory: true
+    prefetch_factor: 2
+
+# --- Training ---
+training:
+  optimizer:
+    type: "adamw"
+    lr: 5.0e-4           # High LR for fast overfit
+    adapter_lr: 5.0e-4   # Same high LR
+    gate_lr: 5.0e-3      # High gate LR
+    weight_decay: 0.0    # No regularization
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "cosine"
+    warmup_steps: 0      # No warmup
+    min_lr_ratio: 1.0    # Constant LR
+
+  num_epochs: 9999
+  max_steps: 500
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+
+  mixed_precision: "bf16"
+  gradient_checkpointing: true
+
+  train_height: 320
+  train_width: 512
+  train_frames: 13
+
+  flow_matching:
+    sigma_min: 0.001
+    time_sampling: "logit_normal"
+    logit_normal_mean: 0.0
+    logit_normal_std: 1.0
+
+  checkpoint:
+    save_every_steps: 100
+    save_dir: "checkpoints_overfit"
+    keep_last_n: 2
+    save_best: true
+    best_metric: "loss"
+
+  logging:
+    log_every_steps: 10
+    tensorboard_dir: "logs/tensorboard_overfit"
+
+  sample_generation:
+    sample_every_steps: 100
+    ablation_every_steps: 500
+
+  # DDP settings
+  ddp:
+    enabled: false

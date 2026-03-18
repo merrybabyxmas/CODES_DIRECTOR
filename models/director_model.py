@@ -33,6 +33,7 @@ from .context_encoder import (
     LocalContextEncoder,
     UnifiedContextBuilder,
 )
+from .diffusion_algorithm import DiffusionAlgorithm, create_diffusion_algorithm
 
 
 @dataclass
@@ -317,6 +318,31 @@ class DirectorTransformer(nn.Module):
         trainable.extend(p for p in self.adapters.parameters() if p.requires_grad)
         return trainable
 
+    def get_trainable_param_groups(self) -> dict:
+        """Return parameters grouped by role for separate LR scheduling."""
+        encoder_params = []
+        if self.local_encoder is not None:
+            encoder_params.extend(p for p in self.local_encoder.parameters() if p.requires_grad)
+        encoder_params.extend(p for p in self.global_encoder.parameters() if p.requires_grad)
+        encoder_params.extend(p for p in self.context_builder.parameters() if p.requires_grad)
+
+        adapter_params = []
+        gate_params = []
+        for key, adapter in self.adapters.items():
+            for name, p in adapter.named_parameters():
+                if not p.requires_grad:
+                    continue
+                if name == "gate":
+                    gate_params.append(p)
+                else:
+                    adapter_params.append(p)
+
+        return {
+            "encoder": encoder_params,
+            "adapter": adapter_params,
+            "gate": gate_params,
+        }
+
     # ----- context encoding (unchanged) -----
 
     def encode_context(
@@ -580,6 +606,9 @@ class DirectorPipeline:
         self.tokenizer = self.base_pipeline.tokenizer
         self.scheduler = self.base_pipeline.scheduler
 
+        # Backbone-agnostic diffusion algorithm wrapper
+        self.diffusion = create_diffusion_algorithm(config.backbone, scheduler=self.scheduler)
+
     @torch.no_grad()
     def encode_text(self, prompt: str, max_length: int = 226) -> torch.Tensor:
         """Encode text prompt via T5.  Returns (1, S, 4096)."""
@@ -622,31 +651,27 @@ class DirectorPipeline:
         logit_normal_std: float = 1.0,
     ) -> Dict[str, torch.Tensor]:
         """
-        Flow matching loss:
-          L = E ||v_theta(X_t, t, ...) - (X_1 - X_0)||^2
-          X_t = t*X_1 + (1-t)*X_0,  X_0 ~ N(0,I)
+        Backbone-agnostic diffusion loss via self.diffusion wrapper.
+
+        For CogVideoX: DDPM v-prediction using scheduler.add_noise/get_velocity
+        For WanVideo:  Flow matching velocity loss (v = x_1 - x_0)
         """
         B = x_1.shape[0]
-        device, dtype = x_1.device, x_1.dtype
+        device = x_1.device
 
-        x_0 = torch.randn_like(x_1)
+        noise = torch.randn_like(x_1)
 
-        # Sample timestep
-        if time_sampling == "logit_normal":
-            u = torch.randn(B, device=device, dtype=dtype) * logit_normal_std + logit_normal_mean
-            t = torch.sigmoid(u)
-        else:
-            t = torch.rand(B, device=device, dtype=dtype)
+        timestep = self.diffusion.sample_timesteps(
+            B, device, sampling=time_sampling,
+            sigma_min=sigma_min,
+            logit_normal_mean=logit_normal_mean,
+            logit_normal_std=logit_normal_std,
+        )
 
-        t = t.clamp(sigma_min, 1.0 - sigma_min)
-        t_exp = t.view(B, 1, 1, 1, 1)
+        x_t = self.diffusion.add_noise(x_1, noise, timestep)
+        target = self.diffusion.get_target(x_1, noise, timestep)
 
-        x_t = t_exp * x_1 + (1.0 - t_exp) * x_0
-        v_target = x_1 - x_0
-
-        timestep = (t * 1000.0).long()
-
-        v_pred = self.director_transformer(
+        pred = self.director_transformer(
             hidden_states=x_t,
             encoder_hidden_states=text_embeds,
             timestep=timestep,
@@ -655,17 +680,17 @@ class DirectorPipeline:
             return_dict=False,
         )[0]
 
-        loss = F.mse_loss(v_pred, v_target, reduction="mean")
+        loss = self.diffusion.compute_loss(pred, target)
 
         with torch.no_grad():
-            pred_norm = v_pred.flatten(1).norm(dim=1).mean()
-            target_norm = v_target.flatten(1).norm(dim=1).mean()
+            pred_norm = pred.flatten(1).norm(dim=1).mean()
+            target_norm = target.flatten(1).norm(dim=1).mean()
 
         return {
             "loss": loss,
             "pred_norm": pred_norm,
             "target_norm": target_norm,
-            "timestep_mean": t.mean(),
+            "timestep_mean": timestep.float().mean(),
         }
 
     # ----- Inference -----
@@ -689,7 +714,8 @@ class DirectorPipeline:
         prev_frame: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         """
-        Single shot generation with Multi-CFG:
+        Single shot generation with Multi-CFG via backbone-agnostic diffusion wrapper.
+
           v_out = v_null + w_t*(v_text - v_null) + w_l*(v_local - v_text) + w_g*(v_glob - v_text)
         """
         # Normalize legacy single-frame to list
@@ -703,7 +729,6 @@ class DirectorPipeline:
         null_text_embeds = self.encode_text("")
 
         with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
-            # Multi-CFG requires 3 decomposed context variants (no ctx_full needed)
             ctx_local, mask_local = self.director_transformer.encode_context(
                 prev_frames=prev_frames, character_images=None,
             )
@@ -719,19 +744,21 @@ class DirectorPipeline:
         latent_t = (num_frames - 1) // 4 + 1
         latent_c = self.vae.config.latent_channels
 
-        x = torch.randn(
+        latents = torch.randn(
             1, latent_t, latent_c, latent_h, latent_w,
             device=self.device, dtype=torch.bfloat16, generator=generator,
         )
 
-        dt = 1.0 / num_steps
-        for step in range(num_steps):
-            t_val = step * dt
-            t_tensor = torch.tensor([t_val * 1000.0], device=self.device, dtype=torch.long)
+        # Backbone-agnostic inference loop
+        timesteps = self.diffusion.prepare_inference(num_steps, self.device)
+
+        state = None
+        for i, t in enumerate(timesteps):
+            t_tensor = t.expand(1)
 
             with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
                 fwd = lambda te, ctx, msk: self.director_transformer(
-                    hidden_states=x, encoder_hidden_states=te, timestep=t_tensor,
+                    hidden_states=latents, encoder_hidden_states=te, timestep=t_tensor,
                     unified_context=ctx, context_mask=msk, return_dict=False,
                 )[0]
 
@@ -745,9 +772,13 @@ class DirectorPipeline:
                      + omega_local  * (v_local - v_text)
                      + omega_global * (v_glob  - v_text))
 
-            x = x + dt * v_out
+            step_out = self.diffusion.inference_step(
+                v_out, latents, t, i, timesteps, state=state,
+            )
+            latents = step_out.latents
+            state = step_out.state
 
-        return self.decode_latent(x)
+        return self.decode_latent(latents)
 
     @torch.no_grad()
     def generate_multi_shot(
