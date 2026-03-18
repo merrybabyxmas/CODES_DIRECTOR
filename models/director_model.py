@@ -736,9 +736,9 @@ class DirectorPipeline:
                 prev_frames=None, character_images=character_images,
                 character_masks=character_masks,
             )
-            ctx_null, mask_null = self.director_transformer.encode_context(
-                prev_frames=None, character_images=None,
-            )
+            # Null context: pass None to skip adapters entirely (avoids NaN
+            # from all-zero mask → all -inf attention → softmax 0/0)
+            ctx_null, mask_null = None, None
 
         latent_h, latent_w = height // 8, width // 8
         latent_t = (num_frames - 1) // 4 + 1

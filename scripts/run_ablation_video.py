@@ -119,9 +119,8 @@ def generate_shot_single_cfg(
                 character_images=character_images,
                 character_masks=character_masks,
             )
-            ctx_null, mask_null = transformer.encode_context(
-                prev_frames=None, character_images=None,
-            )
+            # Null context: pass None to skip adapters (avoids NaN from all-zero mask)
+            ctx_null, mask_null = None, None
 
         latent_h, latent_w = height // 8, width // 8
         latent_t = (num_frames - 1) // 4 + 1
@@ -146,7 +145,7 @@ def generate_shot_single_cfg(
             with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
                 v_null = transformer(
                     hidden_states=x, encoder_hidden_states=null_text_embeds, timestep=t_tensor,
-                    unified_context=ctx_null, context_mask=mask_null, return_dict=False,
+                    unified_context=None, context_mask=None, return_dict=False,
                 )[0]
                 v_cond = transformer(
                     hidden_states=x, encoder_hidden_states=text_embeds, timestep=t_tensor,
@@ -161,7 +160,7 @@ def generate_shot_single_cfg(
             x = step_out.latents
             state = step_out.state
 
-        del text_embeds, null_text_embeds, ctx_cond, mask_cond, ctx_null, mask_null
+        del text_embeds, null_text_embeds, ctx_cond, mask_cond
         torch.cuda.empty_cache()
         return x  # Return latent, decode later
 
@@ -195,9 +194,7 @@ def generate_shot_multi_cfg(
                 prev_frames=None, character_images=character_images,
                 character_masks=character_masks,
             )
-            ctx_null, mask_null = transformer.encode_context(
-                prev_frames=None, character_images=None,
-            )
+            # Null context: pass None to skip adapters (avoids NaN from all-zero mask)
 
         latent_h, latent_w = height // 8, width // 8
         latent_t = (num_frames - 1) // 4 + 1
@@ -223,8 +220,8 @@ def generate_shot_multi_cfg(
                     unified_context=ctx, context_mask=msk, return_dict=False,
                 )[0]
 
-                v_null = fwd(null_text_embeds, ctx_null, mask_null)
-                v_text = fwd(text_embeds, ctx_null, mask_null)
+                v_null = fwd(null_text_embeds, None, None)
+                v_text = fwd(text_embeds, None, None)
                 v_local = fwd(text_embeds, ctx_local, mask_local)
                 v_glob = fwd(text_embeds, ctx_global, mask_global)
 
@@ -240,7 +237,7 @@ def generate_shot_multi_cfg(
             state = step_out.state
 
         del text_embeds, null_text_embeds
-        del ctx_local, mask_local, ctx_global, mask_global, ctx_null, mask_null
+        del ctx_local, mask_local, ctx_global, mask_global
         torch.cuda.empty_cache()
         return x
 

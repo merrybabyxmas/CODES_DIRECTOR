@@ -936,9 +936,7 @@ class DirectorTrainer:
                     character_images=char_list,
                     character_masks=char_mask,
                 )
-                ctx_null, mask_null = transformer.encode_context(
-                    prev_frames=None, character_images=None,
-                )
+                # Null context: pass None to skip adapters (avoids NaN from all-zero mask)
 
                 # Initial noise
                 gen = torch.Generator(device=self.device)
@@ -955,7 +953,7 @@ class DirectorTrainer:
                     t_tensor = t.expand(1)
                     v_null = transformer(
                         hidden_states=x, encoder_hidden_states=null_text_embeds, timestep=t_tensor,
-                        unified_context=ctx_null, context_mask=mask_null, return_dict=False,
+                        unified_context=None, context_mask=None, return_dict=False,
                     )[0]
                     v_cond = transformer(
                         hidden_states=x, encoder_hidden_states=text_embeds, timestep=t_tensor,
@@ -967,7 +965,7 @@ class DirectorTrainer:
                     state = step_out.state
 
                 shot_latents_cpu.append(x.cpu())
-                del x, ctx_cond, mask_cond, ctx_null, mask_null
+                del x, ctx_cond, mask_cond
                 torch.cuda.empty_cache()
 
             # Decode last frame for next shot's prev_frame (if not last shot)
