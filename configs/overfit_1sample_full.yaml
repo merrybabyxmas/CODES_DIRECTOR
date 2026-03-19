@@ -1,15 +1,16 @@
 # =============================================================================
-# DIRECTOR: Single-Batch Overfitting Test (SpongeBob 5-shot)
-# Verifies architecture integrity: loss → ~0.000x by step 500.
-# Tests: local context, global context, zoom-in, cross-cut, multi-character
+# DIRECTOR: Single-Sample Overfitting Test — ALL 30 blocks unfrozen
+# 8-bit AdamW to fit full backbone optimizer states in GPU memory
 # =============================================================================
 
 seed: 42
 cuda_device: 0  # Use with CUDA_VISIBLE_DEVICES=3
 
-# --- Model (same as default) ---
+# --- Model ---
 model:
   backbone: "THUDM/CogVideoX-2b"
+  freeze_backbone: true
+  unfreeze_backbone_last_n: 30  # ALL 30 blocks unfrozen
   inner_dim: 1920
   text_embed_dim: 4096
   num_heads: 30
@@ -33,7 +34,7 @@ model:
     global_proj_dim: 1920
     clip_model: "openai/clip-vit-large-patch14"
 
-  # NO dropout for overfit test
+  # NO dropout
   dropout:
     drop_global_prob: 0.0
     drop_local_prob: 0.0
@@ -42,10 +43,11 @@ model:
   attention:
     inject_layers: "all"
     context_gate_init: 0.0
+    adapter_init_gain: 0.01
 
-# --- Dataset ---
+# --- Dataset (1 sample only) ---
 dataset:
-  dataset_dir: "data/overfit_dataset"
+  dataset_dir: "data/overfit_1sample"
   video:
     num_frames: 49
     fps: 8
@@ -59,28 +61,29 @@ dataset:
     max_caption_length: 200
   dataloader:
     batch_size: 1
-    num_workers: 0    # no workers for single-sample overfit
+    num_workers: 0
     pin_memory: true
     prefetch_factor: 2
 
 # --- Training ---
 training:
   optimizer:
-    type: "adamw"
-    lr: 5.0e-4           # High LR for fast overfit
-    adapter_lr: 2.5e-3   # 5x encoder LR for fast adapter convergence
-    gate_lr: 5.0e-2      # High gate LR to kick gates open fast
-    weight_decay: 0.0    # No regularization
+    type: "adamw8bit"          # 8-bit optimizer to fit full backbone
+    lr: 1.0e-4
+    adapter_lr: 5.0e-4
+    gate_lr: 1.0e-2
+    backbone_lr: 1.0e-4       # More aggressive backbone LR
+    weight_decay: 0.0
     betas: [0.9, 0.999]
     eps: 1.0e-8
 
   scheduler:
     type: "cosine"
-    warmup_steps: 0      # No warmup
-    min_lr_ratio: 1.0    # Constant LR
+    warmup_steps: 0
+    min_lr_ratio: 1.0          # Constant LR
 
   num_epochs: 9999
-  max_steps: 1000
+  max_steps: 5000
   gradient_accumulation_steps: 1
   max_grad_norm: 1.0
 
@@ -93,26 +96,24 @@ training:
 
   flow_matching:
     sigma_min: 0.001
-    time_sampling: "logit_normal"
-    logit_normal_mean: 0.0
-    logit_normal_std: 1.0
+    time_sampling: "uniform"         # Uniform: equal weight on ALL timesteps (critical for overfit)
 
   checkpoint:
-    save_every_steps: 100
-    save_dir: "checkpoints_overfit"
-    keep_last_n: 2
+    save_every_steps: 200
+    save_dir: "checkpoints_overfit_full"
+    keep_last_n: 3
     save_best: true
     best_metric: "loss"
 
   logging:
     log_every_steps: 10
-    tensorboard_dir: "logs/overfit_test"
+    tensorboard_dir: "logs/overfit_1sample_full"
     log_grad_norm: true
 
   sample_generation:
-    every_steps: 999999
+    every_steps: 500
     ablation_every_steps: 999999
     multishot_every_steps: 999999
-    num_steps: 20
+    num_steps: 50
     num_frames_to_log: 8
-    save_dir: "samples/overfit_test"
+    save_dir: "samples/overfit_1sample_full"

@@ -147,20 +147,24 @@ class DirectorTrainer:
         gate_lr = opt_cfg.get("gate_lr", adapter_lr)
 
         param_groups_dict = self.pipeline.director_transformer.get_trainable_param_groups()
+        backbone_lr = opt_cfg.get("backbone_lr", base_lr * 0.1)
         self.trainable_params = (
             param_groups_dict["encoder"]
             + param_groups_dict["adapter"]
             + param_groups_dict["gate"]
+            + param_groups_dict.get("backbone", [])
         )
         total_params = sum(p.numel() for p in self.trainable_params)
         enc_count = sum(p.numel() for p in param_groups_dict["encoder"])
         adp_count = sum(p.numel() for p in param_groups_dict["adapter"])
         gate_count = sum(p.numel() for p in param_groups_dict["gate"])
+        backbone_count = sum(p.numel() for p in param_groups_dict.get("backbone", []))
         logger.info(
             f"Trainable parameters: {total_params:,} ({total_params / 1e6:.2f}M) "
-            f"[encoder={enc_count:,}, adapter={adp_count:,}, gate={gate_count:,}]"
+            f"[encoder={enc_count:,}, adapter={adp_count:,}, gate={gate_count:,}, backbone={backbone_count:,}]"
         )
-        logger.info(f"LR: encoder={base_lr:.1e}, adapter={adapter_lr:.1e}, gate={gate_lr:.1e}")
+        logger.info(f"LR: encoder={base_lr:.1e}, adapter={adapter_lr:.1e}, gate={gate_lr:.1e}"
+                     + (f", backbone={backbone_lr:.1e}" if backbone_count > 0 else ""))
 
         # Optimizer with separate param groups
         param_groups = []
@@ -170,14 +174,22 @@ class DirectorTrainer:
             param_groups.append({"params": param_groups_dict["adapter"], "lr": adapter_lr})
         if param_groups_dict["gate"]:
             param_groups.append({"params": param_groups_dict["gate"], "lr": gate_lr, "weight_decay": 0.0})
+        if param_groups_dict.get("backbone"):
+            param_groups.append({"params": param_groups_dict["backbone"], "lr": backbone_lr})
 
-        self.optimizer = torch.optim.AdamW(
-            param_groups,
+        opt_type = opt_cfg.get("type", "adamw")
+        opt_kwargs = dict(
             lr=base_lr,
             weight_decay=opt_cfg.get("weight_decay", 0.01),
             betas=tuple(opt_cfg.get("betas", [0.9, 0.999])),
             eps=opt_cfg.get("eps", 1e-8),
         )
+        if opt_type == "adamw8bit":
+            import bitsandbytes as bnb
+            self.optimizer = bnb.optim.AdamW8bit(param_groups, **opt_kwargs)
+            logger.info("Using 8-bit AdamW (bitsandbytes)")
+        else:
+            self.optimizer = torch.optim.AdamW(param_groups, **opt_kwargs)
 
         # Scheduler
         sched_cfg = train_cfg.get("scheduler", {})
@@ -354,6 +366,12 @@ class DirectorTrainer:
                     f"grad_norm={gn_str}{gate_str}"
                 )
                 self.running_loss = 0.0
+
+                # Save best based on train loss if no val loader
+                if self.save_best and self.val_loader is None and avg_loss < self.best_metric_val:
+                    self.best_metric_val = avg_loss
+                    self._save_checkpoint("best")
+                    logger.info(f"New best model (train): loss={avg_loss:.6f}")
 
             # Periodic checkpoint (main process only)
             if self.global_step % self.save_every == 0 and self.global_step > 0 and self.is_main_process:
@@ -960,8 +978,10 @@ class DirectorTrainer:
                         unified_context=ctx_cond, context_mask=mask_cond, return_dict=False,
                     )[0]
                     v_out = v_null + guidance_scale * (v_cond - v_null)
-                    step_out = diffusion.inference_step(v_out, x, t, i, timesteps, state=state)
-                    x = step_out.latents
+                    # Cast to float32 for numerical precision in scheduler step
+                    v_out = v_out.float()
+                    step_out = diffusion.inference_step(v_out, x.float(), t, i, timesteps, state=state)
+                    x = step_out.latents.to(torch.bfloat16)
                     state = step_out.state
 
                 shot_latents_cpu.append(x.cpu())
@@ -1113,6 +1133,22 @@ class DirectorTrainer:
                 if "vae" not in k  # Don't save frozen VAE weights
             }
 
+        # Save backbone trainable params (when partially/fully unfrozen)
+        backbone_trainable = {
+            k: v for k, v in t.backbone.state_dict().items()
+            if any(p.requires_grad and p.data_ptr() == v.data_ptr()
+                   for p in t.backbone.parameters())
+        }
+        if not backbone_trainable:
+            # Fallback: check by matching named_parameters with requires_grad
+            trainable_names = {n for n, p in t.backbone.named_parameters() if p.requires_grad}
+            backbone_trainable = {
+                k: v for k, v in t.backbone.state_dict().items()
+                if k in trainable_names
+            }
+        if backbone_trainable:
+            state["backbone"] = backbone_trainable
+
         torch.save(state, ckpt_path)
         logger.info(f"Saved checkpoint: {ckpt_path}")
 
@@ -1125,13 +1161,19 @@ class DirectorTrainer:
                     old.unlink()
                     logger.info(f"Removed old checkpoint: {old}")
 
-    def load_checkpoint(self, path: str):
-        """Load a training checkpoint (DDP-agnostic: checkpoints are always unwrapped)."""
+    def load_checkpoint(self, path: str, weights_only: bool = False):
+        """Load a training checkpoint (DDP-agnostic: checkpoints are always unwrapped).
+
+        Args:
+            weights_only: If True, only load model weights (skip optimizer/scheduler/step).
+                         Useful when changing LR config mid-training.
+        """
         state = torch.load(path, map_location=self.device)
 
-        self.global_step = state["global_step"]
-        self.epoch = state["epoch"]
-        self.best_metric_val = state.get("best_metric_val", float("inf"))
+        if not weights_only:
+            self.global_step = state["global_step"]
+            self.epoch = state["epoch"]
+            self.best_metric_val = state.get("best_metric_val", float("inf"))
 
         # Use unwrapped transformer for loading (checkpoints saved without DDP prefix)
         t = self._transformer
@@ -1148,6 +1190,17 @@ class DirectorTrainer:
             missing, unexpected = t.local_encoder.load_state_dict(
                 state["local_encoder"], strict=False
             )
+
+        # Load backbone trainable params (when partially/fully unfrozen)
+        if "backbone" in state:
+            missing, unexpected = t.backbone.load_state_dict(
+                state["backbone"], strict=False
+            )
+            logger.info(f"Loaded backbone params: {len(state['backbone'])} keys")
+
+        if weights_only:
+            logger.info(f"Loaded model weights only from {path} (skipping optimizer/scheduler/step)")
+            return
 
         # Load optimizer state — skip if param groups changed (e.g., added separate LR groups)
         old_n_groups = len(state["optimizer"]["param_groups"])
@@ -1210,6 +1263,9 @@ def _build_pipeline_and_config(config):
         drop_local_prob=dropout_cfg.get("drop_local_prob", 0.10),
         inject_layers=model_cfg.get("attention", {}).get("inject_layers", "all"),
         context_gate_init=model_cfg.get("attention", {}).get("context_gate_init", 0.0),
+        adapter_init_gain=model_cfg.get("attention", {}).get("adapter_init_gain", 0.01),
+        freeze_backbone=model_cfg.get("freeze_backbone", True),
+        unfreeze_backbone_last_n=model_cfg.get("unfreeze_backbone_last_n", 0),
     )
 
     return director_config, DirectorPipeline
@@ -1319,6 +1375,7 @@ def main():
     parser = argparse.ArgumentParser(description="DIRECTOR Training")
     parser.add_argument("--config", type=str, default="configs/default.yaml")
     parser.add_argument("--resume", type=str, default=None, help="Checkpoint to resume from")
+    parser.add_argument("--weights-only", action="store_true", help="Load only model weights, fresh optimizer/scheduler")
     args = parser.parse_args()
 
     # Load config
@@ -1349,7 +1406,7 @@ def main():
 
     # Resume if specified
     if args.resume:
-        trainer.load_checkpoint(args.resume)
+        trainer.load_checkpoint(args.resume, weights_only=args.weights_only)
 
     # Train
     trainer.train()
@@ -1364,6 +1421,7 @@ def main_ddp():
     parser = argparse.ArgumentParser(description="DIRECTOR DDP Training")
     parser.add_argument("--config", type=str, default="configs/default.yaml")
     parser.add_argument("--resume", type=str, default=None, help="Checkpoint to resume from")
+    parser.add_argument("--weights-only", action="store_true", help="Load only model weights, fresh optimizer/scheduler")
     args = parser.parse_args()
 
     # DDP environment variables set by torchrun
@@ -1404,7 +1462,7 @@ def main_ddp():
 
     # Resume if specified
     if args.resume:
-        trainer.load_checkpoint(args.resume)
+        trainer.load_checkpoint(args.resume, weights_only=args.weights_only)
 
     # Store sampler for epoch-based re-seeding
     trainer._train_sampler = train_sampler

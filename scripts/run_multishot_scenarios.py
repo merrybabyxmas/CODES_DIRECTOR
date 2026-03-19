@@ -118,8 +118,10 @@ def generate_shot_full(
                     context_mask=mask_cond, return_dict=False,
                 )[0]
             v_out = v_null + 6.0 * (v_cond - v_null)
-            step_out = pipeline.diffusion.inference_step(v_out, x, t, i, timesteps, state=state)
-            x = step_out.latents
+            # Cast to float32 for numerical precision in scheduler step
+            v_out = v_out.float()
+            step_out = pipeline.diffusion.inference_step(v_out, x.float(), t, i, timesteps, state=state)
+            x = step_out.latents.to(torch.bfloat16)
             state = step_out.state
 
         del text_embeds, null_text_embeds, ctx_cond, mask_cond
@@ -177,8 +179,10 @@ def generate_shot_multi_cfg(
                      + omega_local * (v_local - v_text)
                      + omega_global * (v_glob - v_text))
 
-            step_out = pipeline.diffusion.inference_step(v_out, x, t, i, timesteps, state=state)
-            x = step_out.latents
+            # Cast to float32 for numerical precision in scheduler step
+            v_out = v_out.float()
+            step_out = pipeline.diffusion.inference_step(v_out, x.float(), t, i, timesteps, state=state)
+            x = step_out.latents.to(torch.bfloat16)
             state = step_out.state
 
         del text_embeds, null_text_embeds

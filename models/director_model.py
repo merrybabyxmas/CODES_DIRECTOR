@@ -58,6 +58,9 @@ class DirectorConfig:
     # Attention injection
     inject_layers: Union[str, List[int]] = "all"
     context_gate_init: float = 0.0
+    adapter_init_gain: float = 0.01  # Xavier gain for adapter weights
+    freeze_backbone: bool = True  # Set False for overfit verification
+    unfreeze_backbone_last_n: int = 0  # Unfreeze last N transformer blocks + output layers
 
 
 # ===========================================================================
@@ -83,6 +86,7 @@ class ContextAdapter(nn.Module):
         head_dim: int = 64,
         context_dim: int = 1920,
         gate_init: float = 0.0,
+        init_gain: float = 0.01,
     ):
         super().__init__()
         self.inner_dim = inner_dim
@@ -104,13 +108,13 @@ class ContextAdapter(nn.Module):
         # Tanh gate (init → 0 so adapter starts as identity)
         self.gate = nn.Parameter(torch.tensor(gate_init))
 
-        self._init_weights()
+        self._init_weights(init_gain)
 
-    def _init_weights(self):
-        nn.init.xavier_uniform_(self.to_q.weight, gain=0.01)
-        nn.init.xavier_uniform_(self.to_k.weight, gain=0.01)
-        nn.init.xavier_uniform_(self.to_v.weight, gain=0.01)
-        nn.init.xavier_uniform_(self.to_out.weight, gain=0.01)
+    def _init_weights(self, gain: float = 0.01):
+        nn.init.xavier_uniform_(self.to_q.weight, gain=gain)
+        nn.init.xavier_uniform_(self.to_k.weight, gain=gain)
+        nn.init.xavier_uniform_(self.to_v.weight, gain=gain)
+        nn.init.xavier_uniform_(self.to_out.weight, gain=gain)
 
     def forward(
         self,
@@ -248,9 +252,27 @@ class DirectorTransformer(nn.Module):
             torch_dtype=torch.bfloat16,
         )
 
-        # Freeze backbone
+        # Freeze backbone (with optional partial unfreezing)
         for param in self.backbone.parameters():
             param.requires_grad = False
+
+        if not config.freeze_backbone:
+            # Unfreeze entire backbone
+            for param in self.backbone.parameters():
+                param.requires_grad = True
+        elif config.unfreeze_backbone_last_n > 0:
+            # Unfreeze last N transformer blocks + output layers
+            n = config.unfreeze_backbone_last_n
+            num_blocks = len(self.backbone.transformer_blocks)
+            for i in range(max(0, num_blocks - n), num_blocks):
+                for param in self.backbone.transformer_blocks[i].parameters():
+                    param.requires_grad = True
+            for param in self.backbone.norm_final.parameters():
+                param.requires_grad = True
+            for param in self.backbone.norm_out.parameters():
+                param.requires_grad = True
+            for param in self.backbone.proj_out.parameters():
+                param.requires_grad = True
 
         # Context encoders
         self.local_encoder = None  # set via set_vae()
@@ -295,6 +317,7 @@ class DirectorTransformer(nn.Module):
                 head_dim=self.config.head_dim,
                 context_dim=self.config.context.context_dim,
                 gate_init=self.config.context_gate_init,
+                init_gain=self.config.adapter_init_gain,
             )
 
     def set_vae(self, vae: nn.Module):
@@ -309,8 +332,9 @@ class DirectorTransformer(nn.Module):
         )
 
     def get_trainable_parameters(self) -> List[nn.Parameter]:
-        """Return only DIRECTOR-added parameters (backbone stays frozen)."""
+        """Return trainable parameters (includes backbone if unfrozen)."""
         trainable = []
+        trainable.extend(p for p in self.backbone.parameters() if p.requires_grad)
         if self.local_encoder is not None:
             trainable.extend(p for p in self.local_encoder.parameters() if p.requires_grad)
         trainable.extend(p for p in self.global_encoder.parameters() if p.requires_grad)
@@ -337,11 +361,15 @@ class DirectorTransformer(nn.Module):
                 else:
                     adapter_params.append(p)
 
-        return {
+        groups = {
             "encoder": encoder_params,
             "adapter": adapter_params,
             "gate": gate_params,
         }
+        backbone_trainable = [p for p in self.backbone.parameters() if p.requires_grad]
+        if backbone_trainable:
+            groups["backbone"] = backbone_trainable
+        return groups
 
     # ----- context encoding (unchanged) -----
 
@@ -712,6 +740,9 @@ class DirectorPipeline:
         generator: Optional[torch.Generator] = None,
         # Legacy single-frame interface
         prev_frame: Optional[torch.Tensor] = None,
+        # Single-CFG mode: inject all context in one pass (for no-dropout training)
+        single_cfg: bool = False,
+        return_latents: bool = False,
     ) -> torch.Tensor:
         """
         Single shot generation with Multi-CFG via backbone-agnostic diffusion wrapper.
@@ -749,6 +780,15 @@ class DirectorPipeline:
             device=self.device, dtype=torch.bfloat16, generator=generator,
         )
 
+        # Build full context (local + global) for single-CFG mode
+        if single_cfg:
+            with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+                ctx_full, mask_full = self.director_transformer.encode_context(
+                    prev_frames=prev_frames,
+                    character_images=character_images,
+                    character_masks=character_masks,
+                )
+
         # Backbone-agnostic inference loop
         timesteps = self.diffusion.prepare_inference(num_steps, self.device)
 
@@ -762,22 +802,30 @@ class DirectorPipeline:
                     unified_context=ctx, context_mask=msk, return_dict=False,
                 )[0]
 
-                v_null  = fwd(null_text_embeds, ctx_null, mask_null)
-                v_text  = fwd(text_embeds, ctx_null, mask_null)
-                v_local = fwd(text_embeds, ctx_local, mask_local)
-                v_glob  = fwd(text_embeds, ctx_global, mask_global)
-
-            v_out = (v_null
-                     + omega_text   * (v_text  - v_null)
-                     + omega_local  * (v_local - v_text)
-                     + omega_global * (v_glob  - v_text))
+                if single_cfg:
+                    # Single-CFG: context always injected, guidance on text only
+                    v_uncond = fwd(null_text_embeds, ctx_full, mask_full)
+                    v_cond   = fwd(text_embeds, ctx_full, mask_full)
+                    v_out = (v_uncond + omega_text * (v_cond - v_uncond)).float()
+                else:
+                    # Multi-CFG: separate local/global guidance terms
+                    v_null  = fwd(null_text_embeds, ctx_null, mask_null)
+                    v_text  = fwd(text_embeds, ctx_null, mask_null)
+                    v_local = fwd(text_embeds, ctx_local, mask_local)
+                    v_glob  = fwd(text_embeds, ctx_global, mask_global)
+                    v_out = (v_null
+                             + omega_text   * (v_text  - v_null)
+                             + omega_local  * (v_local - v_text)
+                             + omega_global * (v_glob  - v_text)).float()
 
             step_out = self.diffusion.inference_step(
-                v_out, latents, t, i, timesteps, state=state,
+                v_out, latents.float(), t, i, timesteps, state=state,
             )
-            latents = step_out.latents
+            latents = step_out.latents.to(torch.bfloat16)
             state = step_out.state
 
+        if return_latents:
+            return latents
         return self.decode_latent(latents)
 
     @torch.no_grad()

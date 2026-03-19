@@ -82,7 +82,7 @@ class DirectorDataset(Dataset):
         # Train/val split
         rng = np.random.RandomState(seed)
         indices = rng.permutation(len(self.seq_dirs))
-        split_point = int(len(indices) * split_ratio)
+        split_point = max(1, int(len(indices) * split_ratio))
         if split == "train":
             self.indices = indices[:split_point]
         else:

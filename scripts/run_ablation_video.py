@@ -154,10 +154,12 @@ def generate_shot_single_cfg(
 
             v_out = v_null + guidance_scale * (v_cond - v_null)
 
+            # Cast to float32 for numerical precision in scheduler step
+            v_out = v_out.float()
             step_out = pipeline.diffusion.inference_step(
-                v_out, x, t, i, timesteps, state=state,
+                v_out, x.float(), t, i, timesteps, state=state,
             )
-            x = step_out.latents
+            x = step_out.latents.to(torch.bfloat16)
             state = step_out.state
 
         del text_embeds, null_text_embeds, ctx_cond, mask_cond
@@ -230,10 +232,12 @@ def generate_shot_multi_cfg(
                      + omega_local  * (v_local - v_text)
                      + omega_global * (v_glob  - v_text))
 
+            # Cast to float32 for numerical precision in scheduler step
+            v_out = v_out.float()
             step_out = pipeline.diffusion.inference_step(
-                v_out, x, t, i, timesteps, state=state,
+                v_out, x.float(), t, i, timesteps, state=state,
             )
-            x = step_out.latents
+            x = step_out.latents.to(torch.bfloat16)
             state = step_out.state
 
         del text_embeds, null_text_embeds
