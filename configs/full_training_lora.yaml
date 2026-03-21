@@ -1,9 +1,7 @@
 # =============================================================================
-# DIRECTOR: Full Multi-Shot Training (1982 sequences, 4-GPU DDP)
-# Lessons from single-sample overfitting applied:
-#   - uniform time sampling (critical for generation quality)
-#   - 8-bit AdamW (memory efficient)
-#   - adapter_init_gain: 0.01
+# DIRECTOR: Full Multi-Shot Training with LoRA (1982 sequences, 4-GPU DDP)
+# LoRA replaces backbone unfreezing: 282M unfrozen params → 29.5M LoRA params
+# Validated on single-sample overfitting: loss 0.007 @ rank 128
 # =============================================================================
 
 seed: 42
@@ -13,7 +11,7 @@ cuda_device: 0  # Ignored when using torchrun DDP
 model:
   backbone: "THUDM/CogVideoX-2b"
   freeze_backbone: true
-  unfreeze_backbone_last_n: 5    # Last 5 blocks learn to use adapter context
+  unfreeze_backbone_last_n: 0     # NO backbone unfreezing — LoRA handles it
   inner_dim: 1920
   text_embed_dim: 4096
   num_heads: 30
@@ -44,9 +42,17 @@ model:
     keep_both_prob: 0.80
 
   attention:
-    inject_layers: [20, 22, 24, 26, 28]   # 5 layers with unfrozen backbone below
-    context_gate_init: 0.5       # tanh(0.5)≈0.46: fixed gate with frozen gate_lr
+    inject_layers: [20, 22, 24, 26, 28]   # 5 adapter layers (validated in overfitting)
+    context_gate_init: 0.5                 # Fixed gate at tanh(0.5)≈0.46
     adapter_init_gain: 0.01
+
+  # LoRA config — rank 128 validated on single-sample overfitting
+  lora:
+    enabled: true
+    rank: 128
+    alpha: 128
+    target_modules: ["attn1.to_q", "attn1.to_v"]
+    dropout: 0.05                          # Light dropout for generalization
 
 # --- Dataset ---
 dataset:
@@ -75,7 +81,7 @@ training:
     lr: 2.0e-5               # Encoder LR
     adapter_lr: 1.0e-4        # Adapter LR
     gate_lr: 1.0e-8           # Effectively frozen
-    backbone_lr: 5.0e-6       # Conservative: last 5 blocks learn to use adapters
+    lora_lr: 2.0e-4           # LoRA LR (lower than overfitting for generalization)
     weight_decay: 0.01
     betas: [0.9, 0.999]
     eps: 1.0e-8
@@ -99,28 +105,28 @@ training:
 
   flow_matching:
     sigma_min: 0.001
-    time_sampling: "uniform"       # CRITICAL: uniform for all timesteps
+    time_sampling: "uniform"
 
   checkpoint:
     save_every_steps: 2000
-    save_dir: "checkpoints_full"
+    save_dir: "checkpoints_full_lora"
     keep_last_n: 5
     save_best: true
     best_metric: "loss"
 
   logging:
     log_every_steps: 50
-    tensorboard_dir: "logs/full_training"
+    tensorboard_dir: "logs/full_training_lora"
     log_grad_norm: true
 
   sample_generation:
-    every_steps: 2000
-    ablation_every_steps: 10000
-    multishot_every_steps: 10000
+    every_steps: 1000             # 더 자주 샘플 생성
+    ablation_every_steps: 5000    # ablation도 자주
+    multishot_every_steps: 2000   # multi-shot 자주 생성
     multishot_num_shots: 2
     num_steps: 30
     num_frames_to_log: 8
-    save_dir: "samples/full_training"
+    save_dir: "samples/full_training_lora"
 
 # --- Inference ---
 inference:

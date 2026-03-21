@@ -133,6 +133,13 @@ class DirectorTrainer:
         self._fixed_sample = None  # cached validation sample for consistent comparison
         self._last_sample_step = 0  # track last sample generation step
 
+        # T5/CLIP CPU offloading config
+        self.offload_text_encoder = train_cfg.get("offload_text_encoder", False)
+
+        # Text embedding cache: pre-encode all captions once, then free T5 entirely
+        self.cache_text_embeddings = train_cfg.get("cache_text_embeddings", False)
+        self._text_embed_cache: Dict[str, torch.Tensor] = {}  # caption_str → (1, S, D) CPU tensor
+
         # Set up device
         self.device = director_pipeline.device
 
@@ -148,23 +155,31 @@ class DirectorTrainer:
 
         param_groups_dict = self.pipeline.director_transformer.get_trainable_param_groups()
         backbone_lr = opt_cfg.get("backbone_lr", base_lr * 0.1)
+        lora_lr = opt_cfg.get("lora_lr", backbone_lr)
         self.trainable_params = (
             param_groups_dict["encoder"]
             + param_groups_dict["adapter"]
             + param_groups_dict["gate"]
             + param_groups_dict.get("backbone", [])
+            + param_groups_dict.get("lora", [])
         )
         total_params = sum(p.numel() for p in self.trainable_params)
         enc_count = sum(p.numel() for p in param_groups_dict["encoder"])
         adp_count = sum(p.numel() for p in param_groups_dict["adapter"])
         gate_count = sum(p.numel() for p in param_groups_dict["gate"])
         backbone_count = sum(p.numel() for p in param_groups_dict.get("backbone", []))
+        lora_count = sum(p.numel() for p in param_groups_dict.get("lora", []))
         logger.info(
             f"Trainable parameters: {total_params:,} ({total_params / 1e6:.2f}M) "
-            f"[encoder={enc_count:,}, adapter={adp_count:,}, gate={gate_count:,}, backbone={backbone_count:,}]"
+            f"[encoder={enc_count:,}, adapter={adp_count:,}, gate={gate_count:,}, "
+            f"backbone={backbone_count:,}, lora={lora_count:,}]"
         )
-        logger.info(f"LR: encoder={base_lr:.1e}, adapter={adapter_lr:.1e}, gate={gate_lr:.1e}"
-                     + (f", backbone={backbone_lr:.1e}" if backbone_count > 0 else ""))
+        lr_info = f"LR: encoder={base_lr:.1e}, adapter={adapter_lr:.1e}, gate={gate_lr:.1e}"
+        if backbone_count > 0:
+            lr_info += f", backbone={backbone_lr:.1e}"
+        if lora_count > 0:
+            lr_info += f", lora={lora_lr:.1e}"
+        logger.info(lr_info)
 
         # Optimizer with separate param groups
         param_groups = []
@@ -176,6 +191,8 @@ class DirectorTrainer:
             param_groups.append({"params": param_groups_dict["gate"], "lr": gate_lr, "weight_decay": 0.0})
         if param_groups_dict.get("backbone"):
             param_groups.append({"params": param_groups_dict["backbone"], "lr": backbone_lr})
+        if param_groups_dict.get("lora"):
+            param_groups.append({"params": param_groups_dict["lora"], "lr": lora_lr})
 
         opt_type = opt_cfg.get("type", "adamw")
         opt_kwargs = dict(
@@ -238,6 +255,104 @@ class DirectorTrainer:
         t = self.pipeline.director_transformer
         return t.module if hasattr(t, "module") else t
 
+    def _precache_text_embeddings(self):
+        """Pre-encode all unique captions with T5 and cache on CPU.
+
+        After caching, T5 text encoder is deleted entirely to free ~9.4GB VRAM/RAM.
+        This is much more efficient than per-step CPU offloading because:
+        1. No T5 GPU↔CPU transfers during training
+        2. No T5 forward pass overhead per step
+        3. T5 memory is freed permanently (not just offloaded)
+        """
+        import json
+
+        cache_path = self.save_dir / "text_embed_cache.pt"
+
+        # Try loading existing cache
+        if cache_path.exists():
+            logger.info(f"Loading text embedding cache from {cache_path}")
+            self._text_embed_cache = torch.load(cache_path, map_location="cpu")
+            logger.info(f"  Loaded {len(self._text_embed_cache)} cached embeddings")
+        else:
+            # Collect all unique captions directly from caption.json files (no video loading)
+            logger.info("Pre-caching text embeddings for all dataset captions...")
+            dataset = self.train_loader.dataset
+            unique_captions = set()
+            for seq_dir in dataset.seq_dirs:
+                caption_path = seq_dir / "caption.json"
+                if caption_path.exists():
+                    with open(caption_path) as f:
+                        cap_data = json.load(f)
+                    full_raw = cap_data.get("full", "")
+                    if isinstance(full_raw, str) and full_raw:
+                        unique_captions.add(full_raw)
+                    else:
+                        # Reconstruct from identity + motion (same logic as dataset)
+                        identity_raw = cap_data.get("identity", "")
+                        motion_raw = cap_data.get("motion", "")
+                        if isinstance(identity_raw, dict):
+                            identity_text = ", ".join(f"{v}" for v in identity_raw.values() if v and v != "neutral")
+                        else:
+                            identity_text = str(identity_raw)
+                        if isinstance(motion_raw, dict):
+                            motion_text = ", ".join(f"{v}" for v in motion_raw.values() if v and v != "neutral")
+                        else:
+                            motion_text = str(motion_raw)
+                        unique_captions.add(f"{identity_text}. {motion_text}".strip(". "))
+            # Also add null caption for CFG
+            unique_captions.add("")
+
+            logger.info(f"  Found {len(unique_captions)} unique captions")
+
+            # Encode all captions
+            self.pipeline.text_encoder.to(self.device)
+            with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+                for i, caption in enumerate(sorted(unique_captions)):
+                    te = self.pipeline.encode_text(caption)  # (1, S, D)
+                    self._text_embed_cache[caption] = te.cpu()
+                    if (i + 1) % 100 == 0:
+                        logger.info(f"  Encoded {i+1}/{len(unique_captions)} captions")
+
+            # Save cache to disk for restarts
+            torch.save(self._text_embed_cache, cache_path)
+            logger.info(f"  Saved cache to {cache_path} ({len(self._text_embed_cache)} entries)")
+
+        # Free T5 entirely — no longer needed
+        if self.pipeline.text_encoder is not None:
+            logger.info("  Freeing T5 text encoder from memory...")
+            self.pipeline.text_encoder.cpu()
+            del self.pipeline.text_encoder
+            self.pipeline.text_encoder = None
+            if hasattr(self.pipeline, 'tokenizer') and self.pipeline.tokenizer is not None:
+                del self.pipeline.tokenizer
+                self.pipeline.tokenizer = None
+            torch.cuda.empty_cache()
+            import gc
+            gc.collect()
+            logger.info("  T5 text encoder freed. Text embeddings served from cache.")
+
+    def _get_text_embeds(self, captions, device=None) -> torch.Tensor:
+        """Look up text embeddings from cache. Falls back to live encoding if not cached."""
+        if device is None:
+            device = self.device
+
+        if self._text_embed_cache:
+            embeds = []
+            for c in (captions if isinstance(captions, (list, tuple)) else [captions]):
+                if c in self._text_embed_cache:
+                    embeds.append(self._text_embed_cache[c].to(device))
+                else:
+                    raise RuntimeError(
+                        f"Text embedding cache miss: '{c[:80]}...'. "
+                        f"Delete {self.save_dir / 'text_embed_cache.pt'} and restart to rebuild cache."
+                    )
+            return torch.cat(embeds, dim=0)
+        else:
+            # No cache — encode live
+            embeds = [self.pipeline.encode_text(c) for c in
+                      (captions if isinstance(captions, (list, tuple)) else [captions])]
+            return torch.cat(embeds, dim=0)
+
     def _create_scheduler(
         self, scheduler_type: str, warmup_steps: int, total_steps: int, min_lr_ratio: float
     ):
@@ -267,6 +382,10 @@ class DirectorTrainer:
         logger.info(f"  Mixed precision: {self.mixed_precision}")
         logger.info(f"  Batch size per step: {self.train_loader.batch_size}")
         logger.info(f"  Effective batch size: {self.train_loader.batch_size * self.grad_accum_steps}")
+
+        # Pre-cache all text embeddings and free T5 if enabled
+        if self.cache_text_embeddings:
+            self._precache_text_embeddings()
 
         self._transformer.train()
 
@@ -457,15 +576,26 @@ class DirectorTrainer:
             with torch.no_grad():
                 x_1 = self.pipeline.encode_video(target_video)  # (B, T_lat, C, H_lat, W_lat)
 
-            # 2. Encode text
+            # 2. Encode text (cached if cache_text_embeddings=true, else T5 with optional offloading)
             with torch.no_grad():
-                text_embeds_list = []
-                for caption in captions:
-                    te = self.pipeline.encode_text(caption)  # (1, S, D_text)
-                    text_embeds_list.append(te)
-                text_embeds = torch.cat(text_embeds_list, dim=0)  # (B, S, D_text)
+                if self._text_embed_cache:
+                    text_embeds = self._get_text_embeds(captions)
+                else:
+                    if self.offload_text_encoder:
+                        self.pipeline.text_encoder.to(self.device)
+                    text_embeds_list = []
+                    for caption in captions:
+                        te = self.pipeline.encode_text(caption)  # (1, S, D_text)
+                        text_embeds_list.append(te)
+                    text_embeds = torch.cat(text_embeds_list, dim=0)  # (B, S, D_text)
+                    if self.offload_text_encoder:
+                        self.pipeline.text_encoder.to("cpu")
+                        torch.cuda.empty_cache()
 
             # 3. Encode context (local + global) with multi-context dropout
+            # Reload CLIP to GPU if it was offloaded in a previous step
+            if self.offload_text_encoder:
+                self._transformer.global_encoder.clip_model.to(self.device)
             # Decompose anchor_rgb (B, K, 3, 224, 224) -> list of K tensors [(B, 3, 224, 224)]
             char_list = [anchor_rgb[:, k] for k in range(K)]
 
@@ -475,6 +605,11 @@ class DirectorTrainer:
                 character_masks=char_mask,
                 local_frame_valid=local_frame_valid,
             )  # (B, N_ctx, D), (B, N_ctx)
+
+            # Offload CLIP to CPU after context encoding to free VRAM during backward
+            if self.offload_text_encoder:
+                self._transformer.global_encoder.clip_model.to("cpu")
+                torch.cuda.empty_cache()
 
             # 4. Compute flow matching loss
             loss_dict = self.pipeline.compute_flow_matching_loss(
@@ -550,8 +685,7 @@ class DirectorTrainer:
 
             with torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
                 x_1 = self.pipeline.encode_video(target_video)
-                text_embeds_list = [self.pipeline.encode_text(c) for c in captions]
-                text_embeds = torch.cat(text_embeds_list, dim=0)
+                text_embeds = self._get_text_embeds(captions)
 
                 char_list = [anchor_rgb[:, k] for k in range(K)]
                 unified_context, context_mask = self._transformer.encode_context(
@@ -612,9 +746,15 @@ class DirectorTrainer:
 
         # Cache a fixed sample — pick brightest from first N batches for better visual assessment
         if self._fixed_sample is None:
-            loader = self.val_loader if self.val_loader is not None else self.train_loader
+            # Use val_loader if it has data, otherwise fall back to train_loader
+            loader = None
+            if self.val_loader is not None and len(self.val_loader) > 0:
+                loader = self.val_loader
+            if loader is None:
+                loader = self.train_loader
             best_sample = None
             best_brightness = -1.0
+            best_id = "?"
             for i, batch in enumerate(loader):
                 if i >= 20:
                     break
@@ -625,7 +765,7 @@ class DirectorTrainer:
                     best_sample = batch
                     best_id = seq_id
             self._fixed_sample = best_sample
-            logger.info(f"Cached fixed sample: seq_id={best_id} (brightness={best_brightness:.4f}, scanned 20 batches)")
+            logger.info(f"Cached fixed sample: seq_id={best_id} (brightness={best_brightness:.4f}, scanned {min(i+1, 20)} batches)")
 
         batch = self._fixed_sample
         target_video = batch["target_video"].to(self.device, dtype=torch.float32)
@@ -660,7 +800,7 @@ class DirectorTrainer:
             x_1 = self.pipeline.encode_video(target_video)
 
             # Encode text + context
-            text_embeds = self.pipeline.encode_text(caption)
+            text_embeds = self._get_text_embeds(caption)
             unified_context, context_mask = self._transformer.encode_context(
                 prev_frames=prev_frames,
                 character_images=char_list,
@@ -716,7 +856,8 @@ class DirectorTrainer:
 
         # Phase 2: Offload transformer + text encoder to CPU, decode latents with VAE
         self._transformer.cpu()
-        self.pipeline.text_encoder.cpu()
+        if self.pipeline.text_encoder is not None:
+            self.pipeline.text_encoder.cpu()
         torch.cuda.empty_cache()
         self.pipeline.vae.to(self.device)
 
@@ -821,7 +962,8 @@ class DirectorTrainer:
 
             # Phase 2: Offload transformer + text encoder, decode with VAE
             self._transformer.cpu()
-            self.pipeline.text_encoder.cpu()
+            if self.pipeline.text_encoder is not None:
+                self.pipeline.text_encoder.cpu()
             torch.cuda.empty_cache()
             self.pipeline.vae.to(self.device)
 
@@ -865,7 +1007,8 @@ class DirectorTrainer:
 
         # Move transformer + text encoder back to GPU for training
         self._transformer.to(self.device)
-        self.pipeline.text_encoder.to(self.device)
+        if self.pipeline.text_encoder is not None:
+            self.pipeline.text_encoder.to(self.device)
         torch.cuda.empty_cache()
 
         elapsed = time.time() - start_t
@@ -926,7 +1069,12 @@ class DirectorTrainer:
         height = train_cfg.get("train_height", 320)
         width = train_cfg.get("train_width", 512)
         num_frames = train_cfg.get("train_frames", 13)
-        guidance_scale = 6.0
+
+        # Multi-CFG guidance scales from config
+        inf_guidance = self.config.get("inference", {}).get("guidance", {})
+        omega_text = inf_guidance.get("omega_text", 6.0)
+        omega_local = inf_guidance.get("omega_local", 2.0)
+        omega_global = inf_guidance.get("omega_global", 3.0)
 
         latent_h, latent_w = height // 8, width // 8
         latent_t = (num_frames - 1) // 4 + 1
@@ -937,8 +1085,8 @@ class DirectorTrainer:
 
         # Pre-encode text (stays fixed across shots)
         with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
-            text_embeds = self.pipeline.encode_text(caption)
-            null_text_embeds = self.pipeline.encode_text("")
+            text_embeds = self._get_text_embeds(caption)
+            null_text_embeds = self._get_text_embeds("")
 
         # Generate shots autoregressively
         shot_latents_cpu = []  # list of latent tensors on CPU
@@ -948,13 +1096,19 @@ class DirectorTrainer:
             logger.info(f"  Shot {shot_idx+1}/{num_shots}...")
 
             with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
-                # Encode context: full (local + global)
-                ctx_cond, mask_cond = transformer.encode_context(
+                # Encode context variants for Multi-CFG:
+                # Full context (local + global)
+                ctx_full, mask_full = transformer.encode_context(
                     prev_frames=prev_frames_ar,
                     character_images=char_list,
                     character_masks=char_mask,
                 )
-                # Null context: pass None to skip adapters (avoids NaN from all-zero mask)
+                # Local-only context (no global anchors)
+                ctx_local, mask_local = transformer.encode_context(
+                    prev_frames=prev_frames_ar,
+                    character_images=None,
+                )
+                # Null context: None to skip adapters (avoids NaN from all-zero mask)
 
                 # Initial noise
                 gen = torch.Generator(device=self.device)
@@ -964,20 +1118,27 @@ class DirectorTrainer:
                     device=self.device, dtype=torch.bfloat16, generator=gen,
                 )
 
-                # ODE solve with simple CFG
+                # ODE solve with Multi-CFG
                 timesteps = diffusion.prepare_inference(num_steps, self.device)
                 state = None
                 for i, t in enumerate(timesteps):
                     t_tensor = t.expand(1)
-                    v_null = transformer(
-                        hidden_states=x, encoder_hidden_states=null_text_embeds, timestep=t_tensor,
-                        unified_context=None, context_mask=None, return_dict=False,
+
+                    fwd = lambda te, ctx, msk: transformer(
+                        hidden_states=x, encoder_hidden_states=te, timestep=t_tensor,
+                        unified_context=ctx, context_mask=msk, return_dict=False,
                     )[0]
-                    v_cond = transformer(
-                        hidden_states=x, encoder_hidden_states=text_embeds, timestep=t_tensor,
-                        unified_context=ctx_cond, context_mask=mask_cond, return_dict=False,
-                    )[0]
-                    v_out = v_null + guidance_scale * (v_cond - v_null)
+
+                    # 4-pass Multi-CFG
+                    v_null  = fwd(null_text_embeds, None, None)         # unconditional
+                    v_text  = fwd(text_embeds, None, None)              # text-only
+                    v_local = fwd(text_embeds, ctx_local, mask_local)   # text + local
+                    v_full  = fwd(text_embeds, ctx_full, mask_full)     # text + local + global
+
+                    v_out = (v_null
+                             + omega_text   * (v_text  - v_null)
+                             + omega_local  * (v_local - v_text)
+                             + omega_global * (v_full  - v_local))
                     # Cast to float32 for numerical precision in scheduler step
                     v_out = v_out.float()
                     step_out = diffusion.inference_step(v_out, x.float(), t, i, timesteps, state=state)
@@ -985,7 +1146,7 @@ class DirectorTrainer:
                     state = step_out.state
 
                 shot_latents_cpu.append(x.cpu())
-                del x, ctx_cond, mask_cond
+                del x, ctx_full, mask_full, ctx_local, mask_local
                 torch.cuda.empty_cache()
 
             # Decode last frame for next shot's prev_frame (if not last shot)
@@ -1013,7 +1174,8 @@ class DirectorTrainer:
         # Decode all shot latents to video
         logger.info("  Decoding all shots...")
         transformer.cpu()
-        self.pipeline.text_encoder.cpu()
+        if self.pipeline.text_encoder is not None:
+            self.pipeline.text_encoder.cpu()
         torch.cuda.empty_cache()
         self.pipeline.vae.to(self.device)
 
@@ -1068,7 +1230,8 @@ class DirectorTrainer:
 
         # Move transformer + text encoder back to GPU
         transformer.to(self.device)
-        self.pipeline.text_encoder.to(self.device)
+        if self.pipeline.text_encoder is not None:
+            self.pipeline.text_encoder.to(self.device)
         torch.cuda.empty_cache()
 
         self.writer.flush()
@@ -1133,21 +1296,29 @@ class DirectorTrainer:
                 if "vae" not in k  # Don't save frozen VAE weights
             }
 
-        # Save backbone trainable params (when partially/fully unfrozen)
-        backbone_trainable = {
-            k: v for k, v in t.backbone.state_dict().items()
-            if any(p.requires_grad and p.data_ptr() == v.data_ptr()
-                   for p in t.backbone.parameters())
-        }
-        if not backbone_trainable:
-            # Fallback: check by matching named_parameters with requires_grad
-            trainable_names = {n for n, p in t.backbone.named_parameters() if p.requires_grad}
+        # Save LoRA or backbone trainable params
+        if t.lora_enabled:
+            # Save only LoRA adapter weights
+            from peft import get_peft_model_state_dict
+            lora_state = get_peft_model_state_dict(t.backbone)
+            if lora_state:
+                state["lora"] = lora_state
+        else:
+            # Save backbone trainable params (when partially/fully unfrozen)
             backbone_trainable = {
                 k: v for k, v in t.backbone.state_dict().items()
-                if k in trainable_names
+                if any(p.requires_grad and p.data_ptr() == v.data_ptr()
+                       for p in t.backbone.parameters())
             }
-        if backbone_trainable:
-            state["backbone"] = backbone_trainable
+            if not backbone_trainable:
+                # Fallback: check by matching named_parameters with requires_grad
+                trainable_names = {n for n, p in t.backbone.named_parameters() if p.requires_grad}
+                backbone_trainable = {
+                    k: v for k, v in t.backbone.state_dict().items()
+                    if k in trainable_names
+                }
+            if backbone_trainable:
+                state["backbone"] = backbone_trainable
 
         torch.save(state, ckpt_path)
         logger.info(f"Saved checkpoint: {ckpt_path}")
@@ -1191,8 +1362,12 @@ class DirectorTrainer:
                 state["local_encoder"], strict=False
             )
 
-        # Load backbone trainable params (when partially/fully unfrozen)
-        if "backbone" in state:
+        # Load LoRA or backbone trainable params
+        if "lora" in state and t.lora_enabled:
+            from peft import set_peft_model_state_dict
+            set_peft_model_state_dict(t.backbone, state["lora"])
+            logger.info(f"Loaded LoRA params: {len(state['lora'])} keys")
+        elif "backbone" in state:
             missing, unexpected = t.backbone.load_state_dict(
                 state["backbone"], strict=False
             )
@@ -1266,6 +1441,15 @@ def _build_pipeline_and_config(config):
         adapter_init_gain=model_cfg.get("attention", {}).get("adapter_init_gain", 0.01),
         freeze_backbone=model_cfg.get("freeze_backbone", True),
         unfreeze_backbone_last_n=model_cfg.get("unfreeze_backbone_last_n", 0),
+        # LoRA config
+        lora_enabled=model_cfg.get("lora", {}).get("enabled", False),
+        lora_rank=model_cfg.get("lora", {}).get("rank", 16),
+        lora_alpha=model_cfg.get("lora", {}).get("alpha", 16),
+        lora_target_modules=model_cfg.get("lora", {}).get(
+            "target_modules", ["attn1.to_q", "attn1.to_v"]
+        ),
+        lora_dropout=model_cfg.get("lora", {}).get("dropout", 0.0),
+        lora_layers=model_cfg.get("lora", {}).get("layers", None),
     )
 
     return director_config, DirectorPipeline

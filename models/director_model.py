@@ -62,6 +62,16 @@ class DirectorConfig:
     freeze_backbone: bool = True  # Set False for overfit verification
     unfreeze_backbone_last_n: int = 0  # Unfreeze last N transformer blocks + output layers
 
+    # LoRA (alternative to unfreezing backbone blocks)
+    lora_enabled: bool = False
+    lora_rank: int = 16
+    lora_alpha: int = 16
+    lora_target_modules: List[str] = field(
+        default_factory=lambda: ["attn1.to_q", "attn1.to_v"]
+    )
+    lora_dropout: float = 0.0
+    lora_layers: Optional[List[int]] = None  # None = all layers, or list of block indices
+
 
 # ===========================================================================
 # Post-Block Context Adapter (replaces custom attention processor)
@@ -252,11 +262,14 @@ class DirectorTransformer(nn.Module):
             torch_dtype=torch.bfloat16,
         )
 
-        # Freeze backbone (with optional partial unfreezing)
+        # Freeze backbone (with optional partial unfreezing or LoRA)
         for param in self.backbone.parameters():
             param.requires_grad = False
 
-        if not config.freeze_backbone:
+        self.lora_enabled = False
+        if config.lora_enabled:
+            self._apply_lora(config)
+        elif not config.freeze_backbone:
             # Unfreeze entire backbone
             for param in self.backbone.parameters():
                 param.requires_grad = True
@@ -273,6 +286,16 @@ class DirectorTransformer(nn.Module):
                 param.requires_grad = True
             for param in self.backbone.proj_out.parameters():
                 param.requires_grad = True
+
+        # Log LoRA status
+        if self.lora_enabled:
+            lora_params = sum(p.numel() for p in self.backbone.parameters() if p.requires_grad)
+            import logging
+            logging.getLogger(__name__).info(
+                f"LoRA enabled: rank={config.lora_rank}, alpha={config.lora_alpha}, "
+                f"targets={config.lora_target_modules}, "
+                f"trainable backbone params={lora_params:,} ({lora_params/1e6:.1f}M)"
+            )
 
         # Context encoders
         self.local_encoder = None  # set via set_vae()
@@ -298,6 +321,31 @@ class DirectorTransformer(nn.Module):
 
         # Create post-block adapters
         self._create_adapters()
+
+    def _apply_lora(self, config: DirectorConfig):
+        """Apply LoRA to backbone transformer blocks."""
+        from peft import LoraConfig, get_peft_model
+
+        # Build target module names, optionally scoped to specific layers
+        if config.lora_layers is not None:
+            # Only apply LoRA to specific block indices
+            target_modules = []
+            for block_idx in config.lora_layers:
+                for mod_name in config.lora_target_modules:
+                    target_modules.append(f"transformer_blocks.{block_idx}.{mod_name}")
+        else:
+            target_modules = config.lora_target_modules
+
+        lora_config = LoraConfig(
+            r=config.lora_rank,
+            lora_alpha=config.lora_alpha,
+            target_modules=target_modules,
+            lora_dropout=config.lora_dropout,
+            bias="none",
+        )
+
+        self.backbone = get_peft_model(self.backbone, lora_config)
+        self.lora_enabled = True
 
     def _create_adapters(self):
         """Create a ContextAdapter for each injected layer."""
@@ -366,9 +414,16 @@ class DirectorTransformer(nn.Module):
             "adapter": adapter_params,
             "gate": gate_params,
         }
-        backbone_trainable = [p for p in self.backbone.parameters() if p.requires_grad]
-        if backbone_trainable:
-            groups["backbone"] = backbone_trainable
+
+        if self.lora_enabled:
+            # LoRA params get their own group (separate from backbone unfreeze)
+            lora_params = [p for p in self.backbone.parameters() if p.requires_grad]
+            if lora_params:
+                groups["lora"] = lora_params
+        else:
+            backbone_trainable = [p for p in self.backbone.parameters() if p.requires_grad]
+            if backbone_trainable:
+                groups["backbone"] = backbone_trainable
         return groups
 
     # ----- context encoding (unchanged) -----
@@ -747,7 +802,7 @@ class DirectorPipeline:
         """
         Single shot generation with Multi-CFG via backbone-agnostic diffusion wrapper.
 
-          v_out = v_null + w_t*(v_text - v_null) + w_l*(v_local - v_text) + w_g*(v_glob - v_text)
+          v_out = v_null + w_t*(v_text - v_null) + w_l*(v_local - v_text) + w_g*(v_full - v_local)
         """
         # Normalize legacy single-frame to list
         if prev_frames is None and prev_frame is not None:
@@ -760,16 +815,15 @@ class DirectorPipeline:
         null_text_embeds = self.encode_text("")
 
         with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+            # Local-only context: prev_frames only, no character anchors
             ctx_local, mask_local = self.director_transformer.encode_context(
                 prev_frames=prev_frames, character_images=None,
             )
-            ctx_global, mask_global = self.director_transformer.encode_context(
-                prev_frames=None, character_images=character_images,
+            # Full context: local (prev_frames) + global (character anchors)
+            ctx_full_mcfg, mask_full_mcfg = self.director_transformer.encode_context(
+                prev_frames=prev_frames, character_images=character_images,
                 character_masks=character_masks,
             )
-            # Null context: pass None to skip adapters entirely (avoids NaN
-            # from all-zero mask → all -inf attention → softmax 0/0)
-            ctx_null, mask_null = None, None
 
         latent_h, latent_w = height // 8, width // 8
         latent_t = (num_frames - 1) // 4 + 1
@@ -780,14 +834,8 @@ class DirectorPipeline:
             device=self.device, dtype=torch.bfloat16, generator=generator,
         )
 
-        # Build full context (local + global) for single-CFG mode
-        if single_cfg:
-            with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
-                ctx_full, mask_full = self.director_transformer.encode_context(
-                    prev_frames=prev_frames,
-                    character_images=character_images,
-                    character_masks=character_masks,
-                )
+        # Alias for single-CFG mode (reuses full context from multi-CFG)
+        ctx_full, mask_full = ctx_full_mcfg, mask_full_mcfg
 
         # Backbone-agnostic inference loop
         timesteps = self.diffusion.prepare_inference(num_steps, self.device)
@@ -808,15 +856,15 @@ class DirectorPipeline:
                     v_cond   = fwd(text_embeds, ctx_full, mask_full)
                     v_out = (v_uncond + omega_text * (v_cond - v_uncond)).float()
                 else:
-                    # Multi-CFG: separate local/global guidance terms
-                    v_null  = fwd(null_text_embeds, ctx_null, mask_null)
-                    v_text  = fwd(text_embeds, ctx_null, mask_null)
-                    v_local = fwd(text_embeds, ctx_local, mask_local)
-                    v_glob  = fwd(text_embeds, ctx_global, mask_global)
+                    # Multi-CFG: v_out = v_null + ω_t*(v_text - v_null) + ω_l*(v_local - v_text) + ω_g*(v_full - v_local)
+                    v_null  = fwd(null_text_embeds, None, None)                       # unconditional
+                    v_text  = fwd(text_embeds, None, None)                             # text-only
+                    v_local = fwd(text_embeds, ctx_local, mask_local)                  # text + local
+                    v_full  = fwd(text_embeds, ctx_full_mcfg, mask_full_mcfg)          # text + local + global
                     v_out = (v_null
                              + omega_text   * (v_text  - v_null)
                              + omega_local  * (v_local - v_text)
-                             + omega_global * (v_glob  - v_text)).float()
+                             + omega_global * (v_full  - v_local)).float()
 
             step_out = self.diffusion.inference_step(
                 v_out, latents.float(), t, i, timesteps, state=state,
