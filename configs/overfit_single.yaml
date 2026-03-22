@@ -1,0 +1,149 @@
+# =============================================================================
+# DIRECTOR: 1-Sample Overfit — Verify adapter actually works
+# Single GPU (RTX 5090 32GB)
+# =============================================================================
+
+seed: 42
+cuda_device: 0
+
+model:
+  backbone: "THUDM/CogVideoX-2b"
+  freeze_backbone: true
+  unfreeze_backbone_last_n: 0
+  inner_dim: 1920
+  text_embed_dim: 4096
+  num_heads: 30
+  head_dim: 64
+  num_layers: 30
+  max_text_seq_length: 226
+  patch_size: 2
+  vae_latent_channels: 16
+  vae_spatial_scale: 8
+  vae_temporal_compression: 4
+  vae_scaling_factor: 1.15258426
+
+  context:
+    local_token_count: 256
+    num_local_frames: 2
+    global_token_count: 64
+    max_characters: 4
+    context_dim: 1920
+    clip_vision_dim: 1024
+    local_proj_dim: 1920
+    global_proj_dim: 1920
+    clip_model: "openai/clip-vit-large-patch14"
+
+  dropout:
+    drop_global_prob: 0.0
+    drop_local_prob: 0.0
+    keep_both_prob: 1.0
+
+  attention:
+    # 15 layers: every other layer from 0-28
+    inject_layers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
+    context_gate_init: 0.1    # Stable adapter influence
+    adapter_init_gain: 0.2   # Meaningful output magnitude
+    freeze_gate: true         # Frozen at 0.1
+
+  lora:
+    enabled: true
+    rank: 128
+    alpha: 128
+    target_modules: ["attn1.to_q", "attn1.to_v"]
+    dropout: 0.0
+
+# --- Dataset (1 sample) ---
+dataset:
+  dataset_dir: "overfit_test/single_sample"
+  metadata_path: "overfit_test/single_sample/metadata.jsonl"
+  video:
+    num_frames: 49
+    fps: 8
+    height: 480
+    width: 720
+    latent_height: 60
+    latent_width: 90
+    latent_frames: 13
+  captioning:
+    model: "qwen2vl"
+    max_caption_length: 500
+  dataloader:
+    batch_size: 1
+    num_workers: 0       # No multiprocess for 1 sample
+    pin_memory: true
+    prefetch_factor: 2
+    use_stratified_sampler: false
+
+# --- Training ---
+training:
+  optimizer:
+    type: "adamw8bit"
+    lr: 1.0e-4
+    adapter_lr: 1.0e-3    # Aggressive for 1-sample
+    gate_lr: 0.0              # Gate frozen
+    gate_grad_scale: 1.0
+    lora_lr: 5.0e-4
+    weight_decay: 0.0
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "constant"
+    warmup_steps: 5
+    min_lr_ratio: 1.0
+
+  num_epochs: 100000
+  max_steps: 2000
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+
+  mixed_precision: "bf16"
+  gradient_checkpointing: true
+
+  train_height: 480
+  train_width: 720
+  train_frames: 13
+
+  cache_text_embeddings: true
+  offload_text_encoder: false
+
+  flow_matching:
+    sigma_min: 0.001
+    time_sampling: "uniform"
+
+  checkpoint:
+    save_every_steps: 200
+    save_dir: "overfit_test/checkpoints_single"
+    keep_last_n: 3
+    save_best: true
+    best_metric: "loss"
+
+  logging:
+    log_every_steps: 5
+    tensorboard_dir: "logs/overfit_single"
+    log_grad_norm: true
+
+  sample_generation:
+    every_steps: 50        # Generate very frequently
+    ablation_every_steps: 200
+    multishot_every_steps: 200
+    multishot_num_shots: 5
+    num_steps: 50
+    num_frames_to_log: 8
+    save_dir: "overfit_test/samples_single"
+
+# --- Inference ---
+inference:
+  guidance:
+    omega_text: 6.0
+    omega_local: 2.0
+    omega_global: 3.0
+  solver:
+    type: "euler"
+    num_steps: 50
+    sigma_min: 0.001
+  generation:
+    num_frames: 49
+    height: 480
+    width: 720
+    fps: 8

@@ -1,0 +1,149 @@
+# =============================================================================
+# DIRECTOR: Full Training with DIRECTOR-10K — Balanced 10,000-triplet dataset
+# 4-GPU DDP (RTX 5090 32GB × 4), LoRA rank 128, T5 embeddings cached
+# Uses StratifiedBatchSampler for balanced category sampling
+# =============================================================================
+
+seed: 42
+cuda_device: 0
+
+# --- Model --- (identical to v2)
+model:
+  backbone: "THUDM/CogVideoX-2b"
+  freeze_backbone: true
+  unfreeze_backbone_last_n: 0
+  inner_dim: 1920
+  text_embed_dim: 4096
+  num_heads: 30
+  head_dim: 64
+  num_layers: 30
+  max_text_seq_length: 226
+  patch_size: 2
+  vae_latent_channels: 16
+  vae_spatial_scale: 8
+  vae_temporal_compression: 4
+  vae_scaling_factor: 1.15258426
+
+  context:
+    local_token_count: 256
+    num_local_frames: 2
+    global_token_count: 64
+    max_characters: 4
+    context_dim: 1920
+    clip_vision_dim: 1024
+    local_proj_dim: 1920
+    global_proj_dim: 1920
+    clip_model: "openai/clip-vit-large-patch14"
+
+  dropout:
+    drop_global_prob: 0.10
+    drop_local_prob: 0.10
+    keep_both_prob: 0.80
+
+  attention:
+    inject_layers: [20, 22, 24, 26, 28]
+    context_gate_init: 0.462  # Direct scalar (no tanh); matches old tanh(0.5)
+    adapter_init_gain: 0.01
+
+  lora:
+    enabled: true
+    rank: 128
+    alpha: 128
+    target_modules: ["attn1.to_q", "attn1.to_v"]
+    dropout: 0.05
+
+# --- Dataset (DIRECTOR-10K) ---
+dataset:
+  dataset_dir: "data/director_10k/output"
+  metadata_path: "data/director_10k/output/metadata.jsonl"  # For StratifiedBatchSampler
+  video:
+    num_frames: 49
+    fps: 8
+    height: 480
+    width: 720
+    latent_height: 60
+    latent_width: 90
+    latent_frames: 13
+  captioning:
+    model: "llava"
+    max_caption_length: 200
+  dataloader:
+    batch_size: 1
+    num_workers: 4
+    pin_memory: true
+    prefetch_factor: 2
+    use_stratified_sampler: true  # Enable balanced category sampling
+
+# --- Training ---
+training:
+  optimizer:
+    type: "adamw8bit"
+    lr: 2.0e-5
+    adapter_lr: 1.0e-4
+    gate_lr: 1.0e-4
+    gate_grad_scale: 1000.0  # Amplify gate gradient (adapter output is tiny due to init_gain=0.01)
+    lora_lr: 2.0e-4
+    weight_decay: 0.01
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "cosine"
+    warmup_steps: 500
+    min_lr_ratio: 0.1
+
+  num_epochs: 200
+  max_steps: 100000
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+
+  mixed_precision: "bf16"
+  gradient_checkpointing: true
+
+  train_height: 480
+  train_width: 720
+  train_frames: 13
+
+  cache_text_embeddings: true
+  offload_text_encoder: false
+
+  flow_matching:
+    sigma_min: 0.001
+    time_sampling: "uniform"
+
+  checkpoint:
+    save_every_steps: 2000
+    save_dir: "checkpoints_10k"
+    keep_last_n: 5
+    save_best: true
+    best_metric: "loss"
+
+  logging:
+    log_every_steps: 50
+    tensorboard_dir: "logs/full_training_10k"
+    log_grad_norm: true
+
+  sample_generation:
+    every_steps: 1000
+    ablation_every_steps: 5000
+    multishot_every_steps: 4000
+    multishot_num_shots: 5
+    num_steps: 30
+    num_frames_to_log: 8
+    save_dir: "samples/full_training_10k"
+
+# --- Inference ---
+inference:
+  guidance:
+    omega_text: 6.0
+    omega_local: 2.0
+    omega_global: 3.0
+  solver:
+    type: "euler"
+    num_steps: 50
+    sigma_min: 0.001
+  generation:
+    num_frames: 49
+    height: 480
+    width: 720
+    fps: 8

@@ -391,3 +391,113 @@ def create_dataloader(
     )
 
     return loader
+
+
+# ---------------------------------------------------------------------------
+# Stratified Batch Sampler for DIRECTOR-10K balanced category training
+# ---------------------------------------------------------------------------
+
+class StratifiedBatchSampler(torch.utils.data.Sampler):
+    """Batch sampler that ensures each batch has balanced category representation.
+
+    Reads category labels from metadata.jsonl and samples proportionally
+    from each category to maintain the target distribution during training.
+
+    Usage:
+        sampler = StratifiedBatchSampler(
+            dataset=dataset,
+            batch_size=4,
+            metadata_path="data/director_10k/output/metadata.jsonl",
+        )
+        loader = DataLoader(dataset, batch_sampler=sampler, ...)
+    """
+
+    def __init__(
+        self,
+        dataset: DirectorDataset,
+        batch_size: int,
+        metadata_path: Optional[str] = None,
+        seed: int = 42,
+    ):
+        self.dataset = dataset
+        self.batch_size = batch_size
+        self.seed = seed
+        self.epoch = 0
+
+        # Build category → indices mapping
+        self.category_indices: Dict[str, List[int]] = {}
+        self._build_category_map(metadata_path)
+
+    def _build_category_map(self, metadata_path: Optional[str]) -> None:
+        """Map dataset indices to categories using metadata.jsonl."""
+        # Build seq_id → category lookup from metadata
+        seq_to_category: Dict[str, str] = {}
+        if metadata_path and os.path.exists(metadata_path):
+            with open(metadata_path) as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        entry = json.loads(line)
+                        seq_to_category[entry.get("seq_id", "")] = entry.get("category", "A")
+
+        # Map dataset indices to categories
+        for idx in range(len(self.dataset.indices)):
+            seq_dir = self.dataset.seq_dirs[self.dataset.indices[idx]]
+            category = seq_to_category.get(seq_dir.name, "A")
+            if category not in self.category_indices:
+                self.category_indices[category] = []
+            self.category_indices[category].append(idx)
+
+        for cat, indices in self.category_indices.items():
+            logger.info(f"StratifiedBatchSampler: category {cat} has {len(indices)} samples")
+
+    def __iter__(self):
+        rng = np.random.RandomState(self.seed + self.epoch)
+
+        # Shuffle within each category
+        shuffled = {}
+        for cat, indices in self.category_indices.items():
+            perm = rng.permutation(len(indices))
+            shuffled[cat] = [indices[i] for i in perm]
+
+        # Round-robin across categories to fill batches
+        categories = sorted(shuffled.keys())
+        cat_pointers = {cat: 0 for cat in categories}
+        total_samples = sum(len(v) for v in shuffled.values())
+        num_batches = total_samples // self.batch_size
+
+        for _ in range(num_batches):
+            batch = []
+            # Sample proportionally from each category
+            for cat in categories:
+                n_from_cat = max(1, self.batch_size * len(shuffled[cat]) // total_samples)
+                for _ in range(n_from_cat):
+                    if cat_pointers[cat] < len(shuffled[cat]):
+                        batch.append(shuffled[cat][cat_pointers[cat]])
+                        cat_pointers[cat] += 1
+                    if len(batch) >= self.batch_size:
+                        break
+                if len(batch) >= self.batch_size:
+                    break
+
+            # Fill remainder from any available category
+            while len(batch) < self.batch_size:
+                for cat in categories:
+                    if cat_pointers[cat] < len(shuffled[cat]):
+                        batch.append(shuffled[cat][cat_pointers[cat]])
+                        cat_pointers[cat] += 1
+                        break
+                else:
+                    break  # All categories exhausted
+
+            if len(batch) == self.batch_size:
+                rng.shuffle(batch)
+                yield batch
+
+        self.epoch += 1
+
+    def __len__(self):
+        return sum(len(v) for v in self.category_indices.values()) // self.batch_size
+
+    def set_epoch(self, epoch: int):
+        self.epoch = epoch

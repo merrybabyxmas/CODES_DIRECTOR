@@ -11,6 +11,14 @@ data/raw_videos/
 data/processed_dataset/
 data/test_output/
 data/test_single_video/
+data/director_10k/cache/
+data/director_10k/output/
+
+# Overfit test data & outputs
+overfit_test/single_sample/
+overfit_test/mini_dataset/
+overfit_test/checkpoints_*/
+overfit_test/samples_*/
 
 # Generated outputs
 outputs/

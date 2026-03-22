@@ -5,11 +5,11 @@ Architecture (Post-Block Adapter):
   - Backbone CogVideoX transformer blocks are kept COMPLETELY UNTOUCHED.
   - After each block, a lightweight ContextAdapter cross-attention module is applied:
       Q = joint hidden states (text + video),  K/V = unified context tokens
-  - The adapter output is added to the block output via tanh-gated residual.
+  - The adapter output is added to the block output via learnable-gated residual.
   - This design is fully compatible with gradient checkpointing.
 
 Mathematical formulation:
-  h_out = h_block + tanh(gate) * Adapter(h_block, ctx)
+  h_out = h_block + gate * Adapter(h_block, ctx)
   Adapter(h, ctx) = OutProj( Softmax( Q_norm(Q) @ K_norm(K)^T / sqrt(d) ) @ V )
   where Q = W_q(h),  K = W_k(ctx),  V = W_v(ctx)
 """
@@ -59,6 +59,7 @@ class DirectorConfig:
     inject_layers: Union[str, List[int]] = "all"
     context_gate_init: float = 0.0
     adapter_init_gain: float = 0.01  # Xavier gain for adapter weights
+    freeze_gate: bool = False  # If True, gate is non-learnable (fixed at gate_init)
     freeze_backbone: bool = True  # Set False for overfit verification
     unfreeze_backbone_last_n: int = 0  # Unfreeze last N transformer blocks + output layers
 
@@ -115,7 +116,8 @@ class ContextAdapter(nn.Module):
         # Output projection
         self.to_out = nn.Linear(inner_dim, inner_dim, bias=False)
 
-        # Tanh gate (init → 0 so adapter starts as identity)
+        # Learnable gate scalar (direct, no activation).
+        # Set requires_grad based on config — can be frozen to force adapter learning.
         self.gate = nn.Parameter(torch.tensor(gate_init))
 
         self._init_weights(init_gain)
@@ -179,7 +181,7 @@ class ContextAdapter(nn.Module):
         # Split back
         ctx_text, ctx_video = out.split([text_len, S - text_len], dim=1)
 
-        gate_val = torch.tanh(self.gate)
+        gate_val = self.gate  # Direct learnable scalar (no activation)
         hidden_states = hidden_states + gate_val * ctx_video
         encoder_hidden_states = encoder_hidden_states + gate_val * ctx_text
 
@@ -359,7 +361,7 @@ class DirectorTransformer(nn.Module):
 
         self.adapters = nn.ModuleDict()
         for idx in self._inject_indices:
-            self.adapters[str(idx)] = ContextAdapter(
+            adapter = ContextAdapter(
                 inner_dim=self.config.inner_dim,
                 num_heads=self.config.num_heads,
                 head_dim=self.config.head_dim,
@@ -367,6 +369,9 @@ class DirectorTransformer(nn.Module):
                 gate_init=self.config.context_gate_init,
                 init_gain=self.config.adapter_init_gain,
             )
+            if self.config.freeze_gate:
+                adapter.gate.requires_grad = False
+            self.adapters[str(idx)] = adapter
 
     def set_vae(self, vae: nn.Module):
         """Set the VAE for local context encoding."""

@@ -189,6 +189,13 @@ class DirectorTrainer:
             param_groups.append({"params": param_groups_dict["adapter"], "lr": adapter_lr})
         if param_groups_dict["gate"]:
             param_groups.append({"params": param_groups_dict["gate"], "lr": gate_lr, "weight_decay": 0.0})
+            # Gate gradient amplification (skip if gate is frozen)
+            gate_grad_scale = opt_cfg.get("gate_grad_scale", 1.0)
+            if gate_grad_scale != 1.0:
+                for gp in param_groups_dict["gate"]:
+                    if gp.requires_grad:
+                        gp.register_hook(lambda grad, s=gate_grad_scale: grad * s)
+                logger.info(f"Gate gradient amplification: {gate_grad_scale}x")
         if param_groups_dict.get("backbone"):
             param_groups.append({"params": param_groups_dict["backbone"], "lr": backbone_lr})
         if param_groups_dict.get("lora"):
@@ -207,6 +214,9 @@ class DirectorTrainer:
             logger.info("Using 8-bit AdamW (bitsandbytes)")
         else:
             self.optimizer = torch.optim.AdamW(param_groups, **opt_kwargs)
+
+        # Store initial LR per param group (used to override stale LR from checkpoints)
+        self._initial_param_groups_lr = [pg["lr"] for pg in param_groups]
 
         # Scheduler
         sched_cfg = train_cfg.get("scheduler", {})
@@ -301,6 +311,27 @@ class DirectorTrainer:
                         unique_captions.add(f"{identity_text}. {motion_text}".strip(". "))
             # Also add null caption for CFG
             unique_captions.add("")
+
+            # Add 5-shot evaluation prompts so they're cached too
+            _eval_prompts = [
+                "The character walks forward through the scene as the camera steadily dollies in, "
+                "revealing details of the environment. The lighting is natural and the composition "
+                "focuses on the character's presence in the space.",
+                "The same character continues through the scene as the camera pans right while "
+                "moving forward, tracking their movement through the environment. The character "
+                "maintains a natural walking pace.",
+                "Cut to a new scene: a different character appears in a completely different "
+                "environment. The camera captures them from a medium angle as they stand or "
+                "move in their new surroundings, establishing a clear scene change.",
+                "Both characters are now visible together in the same scene. The camera holds "
+                "a wide static shot showing them interacting in a shared space. Each character "
+                "maintains their distinct appearance and positioning.",
+                "The scene continues with only the first character visible. The camera pans left "
+                "while moving forward, following the character as they walk alone through the "
+                "environment. The second character is no longer present.",
+            ]
+            for p in _eval_prompts:
+                unique_captions.add(p)
 
             logger.info(f"  Found {len(unique_captions)} unique captions")
 
@@ -478,11 +509,32 @@ class DirectorTrainer:
                         if i % 5 == 0 or i == len(gate_values) - 1:
                             self.writer.add_scalar(f"gates/layer_{i}", gv, self.global_step)
 
+                # Log gate gradient norms
+                gate_grad_norms = self._get_gate_grad_norms()
+                if gate_grad_norms:
+                    self.writer.add_scalar("train/gate_grad_mean", np.mean(gate_grad_norms), self.global_step)
+
+                # Per-module monitoring: grad norms and weight norms
+                module_stats = loss_dict.get("module_stats", self._get_module_stats())
+                for mod_name, stats in module_stats.items():
+                    self.writer.add_scalar(f"modules/{mod_name}/grad_norm", stats["grad_norm"], self.global_step)
+                    self.writer.add_scalar(f"modules/{mod_name}/weight_norm", stats["weight_norm"], self.global_step)
+                    self.writer.add_scalar(f"modules/{mod_name}/weight_delta", stats["weight_delta"], self.global_step)
+
                 gate_str = f", gate={np.mean(gate_values):.6f}" if gate_values else ""
+                if gate_grad_norms:
+                    gate_str += f" (grad={np.mean(gate_grad_norms):.2e})"
                 gn_str = f"{grad_norm:.2e}" if self.log_grad_norm else "N/A"
+
+                # Compact module monitoring string
+                mod_str = ""
+                if module_stats:
+                    parts = [f"{k}={v['grad_norm']:.2e}" for k, v in module_stats.items()]
+                    mod_str = f" | gnorms: {', '.join(parts)}"
+
                 logger.info(
                     f"Step {self.global_step}: loss={avg_loss:.6f}, lr={lr:.2e}, "
-                    f"grad_norm={gn_str}{gate_str}"
+                    f"grad_norm={gn_str}{gate_str}{mod_str}"
                 )
                 self.running_loss = 0.0
 
@@ -523,15 +575,25 @@ class DirectorTrainer:
                     self._transformer.train()
                     torch.cuda.empty_cache()
 
-            # Periodic multi-shot autoregressive ablation (main process only)
+            # Periodic 5-shot multi-transition evaluation (main process only)
             if (self.global_step % self.multishot_every_steps == 0
                     and self.global_step > 0
                     and self.is_main_process):
                 try:
-                    self._generate_multishot_ablation(self.global_step)
+                    self._generate_5shot_evaluation(self.global_step)
                 except Exception as e:
                     import traceback
-                    logger.warning(f"Multi-shot ablation failed (step {self.global_step}): {e}\n{traceback.format_exc()}")
+                    logger.warning(f"5-shot evaluation failed (step {self.global_step}): {e}\n{traceback.format_exc()}")
+                    self._reload_optimizer_to_gpu()
+                    self._transformer.train()
+                    torch.cuda.empty_cache()
+
+                # GT comparison: generate all training samples and compare with GT
+                try:
+                    self._generate_gt_comparison(self.global_step)
+                except Exception as e:
+                    import traceback
+                    logger.warning(f"GT comparison failed (step {self.global_step}): {e}\n{traceback.format_exc()}")
                     self._reload_optimizer_to_gpu()
                     self._transformer.train()
                     torch.cuda.empty_cache()
@@ -645,6 +707,10 @@ class DirectorTrainer:
             # Compute grad norm BEFORE clipping (for logging)
             if self.log_grad_norm:
                 loss_dict["grad_norm"] = self._compute_grad_norm()
+
+            # Capture per-module grad norms BEFORE clipping (for monitoring)
+            if self.global_step % self.log_every == 0:
+                loss_dict["module_stats"] = self._get_module_stats()
 
             # Gradient clipping
             if self.max_grad_norm > 0:
@@ -1024,6 +1090,199 @@ class DirectorTrainer:
         logger.info("Reloading optimizer state to GPU...")
         self._reload_optimizer_to_gpu()
 
+    def _generate_gt_comparison(self, step: int):
+        """Generate Multi-CFG samples for ALL training samples and compare with GT.
+
+        For each sample in the dataset:
+          1. Full Multi-CFG generation (same anchor, prev_frame, caption as training)
+          2. Decode both GT and generated latents
+          3. Save side-by-side video: [GT | Generated] for each sample
+          4. Save combined grid to TensorBoard
+
+        This is the definitive overfit verification: if the model memorized
+        the data, generated videos should match GT closely.
+        """
+        from torchvision.utils import make_grid
+        import torchvision.transforms.functional as TF
+
+        logger.info(f"GT comparison (step {step}): generating for all {len(self.train_loader.dataset)} samples...")
+        start_t = time.time()
+
+        self._transformer.eval()
+        self._offload_optimizer_to_cpu()
+
+        train_cfg = self.config["training"]
+        height = train_cfg.get("train_height", 320)
+        width = train_cfg.get("train_width", 512)
+        num_frames = train_cfg.get("train_frames", 13)
+
+        latent_h, latent_w = height // 8, width // 8
+        latent_t = (num_frames - 1) // 4 + 1
+        latent_c = self.pipeline.vae.config.latent_channels
+
+        inf_guidance = self.config.get("inference", {}).get("guidance", {})
+        omega_text = inf_guidance.get("omega_text", 6.0)
+        omega_local = inf_guidance.get("omega_local", 2.0)
+        omega_global = inf_guidance.get("omega_global", 3.0)
+        num_steps = self.sample_num_steps
+
+        diffusion = self.pipeline.diffusion
+        transformer = self._transformer
+        max_chars = self.config.get("model", {}).get("context", {}).get("max_characters", 4)
+
+        with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+            null_text_embeds = self._get_text_embeds("")
+
+        gt_gen_pairs = []  # list of (seq_id, role, gt_mid_frame, gen_mid_frame)
+
+        for batch_idx, batch in enumerate(self.train_loader):
+            seq_id = batch.get("seq_ids", [f"sample_{batch_idx}"])[0]
+
+            target_video = batch["target_video"].to(self.device, dtype=torch.float32)
+            prev_frame = batch["prev_frame"].to(self.device, dtype=torch.float32)
+            prev_prev_frame = batch["prev_prev_frame"].to(self.device, dtype=torch.float32)
+            has_prev_prev = batch["has_prev_prev"]
+            anchor_rgb = batch["anchor_rgb"].to(self.device, dtype=torch.float32)
+            char_mask = batch["character_mask"].to(self.device, dtype=torch.float32)
+            caption = batch["captions"][0]
+            B, K = anchor_rgb.shape[:2]
+
+            prev_frames = [prev_frame]
+            if has_prev_prev[0]:
+                prev_frames.append(prev_prev_frame)
+            char_list = [anchor_rgb[:, k] for k in range(K)]
+            local_frame_valid = torch.stack([
+                torch.ones(B, device=self.device),
+                has_prev_prev.float().to(self.device),
+            ], dim=0)
+
+            with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+                # Encode GT
+                gt_latents = self.pipeline.encode_video(target_video)
+
+                # Get text + context embeddings
+                text_embeds = self._get_text_embeds(caption)
+                ctx_full, mask_full = transformer.encode_context(
+                    prev_frames=prev_frames,
+                    character_images=char_list,
+                    character_masks=char_mask,
+                    local_frame_valid=local_frame_valid,
+                )
+                ctx_local, mask_local = transformer.encode_context(
+                    prev_frames=prev_frames,
+                    character_images=None,
+                )
+
+                # Full Multi-CFG ODE generation
+                gen = torch.Generator(device=self.device).manual_seed(42)
+                x = torch.randn(
+                    1, latent_t, latent_c, latent_h, latent_w,
+                    device=self.device, dtype=torch.bfloat16, generator=gen,
+                )
+                timesteps = diffusion.prepare_inference(num_steps, self.device)
+                state = None
+                for i, t in enumerate(timesteps):
+                    t_tensor = t.expand(1)
+                    fwd = lambda te, ctx, msk: transformer(
+                        hidden_states=x, encoder_hidden_states=te, timestep=t_tensor,
+                        unified_context=ctx, context_mask=msk, return_dict=False,
+                    )[0]
+
+                    v_null  = fwd(null_text_embeds, None, None)
+                    v_text  = fwd(text_embeds, None, None)
+                    v_local = fwd(text_embeds, ctx_local, mask_local)
+                    v_full  = fwd(text_embeds, ctx_full, mask_full)
+
+                    v_out = (v_null
+                             + omega_text   * (v_text  - v_null)
+                             + omega_local  * (v_local - v_text)
+                             + omega_global * (v_full  - v_local))
+                    v_out = v_out.float()
+                    step_out = diffusion.inference_step(v_out, x.float(), t, i, timesteps, state=state)
+                    x = step_out.latents.to(torch.bfloat16)
+                    state = step_out.state
+
+                gen_latents = x.cpu()
+
+            logger.info(f"  [{seq_id}] Generated ({caption[:50]}...)")
+
+            # Store for decoding after all generation is done
+            gt_gen_pairs.append((seq_id, gt_latents.cpu(), gen_latents))
+
+            del target_video, prev_frame, prev_prev_frame, anchor_rgb, char_mask
+            del text_embeds, ctx_full, mask_full, ctx_local, mask_local, x
+            torch.cuda.empty_cache()
+
+        # Phase 2: Decode all with VAE (transformer offloaded)
+        transformer.cpu()
+        torch.cuda.empty_cache()
+        self.pipeline.vae.to(self.device)
+
+        comparison_frames = []
+        sample_dir = Path(self.config["training"]["sample_generation"]["save_dir"])
+        sample_dir.mkdir(parents=True, exist_ok=True)
+
+        for seq_id, gt_lat, gen_lat in gt_gen_pairs:
+            with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+                gt_video = self.pipeline.decode_latent(gt_lat.to(self.device))   # (1, T, 3, H, W)
+                gen_video = self.pipeline.decode_latent(gen_lat.to(self.device))  # (1, T, 3, H, W)
+
+            gt_vid = gt_video[0].cpu().float().clamp(0, 1)    # (T, 3, H, W)
+            gen_vid = gen_video[0].cpu().float().clamp(0, 1)   # (T, 3, H, W)
+
+            # Save side-by-side video: [GT | Generated]
+            T_vid = min(gt_vid.shape[0], gen_vid.shape[0])
+            sbs_frames = []
+            for t_idx in range(T_vid):
+                gt_f = (gt_vid[t_idx].permute(1, 2, 0).numpy() * 255).astype(np.uint8)
+                gen_f = (gen_vid[t_idx].permute(1, 2, 0).numpy() * 255).astype(np.uint8)
+                # Add labels
+                gt_labeled = gt_f.copy()
+                gen_labeled = gen_f.copy()
+                cv2.putText(gt_labeled, "GT", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
+                cv2.putText(gen_labeled, "GEN", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                sbs = np.concatenate([gt_labeled, gen_labeled], axis=1)
+                sbs_frames.append(sbs)
+
+            # Write side-by-side video
+            sbs_path = sample_dir / f"gt_vs_gen_{seq_id}_step{step:06d}.mp4"
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            h_sbs, w_sbs = sbs_frames[0].shape[:2]
+            writer = cv2.VideoWriter(str(sbs_path), fourcc, 8, (w_sbs, h_sbs))
+            for frame in sbs_frames:
+                writer.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+            writer.release()
+            logger.info(f"  Saved: {sbs_path}")
+
+            # Store mid frames for grid
+            mid = T_vid // 2
+            gt_mid = gt_vid[mid]
+            gen_mid = gen_vid[mid]
+            comparison_frames.append(gt_mid)
+            comparison_frames.append(gen_mid)
+
+            del gt_video, gen_video, gt_vid, gen_vid
+            torch.cuda.empty_cache()
+
+        # TensorBoard: grid of all [GT, Gen] pairs
+        if comparison_frames and self.writer is not None:
+            grid = make_grid(comparison_frames, nrow=2, padding=4, normalize=False)
+            self.writer.add_image("gt_comparison/all_samples", grid, step)
+            self.writer.flush()
+
+        # Cleanup: move everything back
+        self.pipeline.vae.cpu()
+        torch.cuda.empty_cache()
+        transformer.to(self.device)
+        transformer.train()
+        torch.cuda.empty_cache()
+
+        elapsed = time.time() - start_t
+        logger.info(f"GT comparison complete in {elapsed:.1f}s ({len(gt_gen_pairs)} samples)")
+
+        logger.info("Reloading optimizer state to GPU...")
+        self._reload_optimizer_to_gpu()
+
     def _generate_multishot_ablation(self, step: int):
         """
         Generate a multi-shot autoregressive sequence to verify shot-to-shot consistency.
@@ -1242,6 +1501,420 @@ class DirectorTrainer:
         torch.cuda.empty_cache()
         self._reload_optimizer_to_gpu()
 
+    def _generate_5shot_evaluation(self, step: int):
+        """
+        Generate 3×5 multi-domain multi-transition evaluation.
+
+        3 Anchor Domains:
+          D1: T2I Synthetic (high-fidelity generated characters)
+          D2: In-the-wild / Heterogeneous (cartoon + noisy real photo)
+          D3: Self-extracted (SAM2-extracted from video dataset)
+
+        5 Shots per domain (same scenario):
+          Shot 1: Zoom-in, Character A  (Identity Alignment)
+          Shot 2: Zoom-in, Character A  (Spatial Inertia / Continuity)
+          Shot 3: Cross-cut to Char B   (Context Blocking / Swap)
+          Shot 4: Char A + B together   (Feature Composition / Multi-entity)
+          Shot 5: Char A only, B gone   (Selective Erasure)
+
+        Outputs per domain:
+          1. Full-length 5-shot concatenated video
+          2. 4-subplot transition comparison video with subtitles
+        """
+        from PIL import Image as _Image
+        from torchvision import transforms as _transforms
+
+        num_shots = 5
+        num_steps = self.sample_num_steps
+        logger.info(f"3x5 evaluation (step {step}): 3 domains × {num_shots} shots, {num_steps} ODE steps...")
+        start_t = time.time()
+
+        self._transformer.eval()
+        self._offload_optimizer_to_cpu()
+
+        # --- Anchor loading utilities ---
+        clip_size = 224
+        clip_normalize = _transforms.Normalize(
+            mean=[0.48145466, 0.4578275, 0.40821073],
+            std=[0.26862954, 0.26130258, 0.27577711],
+        )
+
+        def load_anchor_from_path(path: str):
+            """Load RGBA anchor as CLIP-normalized (3, 224, 224) tensor."""
+            p = Path(path)
+            if not p.exists():
+                return None
+            img = _Image.open(str(p)).convert("RGBA")
+            arr = np.array(img)
+            t = torch.from_numpy(arr).permute(2, 0, 1).float() / 255.0
+            t = _transforms.Resize((clip_size, clip_size), antialias=True)(t)
+            rgb = t[:3]
+            alpha = t[3:4]
+            composited = rgb * alpha + torch.ones_like(rgb) * (1 - alpha)
+            return clip_normalize(composited)
+
+        # --- Load anchors for all 3 domains ---
+        eval_anchor_dir = Path("evaluation/anchors")
+        dataset_dir = Path(self.config.get("dataset", {}).get(
+            "dataset_dir", self.config.get("dataset", {}).get("triplet_dir", "data/director_10k/output")))
+
+        domains = [
+            {
+                "name": "t2i",
+                "label": "D1:T2I-Synthetic",
+                "char_a": str(eval_anchor_dir / "t2i" / "char_a.png"),
+                "char_b": str(eval_anchor_dir / "t2i" / "char_b.png"),
+            },
+            {
+                "name": "wild",
+                "label": "D2:In-the-Wild",
+                "char_a": str(eval_anchor_dir / "wild" / "char_a.png"),
+                "char_b": str(eval_anchor_dir / "wild" / "char_b.png"),
+            },
+            {
+                "name": "extracted",
+                "label": "D3:Self-Extracted",
+                "char_a": str(eval_anchor_dir / "extracted" / "char_a.png"),
+                "char_b": str(eval_anchor_dir / "extracted" / "char_b.png"),
+            },
+        ]
+
+        # Filter to available domains only
+        valid_domains = []
+        for dom in domains:
+            a = load_anchor_from_path(dom["char_a"])
+            b = load_anchor_from_path(dom["char_b"])
+            if a is not None and b is not None:
+                dom["anchor_a"] = a
+                dom["anchor_b"] = b
+                valid_domains.append(dom)
+            else:
+                logger.warning(f"Skipping domain {dom['name']}: anchors not found")
+
+        if not valid_domains:
+            # Fallback: use dataset anchors directly
+            logger.warning("No eval anchors found, falling back to dataset anchors")
+            a = load_anchor_from_path(str(dataset_dir / "seq_00047" / "global_anchor_0.png"))
+            b = load_anchor_from_path(str(dataset_dir / "seq_00002" / "global_anchor_0.png"))
+            if a is None or b is None:
+                logger.error("Cannot find any valid anchors for evaluation!")
+                self._transformer.train()
+                self._reload_optimizer_to_gpu()
+                return
+            valid_domains = [{"name": "extracted", "label": "D3:Self-Extracted",
+                              "anchor_a": a, "anchor_b": b}]
+
+        logger.info(f"  Running evaluation for {len(valid_domains)} domains: {[d['name'] for d in valid_domains]}")
+
+        # Load initial prev_frame (from dataset)
+        prev_frame_path = dataset_dir / "seq_00047" / "prev_shot_last_frame.jpg"
+        if not prev_frame_path.exists():
+            # Find any valid prev frame
+            for seq in sorted(dataset_dir.iterdir()):
+                p = seq / "prev_shot_last_frame.jpg"
+                if p.exists():
+                    prev_frame_path = p
+                    break
+        prev_img = cv2.imread(str(prev_frame_path))
+        if prev_img is None:
+            logger.error(f"Cannot load prev frame from {prev_frame_path}")
+            self._transformer.train()
+            self._reload_optimizer_to_gpu()
+            return
+        prev_img = cv2.cvtColor(prev_img, cv2.COLOR_BGR2RGB)
+
+        # Training resolution
+        train_cfg = self.config["training"]
+        height = train_cfg.get("train_height", 320)
+        width = train_cfg.get("train_width", 512)
+        num_frames = train_cfg.get("train_frames", 13)
+        max_chars = self.config.get("dataset", {}).get("max_characters", 4)
+
+        video_resize = _transforms.Resize((height, width), antialias=True)
+        prev_tensor = torch.from_numpy(prev_img).permute(2, 0, 1).float() / 255.0
+        prev_frame_base = video_resize(prev_tensor.unsqueeze(0)).squeeze(0)  # (3, H, W)
+
+        # Multi-CFG guidance scales
+        inf_guidance = self.config.get("inference", {}).get("guidance", {})
+        omega_text = inf_guidance.get("omega_text", 6.0)
+        omega_local = inf_guidance.get("omega_local", 2.0)
+        omega_global = inf_guidance.get("omega_global", 3.0)
+
+        latent_h, latent_w = height // 8, width // 8
+        latent_t = (num_frames - 1) // 4 + 1
+        latent_c = self.pipeline.vae.config.latent_channels
+
+        diffusion = self.pipeline.diffusion
+        transformer = self._transformer
+
+        # Pre-encode text (shared across all domains)
+        with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+            null_text_embeds = self._get_text_embeds("")
+
+        # Transition labels for subplot videos
+        transition_labels = [
+            "T1: Continuity (Fwd->Pan-R)\nSame char A, motion change.\nSuccess: A consistent",
+            "T2: Cross-Cut (A->B)\nCharacter swap.\nSuccess: B appears, not A",
+            "T3: Multi-Entity (B->A+B)\nA joins B's scene.\nSuccess: Both A+B visible",
+            "T4: Erasure (A+B->A)\nB removed, pan-left.\nSuccess: Only A remains",
+        ]
+
+        # === Generate 5 shots for each domain ===
+        for dom in valid_domains:
+            domain_name = dom["name"]
+            domain_label = dom["label"]
+            anchor_a = dom["anchor_a"]
+            anchor_b = dom["anchor_b"]
+
+            logger.info(f"  --- Domain: {domain_label} ---")
+
+            shot_configs = [
+                # S1: Character A established in scene, camera dollies forward
+                {"caption": "The character walks forward through the scene as the camera steadily dollies in, "
+                            "revealing details of the environment. The lighting is natural and the composition "
+                            "focuses on the character's presence in the space.",
+                 "anchors": [anchor_a], "subtitle": f"[{domain_label}] S1: Dolly-In | A"},
+                # S2: Same character A, camera pans right — test continuity across motion change
+                {"caption": "The same character continues through the scene as the camera pans right while "
+                            "moving forward, tracking their movement through the environment. The character "
+                            "maintains a natural walking pace.",
+                 "anchors": [anchor_a], "subtitle": f"[{domain_label}] S2: Pan-R | A (cont.)"},
+                # S3: Cross-cut to character B — test identity swap
+                {"caption": "Cut to a new scene: a different character appears in a completely different "
+                            "environment. The camera captures them from a medium angle as they stand or "
+                            "move in their new surroundings, establishing a clear scene change.",
+                 "anchors": [anchor_b], "subtitle": f"[{domain_label}] S3: Cross-Cut | B"},
+                # S4: Both A and B together — test multi-entity composition
+                {"caption": "Both characters are now visible together in the same scene. The camera holds "
+                            "a wide static shot showing them interacting in a shared space. Each character "
+                            "maintains their distinct appearance and positioning.",
+                 "anchors": [anchor_a, anchor_b], "subtitle": f"[{domain_label}] S4: Static | A+B"},
+                # S5: Only A remains, B gone — test selective erasure
+                {"caption": "The scene continues with only the first character visible. The camera pans left "
+                            "while moving forward, following the character as they walk alone through the "
+                            "environment. The second character is no longer present.",
+                 "anchors": [anchor_a], "subtitle": f"[{domain_label}] S5: Pan-L | A only"},
+            ]
+
+            prev_frame_init = prev_frame_base.unsqueeze(0).to(self.device)
+            shot_latents_cpu = []
+            prev_frames_ar = [prev_frame_init]
+
+            for shot_idx in range(num_shots):
+                sc = shot_configs[shot_idx]
+                logger.info(f"    {sc['subtitle']}...")
+
+                with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+                    text_embeds = self._get_text_embeds(sc["caption"])
+
+                    anchor_rgb = torch.zeros(1, max_chars, 3, clip_size, clip_size, device=self.device)
+                    char_mask = torch.zeros(1, max_chars, device=self.device)
+                    for k, anc in enumerate(sc["anchors"]):
+                        if k < max_chars:
+                            anchor_rgb[0, k] = anc.to(self.device)
+                            char_mask[0, k] = 1.0
+                    char_list = [anchor_rgb[:, k] for k in range(max_chars)]
+
+                    ctx_full, mask_full = transformer.encode_context(
+                        prev_frames=prev_frames_ar,
+                        character_images=char_list,
+                        character_masks=char_mask,
+                    )
+                    ctx_local, mask_local = transformer.encode_context(
+                        prev_frames=prev_frames_ar,
+                        character_images=None,
+                    )
+
+                    gen = torch.Generator(device=self.device)
+                    gen.manual_seed(42 + shot_idx)
+                    x = torch.randn(
+                        1, latent_t, latent_c, latent_h, latent_w,
+                        device=self.device, dtype=torch.bfloat16, generator=gen,
+                    )
+
+                    timesteps = diffusion.prepare_inference(num_steps, self.device)
+                    state = None
+                    for i, t in enumerate(timesteps):
+                        t_tensor = t.expand(1)
+                        fwd = lambda te, ctx, msk: transformer(
+                            hidden_states=x, encoder_hidden_states=te, timestep=t_tensor,
+                            unified_context=ctx, context_mask=msk, return_dict=False,
+                        )[0]
+
+                        v_null  = fwd(null_text_embeds, None, None)
+                        v_text  = fwd(text_embeds, None, None)
+                        v_local = fwd(text_embeds, ctx_local, mask_local)
+                        v_full  = fwd(text_embeds, ctx_full, mask_full)
+
+                        v_out = (v_null
+                                 + omega_text   * (v_text  - v_null)
+                                 + omega_local  * (v_local - v_text)
+                                 + omega_global * (v_full  - v_local))
+                        v_out = v_out.float()
+                        step_out = diffusion.inference_step(v_out, x.float(), t, i, timesteps, state=state)
+                        x = step_out.latents.to(torch.bfloat16)
+                        state = step_out.state
+
+                    shot_latents_cpu.append(x.cpu())
+                    del x, ctx_full, mask_full, ctx_local, mask_local, text_embeds
+                    torch.cuda.empty_cache()
+
+                # Decode last frame for autoregressive chaining
+                if shot_idx < num_shots - 1:
+                    transformer.cpu()
+                    torch.cuda.empty_cache()
+                    self.pipeline.vae.to(self.device)
+
+                    with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+                        video_tmp = self.pipeline.decode_latent(shot_latents_cpu[-1].to(self.device))
+                    last_frame = video_tmp[:, -1]
+                    del video_tmp
+                    torch.cuda.empty_cache()
+
+                    self.pipeline.vae.cpu()
+                    torch.cuda.empty_cache()
+                    transformer.to(self.device)
+                    prev_frames_ar = [last_frame]
+
+            # === Decode all shots for this domain ===
+            logger.info(f"    Decoding all 5 shots for {domain_label}...")
+            transformer.cpu()
+            if self.pipeline.text_encoder is not None:
+                self.pipeline.text_encoder.cpu()
+            torch.cuda.empty_cache()
+            self.pipeline.vae.to(self.device)
+
+            shot_videos = []
+            for lat_cpu in shot_latents_cpu:
+                with torch.no_grad(), torch.autocast(device_type="cuda", dtype=self.amp_dtype, enabled=self.use_amp):
+                    video = self.pipeline.decode_latent(lat_cpu.to(self.device))
+                shot_videos.append(video[0].cpu().float().clamp(0, 1))
+                del video
+                torch.cuda.empty_cache()
+            del shot_latents_cpu
+
+            # Move transformer back for next domain (or final cleanup)
+            self.pipeline.vae.cpu()
+            torch.cuda.empty_cache()
+            transformer.to(self.device)
+
+            # === Write outputs for this domain ===
+            self._write_5shot_videos(
+                shot_videos, shot_configs, transition_labels,
+                step, domain_name, domain_label,
+                height, width,
+            )
+
+            del shot_videos
+            torch.cuda.empty_cache()
+
+        del null_text_embeds
+        torch.cuda.empty_cache()
+
+        # Move everything back to GPU
+        transformer.to(self.device)
+        if self.pipeline.text_encoder is not None:
+            self.pipeline.text_encoder.to(self.device)
+        torch.cuda.empty_cache()
+
+        self.writer.flush()
+        elapsed = time.time() - start_t
+        logger.info(f"3x5 evaluation complete in {elapsed:.1f}s ({len(valid_domains)} domains)")
+
+        self._transformer.train()
+        torch.cuda.empty_cache()
+        self._reload_optimizer_to_gpu()
+
+    def _write_5shot_videos(
+        self,
+        shot_videos: list,
+        shot_configs: list,
+        transition_labels: list,
+        step: int,
+        domain_name: str,
+        domain_label: str,
+        height: int,
+        width: int,
+    ):
+        """Write output videos for one domain of the 5-shot evaluation."""
+        H_out, W_out = height, width
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+
+        # Output 1: Full-length concatenated video with shot labels
+        full_video = torch.cat(shot_videos, dim=0)
+        mp4_full = self.sample_dir / f"5shot_{domain_name}_full_step{step:06d}.mp4"
+        video_np = (full_video.clamp(0, 1) * 255).byte().permute(0, 2, 3, 1).numpy()
+        T_out = video_np.shape[0]
+
+        writer_cv = cv2.VideoWriter(str(mp4_full), fourcc, 8, (W_out, H_out))
+        frame_idx = 0
+        for shot_i, sv in enumerate(shot_videos):
+            label = shot_configs[shot_i]["subtitle"]
+            for _ in range(sv.shape[0]):
+                frame_bgr = cv2.cvtColor(video_np[frame_idx], cv2.COLOR_RGB2BGR)
+                cv2.putText(frame_bgr, label, (10, H_out - 15),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 2, cv2.LINE_AA)
+                cv2.putText(frame_bgr, label, (10, H_out - 15),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), 1, cv2.LINE_AA)
+                writer_cv.write(frame_bgr)
+                frame_idx += 1
+        writer_cv.release()
+        logger.info(f"    Saved: {mp4_full} ({T_out} frames)")
+
+        # Output 2: 4-subplot transition comparison
+        mp4_comp = self.sample_dir / f"5shot_{domain_name}_transitions_step{step:06d}.mp4"
+        n_ctx = 3
+        canvas_w = W_out * 4
+        canvas_h = H_out + 60
+
+        transition_clips = []
+        for t_idx in range(4):
+            before = shot_videos[t_idx][-n_ctx:]
+            after = shot_videos[t_idx + 1][:n_ctx]
+            transition_clips.append(torch.cat([before, after], dim=0))
+        max_frames = max(c.shape[0] for c in transition_clips)
+
+        writer_cv2 = cv2.VideoWriter(str(mp4_comp), fourcc, 4, (canvas_w, canvas_h))
+        for f_idx in range(max_frames):
+            canvas = np.zeros((canvas_h, canvas_w, 3), dtype=np.uint8)
+            for t_idx in range(4):
+                clip = transition_clips[t_idx]
+                actual_f = min(f_idx, clip.shape[0] - 1)
+                frame = (clip[actual_f].permute(1, 2, 0).numpy() * 255).astype(np.uint8)
+                frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+                if f_idx == n_ctx:
+                    cv2.line(frame_bgr, (0, 0), (0, H_out), (0, 0, 255), 3)
+
+                x_off = t_idx * W_out
+                canvas[:H_out, x_off:x_off + W_out] = frame_bgr
+
+                for li, line in enumerate(transition_labels[t_idx].split("\n")):
+                    cv2.putText(canvas, line, (x_off + 5, H_out + 15 + li * 15),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1, cv2.LINE_AA)
+
+                pos = f"Shot {t_idx+1} (-{n_ctx-f_idx})" if f_idx < n_ctx else f"Shot {t_idx+2} (+{f_idx-n_ctx+1})"
+                cv2.putText(canvas, pos, (x_off + 5, 15),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 255, 0), 1, cv2.LINE_AA)
+            writer_cv2.write(canvas)
+        writer_cv2.release()
+        logger.info(f"    Saved: {mp4_comp} ({max_frames} frames, {canvas_w}x{canvas_h})")
+
+        # TensorBoard logging
+        key_frames = []
+        for sv in shot_videos:
+            T = sv.shape[0]
+            key_frames.extend([sv[0], sv[T // 2], sv[-1]])
+        kf_grid = make_grid(key_frames, nrow=3, padding=4, normalize=False)
+        self.writer.add_image(f"5shot_{domain_name}/key_frames", kf_grid, step)
+
+        tr_frames = []
+        for i in range(4):
+            tr_frames.append(shot_videos[i][-1])
+            tr_frames.append(shot_videos[i + 1][0])
+        tr_grid = make_grid(tr_frames, nrow=2, padding=4, normalize=False)
+        self.writer.add_image(f"5shot_{domain_name}/transitions", tr_grid, step)
+
     def _compute_grad_norm(self) -> float:
         """Compute the total gradient norm across all trainable parameters."""
         total_norm = 0.0
@@ -1251,12 +1924,58 @@ class DirectorTrainer:
         return total_norm ** 0.5
 
     def _get_gate_values(self) -> List[float]:
-        """Extract tanh(gate) values from all DIRECTOR context adapters."""
+        """Extract gate values from all DIRECTOR context adapters."""
         gate_vals = []
         adapters = self._transformer.adapters
         for key, adapter in adapters.items():
-            gate_vals.append(torch.tanh(adapter.gate).item())
+            gate_vals.append(adapter.gate.item())
         return gate_vals
+
+    def _get_gate_grad_norms(self) -> List[float]:
+        """Extract gate gradient norms (after hooks) from all context adapters."""
+        norms = []
+        adapters = self._transformer.adapters
+        for key, adapter in adapters.items():
+            if adapter.gate.grad is not None:
+                norms.append(adapter.gate.grad.abs().item())
+        return norms
+
+    def _get_module_stats(self) -> Dict[str, Dict[str, float]]:
+        """Compute per-module grad norms and weight norms for monitoring.
+
+        Tracks: encoder (local+global proj), adapter (cross-attn), gate, lora.
+        """
+        if not hasattr(self, '_prev_weight_norms'):
+            self._prev_weight_norms = {}
+
+        param_groups_dict = self.pipeline.director_transformer.get_trainable_param_groups()
+        stats = {}
+        for group_name in ["encoder", "adapter", "gate", "lora"]:
+            params = param_groups_dict.get(group_name, [])
+            if not params:
+                continue
+            # Grad norm
+            grad_sq = 0.0
+            for p in params:
+                if p.grad is not None:
+                    grad_sq += p.grad.data.float().norm().item() ** 2
+            grad_norm = grad_sq ** 0.5
+
+            # Weight norm
+            weight_sq = sum(p.data.float().norm().item() ** 2 for p in params)
+            weight_norm = weight_sq ** 0.5
+
+            # Weight delta (change since last check)
+            prev = self._prev_weight_norms.get(group_name, weight_norm)
+            weight_delta = abs(weight_norm - prev)
+            self._prev_weight_norms[group_name] = weight_norm
+
+            stats[group_name] = {
+                "grad_norm": grad_norm,
+                "weight_norm": weight_norm,
+                "weight_delta": weight_delta,
+            }
+        return stats
 
     def _unwrap_module(self, module):
         """Unwrap DDP module to get the underlying module."""
@@ -1384,6 +2103,12 @@ class DirectorTrainer:
             try:
                 self.optimizer.load_state_dict(state["optimizer"])
                 logger.info("Optimizer state loaded successfully")
+                # Override LR from current config (checkpoint may have stale LR values)
+                for pg_old, pg_new in zip(self.optimizer.param_groups,
+                                          self._initial_param_groups_lr):
+                    if pg_old["lr"] != pg_new:
+                        logger.info(f"  Overriding LR: {pg_old['lr']:.1e} -> {pg_new:.1e}")
+                        pg_old["lr"] = pg_new
             except (ValueError, KeyError) as e:
                 logger.warning(f"Optimizer state load failed, starting fresh: {e}")
         else:
@@ -1441,6 +2166,7 @@ def _build_pipeline_and_config(config):
         adapter_init_gain=model_cfg.get("attention", {}).get("adapter_init_gain", 0.01),
         freeze_backbone=model_cfg.get("freeze_backbone", True),
         unfreeze_backbone_last_n=model_cfg.get("unfreeze_backbone_last_n", 0),
+        freeze_gate=model_cfg.get("attention", {}).get("freeze_gate", False),
         # LoRA config
         lora_enabled=model_cfg.get("lora", {}).get("enabled", False),
         lora_rank=model_cfg.get("lora", {}).get("rank", 16),
@@ -1547,6 +2273,9 @@ def _create_dataloaders(config, pipeline, distributed=False):
             tokenizer=pipeline.tokenizer,
             seed=seed,
         )
+        # If val set is empty (e.g. 1-sample overfit), set to None
+        if len(val_loader.dataset) == 0:
+            val_loader = None
         return train_loader, val_loader, None
 
 
