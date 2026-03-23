@@ -1,0 +1,160 @@
+# =============================================================================
+# DIRECTOR Phase 2: Quality Fine-tuning (Adapter + LoRA)
+# =============================================================================
+# Purpose: Load Phase 1 adapter weights (routing already learned), then add
+#   LoRA as a quality-boosting auxiliary. LoRA LR << Adapter LR so that
+#   LoRA acts as a helper, NOT a replacement for the adapter.
+#
+# Launch:
+#   torchrun --nproc_per_node=4 -m training.trainer \
+#     --config configs/phase2_quality_finetune.yaml \
+#     --resume checkpoints/phase1_adapter_awakening/best.pt \
+#     --weights-only
+#
+# This loads adapter+encoder weights from Phase 1 but starts optimizer,
+# scheduler, and step counter fresh. LoRA is randomly initialized.
+#
+# 4-GPU DDP (RTX 5090 32GB x 4)
+# =============================================================================
+
+seed: 42
+cuda_device: 0
+
+model:
+  backbone: "THUDM/CogVideoX-2b"
+  freeze_backbone: true
+  unfreeze_backbone_last_n: 0
+  inner_dim: 1920
+  text_embed_dim: 4096
+  num_heads: 30
+  head_dim: 64
+  num_layers: 30
+  max_text_seq_length: 226
+  patch_size: 2
+  vae_latent_channels: 16
+  vae_spatial_scale: 8
+  vae_temporal_compression: 4
+  vae_scaling_factor: 1.15258426
+
+  context:
+    local_token_count: 256
+    num_local_frames: 2
+    global_token_count: 64
+    max_characters: 4
+    context_dim: 1920
+    clip_vision_dim: 1024
+    local_proj_dim: 1920
+    global_proj_dim: 1920
+    clip_model: "openai/clip-vit-large-patch14"
+
+  dropout:
+    drop_global_prob: 0.10
+    drop_local_prob: 0.10
+    keep_both_prob: 0.80
+
+  attention:
+    inject_layers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
+    context_gate_init: 0.1     # Overwritten by Phase 1 checkpoint
+    adapter_init_gain: 0.2     # Overwritten by Phase 1 checkpoint
+    freeze_gate: false
+
+  lora:
+    enabled: true
+    rank: 32              # Reduced from 128 → 32 to prevent LoRA from dominating adapter
+    alpha: 32             # alpha/rank = 1.0
+    target_modules: ["attn1.to_q", "attn1.to_v"]
+    dropout: 0.05
+
+dataset:
+  dataset_dir: "data/processed_dataset"
+  video:
+    num_frames: 49
+    fps: 8
+    height: 480
+    width: 720
+    latent_height: 60
+    latent_width: 90
+    latent_frames: 13
+  captioning:
+    model: "llava"
+    max_caption_length: 200
+  dataloader:
+    batch_size: 1
+    num_workers: 4
+    pin_memory: true
+    prefetch_factor: 2
+
+training:
+  optimizer:
+    type: "adamw8bit"
+    lr: 5.0e-5            # Encoder — lower than Phase 1 (already warmed up)
+    adapter_lr: 2.0e-4    # Adapter — lower than Phase 1 (preserve learned routing)
+    gate_lr: 1.0e-4       # Gates — lower (should stay near Phase 1 values)
+    gate_grad_scale: 1.0
+    lora_lr: 1.0e-5       # LoRA — much lower than adapter (auxiliary role only)
+    weight_decay: 0.01    # Light regularization for generalization
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "cosine"
+    warmup_steps: 500
+    min_lr_ratio: 0.1
+
+  curriculum_gating:
+    enabled: false
+
+  num_epochs: 200
+  max_steps: 50000
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+
+  mixed_precision: "bf16"
+  gradient_checkpointing: true
+
+  train_height: 480
+  train_width: 720
+  train_frames: 13
+
+  cache_text_embeddings: true
+  offload_text_encoder: false
+
+  flow_matching:
+    sigma_min: 0.001
+    time_sampling: "uniform"
+
+  checkpoint:
+    save_every_steps: 2000
+    save_dir: "checkpoints/phase2_quality_finetune"
+    keep_last_n: 5
+    save_best: true
+    best_metric: "loss"
+
+  logging:
+    log_every_steps: 50
+    tensorboard_dir: "logs/phase2_quality_finetune"
+    log_grad_norm: true
+
+  sample_generation:
+    every_steps: 1000
+    ablation_every_steps: 5000
+    multishot_every_steps: 2000
+    multishot_num_shots: 3
+    num_steps: 50
+    num_frames_to_log: 8
+    save_dir: "samples/phase2_quality_finetune"
+
+inference:
+  guidance:
+    omega_text: 6.0
+    omega_local: 2.0
+    omega_global: 3.0
+  solver:
+    type: "euler"
+    num_steps: 50
+    sigma_min: 0.001
+  generation:
+    num_frames: 49
+    height: 480
+    width: 720
+    fps: 8

@@ -133,6 +133,19 @@ class DirectorTrainer:
         self._fixed_sample = None  # cached validation sample for consistent comparison
         self._last_sample_step = 0  # track last sample generation step
 
+        # Curriculum gating: gradually increase gate clamp during warmup
+        curriculum_cfg = train_cfg.get("curriculum_gating", {})
+        self.curriculum_enabled = curriculum_cfg.get("enabled", False)
+        self.curriculum_warmup_steps = curriculum_cfg.get("warmup_steps", 1000)
+        self.curriculum_gate_start = curriculum_cfg.get("gate_start", 0.0)
+        self.curriculum_gate_end = curriculum_cfg.get("gate_end", None)  # None = unclamped after warmup
+        if self.curriculum_enabled:
+            logger.info(
+                f"Curriculum gating enabled: gate clamp {self.curriculum_gate_start:.2f} → "
+                f"{'unclamped' if self.curriculum_gate_end is None else f'{self.curriculum_gate_end:.2f}'} "
+                f"over {self.curriculum_warmup_steps} steps"
+            )
+
         # T5/CLIP CPU offloading config
         self.offload_text_encoder = train_cfg.get("offload_text_encoder", False)
 
@@ -493,21 +506,42 @@ class DirectorTrainer:
                     grad_norm = loss_dict.get("grad_norm", 0.0)
                     self.writer.add_scalar("train/grad_norm", grad_norm, self.global_step)
 
-                # Log gate values from DIRECTOR adapters
-                gate_values = self._get_gate_values()
+                # Log gate values from DIRECTOR adapters (video + text)
+                gate_values = self._get_gate_values()  # video gates
+                gate_text_values = self._get_gate_text_values()  # text gates
                 if gate_values:
                     gate_mean = np.mean(gate_values)
                     gate_max = np.max(gate_values)
                     gate_min = np.min(gate_values)
                     gate_std = np.std(gate_values)
+                    self.writer.add_scalar("train/gate_video_mean", gate_mean, self.global_step)
+                    self.writer.add_scalar("train/gate_video_max", gate_max, self.global_step)
+                    self.writer.add_scalar("train/gate_video_min", gate_min, self.global_step)
+                    # Legacy alias for compatibility
                     self.writer.add_scalar("train/gate_mean", gate_mean, self.global_step)
-                    self.writer.add_scalar("train/gate_max", gate_max, self.global_step)
-                    self.writer.add_scalar("train/gate_min", gate_min, self.global_step)
-                    self.writer.add_scalar("train/gate_std", gate_std, self.global_step)
-                    # Per-layer gate values (every 5th layer to avoid clutter)
+                    # Per-layer gate values (every 5th layer)
                     for i, gv in enumerate(gate_values):
                         if i % 5 == 0 or i == len(gate_values) - 1:
-                            self.writer.add_scalar(f"gates/layer_{i}", gv, self.global_step)
+                            self.writer.add_scalar(f"gates/video_layer_{i}", gv, self.global_step)
+                if gate_text_values:
+                    self.writer.add_scalar("train/gate_text_mean", np.mean(gate_text_values), self.global_step)
+                    self.writer.add_scalar("train/gate_text_max", np.max(gate_text_values), self.global_step)
+                    for i, gv in enumerate(gate_text_values):
+                        if i % 5 == 0 or i == len(gate_text_values) - 1:
+                            self.writer.add_scalar(f"gates/text_layer_{i}", gv, self.global_step)
+
+                # Log curriculum gate clamp if active
+                if self.curriculum_enabled:
+                    if self.global_step < self.curriculum_warmup_steps:
+                        progress = self.global_step / max(1, self.curriculum_warmup_steps)
+                        if self.curriculum_gate_end is not None:
+                            clamp_val = self.curriculum_gate_start + progress * (
+                                self.curriculum_gate_end - self.curriculum_gate_start)
+                        else:
+                            clamp_val = self.curriculum_gate_start + progress * (1.0 - self.curriculum_gate_start)
+                        self.writer.add_scalar("train/gate_clamp", clamp_val, self.global_step)
+                    else:
+                        self.writer.add_scalar("train/gate_clamp", -1.0, self.global_step)  # unclamped
 
                 # Log gate gradient norms
                 gate_grad_norms = self._get_gate_grad_norms()
@@ -521,7 +555,11 @@ class DirectorTrainer:
                     self.writer.add_scalar(f"modules/{mod_name}/weight_norm", stats["weight_norm"], self.global_step)
                     self.writer.add_scalar(f"modules/{mod_name}/weight_delta", stats["weight_delta"], self.global_step)
 
-                gate_str = f", gate={np.mean(gate_values):.6f}" if gate_values else ""
+                gate_str = ""
+                if gate_values:
+                    gate_str = f", gV={np.mean(gate_values):.4f}"
+                    if gate_text_values:
+                        gate_str += f"/gT={np.mean(gate_text_values):.4f}"
                 if gate_grad_norms:
                     gate_str += f" (grad={np.mean(gate_grad_norms):.2e})"
                 gn_str = f"{grad_norm:.2e}" if self.log_grad_norm else "N/A"
@@ -673,7 +711,19 @@ class DirectorTrainer:
                 self._transformer.global_encoder.clip_model.to("cpu")
                 torch.cuda.empty_cache()
 
-            # 4. Compute flow matching loss
+            # 4. Compute curriculum gate clamp (if enabled)
+            gate_clamp = None
+            if self.curriculum_enabled and self.global_step < self.curriculum_warmup_steps:
+                progress = self.global_step / max(1, self.curriculum_warmup_steps)
+                if self.curriculum_gate_end is not None:
+                    gate_clamp = self.curriculum_gate_start + progress * (
+                        self.curriculum_gate_end - self.curriculum_gate_start
+                    )
+                else:
+                    # Linear ramp from gate_start to 1.0, then unclamped
+                    gate_clamp = self.curriculum_gate_start + progress * (1.0 - self.curriculum_gate_start)
+
+            # 5. Compute flow matching loss
             loss_dict = self.pipeline.compute_flow_matching_loss(
                 x_1=x_1,
                 text_embeds=text_embeds,
@@ -683,6 +733,7 @@ class DirectorTrainer:
                 time_sampling=self.time_sampling,
                 logit_normal_mean=self.logit_normal_mean,
                 logit_normal_std=self.logit_normal_std,
+                gate_clamp=gate_clamp,
             )
 
             loss = loss_dict["loss"] / self.grad_accum_steps
@@ -1063,10 +1114,13 @@ class DirectorTrainer:
             ablation_elapsed = time.time() - ablation_start
             logger.info(f"Multi-CFG ablation complete in {ablation_elapsed:.1f}s")
 
-        # === Part 3: Per-layer gate values ===
+        # === Part 3: Per-layer gate values (video + text) ===
         gate_vals = self._get_gate_values()
+        gate_text_vals = self._get_gate_text_values()
         for i, gv in enumerate(gate_vals):
-            self.writer.add_scalar(f"gates/layer_{i:02d}", gv, step)
+            self.writer.add_scalar(f"gates/video_layer_{i:02d}", gv, step)
+        for i, gv in enumerate(gate_text_vals):
+            self.writer.add_scalar(f"gates/text_layer_{i:02d}", gv, step)
 
         del recon_frames_cpu, gt_mid_cpu
         torch.cuda.empty_cache()
@@ -1924,11 +1978,19 @@ class DirectorTrainer:
         return total_norm ** 0.5
 
     def _get_gate_values(self) -> List[float]:
-        """Extract gate values from all DIRECTOR context adapters."""
+        """Extract gate values from all DIRECTOR context adapters (video gate)."""
         gate_vals = []
         adapters = self._transformer.adapters
         for key, adapter in adapters.items():
-            gate_vals.append(adapter.gate.item())
+            gate_vals.append(adapter.gate_video.item())
+        return gate_vals
+
+    def _get_gate_text_values(self) -> List[float]:
+        """Extract text gate values from all DIRECTOR context adapters."""
+        gate_vals = []
+        adapters = self._transformer.adapters
+        for key, adapter in adapters.items():
+            gate_vals.append(adapter.gate_text.item())
         return gate_vals
 
     def _get_gate_grad_norms(self) -> List[float]:
@@ -1936,8 +1998,8 @@ class DirectorTrainer:
         norms = []
         adapters = self._transformer.adapters
         for key, adapter in adapters.items():
-            if adapter.gate.grad is not None:
-                norms.append(adapter.gate.grad.abs().item())
+            if adapter.gate_video.grad is not None:
+                norms.append(adapter.gate_video.grad.abs().item())
         return norms
 
     def _get_module_stats(self) -> Dict[str, Dict[str, float]]:

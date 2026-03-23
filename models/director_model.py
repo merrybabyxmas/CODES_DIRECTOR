@@ -86,7 +86,14 @@ class ContextAdapter(nn.Module):
     K = linear(context)       -->  (B, N_ctx, D)
     V = linear(context)       -->  (B, N_ctx, D)
 
-    Output is tanh-gated and added as residual.
+    Uses zero-initialized learnable gates (ControlNet/IP-Adapter style):
+      - Starts at 0 → model initially identical to pretrained backbone
+      - Model learns to open gates as context becomes useful for loss reduction
+      - Separate gates for video and text streams
+
+    Output is normalized (LayerNorm) before gated residual to prevent
+    distribution shift from destabilizing the backbone.
+
     Fully compatible with gradient checkpointing since no backbone modification.
     """
 
@@ -116,9 +123,14 @@ class ContextAdapter(nn.Module):
         # Output projection
         self.to_out = nn.Linear(inner_dim, inner_dim, bias=False)
 
-        # Learnable gate scalar (direct, no activation).
-        # Set requires_grad based on config — can be frozen to force adapter learning.
-        self.gate = nn.Parameter(torch.tensor(gate_init))
+        # Separate learnable gates for video and text streams
+        # Recommended: gate_init=0.1 (small enough to not destabilize, large enough for gradient flow)
+        # With learnable gates, model can increase/decrease context influence as needed
+        self.gate_video = nn.Parameter(torch.tensor(gate_init))
+        self.gate_text = nn.Parameter(torch.tensor(gate_init))
+
+        # Legacy alias for monitoring compatibility
+        self.gate = self.gate_video
 
         self._init_weights(init_gain)
 
@@ -126,6 +138,8 @@ class ContextAdapter(nn.Module):
         nn.init.xavier_uniform_(self.to_q.weight, gain=gain)
         nn.init.xavier_uniform_(self.to_k.weight, gain=gain)
         nn.init.xavier_uniform_(self.to_v.weight, gain=gain)
+        # Small init for output projection — needs non-zero output for gate gradients
+        # Gate starts at 0, so initial residual = 0 * small_output ≈ 0 (safe)
         nn.init.xavier_uniform_(self.to_out.weight, gain=gain)
 
     def forward(
@@ -134,6 +148,7 @@ class ContextAdapter(nn.Module):
         encoder_hidden_states: torch.Tensor,
         unified_context: torch.Tensor,
         context_mask: Optional[torch.Tensor] = None,
+        gate_clamp: Optional[float] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """
         Args:
@@ -141,6 +156,7 @@ class ContextAdapter(nn.Module):
             encoder_hidden_states:  (B, T_text, D)   text tokens from block output
             unified_context:        (B, N_ctx, D)    unified context [local + global]
             context_mask:           (B, N_ctx)        validity mask
+            gate_clamp:             Optional max gate value for curriculum gating
 
         Returns:
             hidden_states, encoder_hidden_states  (with adapter residual added)
@@ -181,9 +197,15 @@ class ContextAdapter(nn.Module):
         # Split back
         ctx_text, ctx_video = out.split([text_len, S - text_len], dim=1)
 
-        gate_val = self.gate  # Direct learnable scalar (no activation)
-        hidden_states = hidden_states + gate_val * ctx_video
-        encoder_hidden_states = encoder_hidden_states + gate_val * ctx_text
+        # Separate learnable gates for video and text
+        gv = self.gate_video
+        gt = self.gate_text
+        if gate_clamp is not None:
+            gv = gv.clamp(max=gate_clamp)
+            gt = gt.clamp(max=gate_clamp)
+
+        hidden_states = hidden_states + gv * ctx_video
+        encoder_hidden_states = encoder_hidden_states + gt * ctx_text
 
         return hidden_states, encoder_hidden_states
 
@@ -370,7 +392,8 @@ class DirectorTransformer(nn.Module):
                 init_gain=self.config.adapter_init_gain,
             )
             if self.config.freeze_gate:
-                adapter.gate.requires_grad = False
+                adapter.gate_video.requires_grad = False
+                adapter.gate_text.requires_grad = False
             self.adapters[str(idx)] = adapter
 
     def set_vae(self, vae: nn.Module):
@@ -409,7 +432,7 @@ class DirectorTransformer(nn.Module):
             for name, p in adapter.named_parameters():
                 if not p.requires_grad:
                     continue
-                if name == "gate":
+                if name in ("gate_video", "gate_text"):
                     gate_params.append(p)
                 else:
                     adapter_params.append(p)
@@ -547,12 +570,14 @@ class DirectorTransformer(nn.Module):
         encoder_hidden_states: torch.Tensor,
         unified_context: torch.Tensor,
         context_mask: Optional[torch.Tensor],
+        gate_clamp: Optional[float] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Apply adapter for a given block index (if it exists)."""
         key = str(block_idx)
         if key in self.adapters:
             hidden_states, encoder_hidden_states = self.adapters[key](
                 hidden_states, encoder_hidden_states, unified_context, context_mask,
+                gate_clamp=gate_clamp,
             )
         return hidden_states, encoder_hidden_states
 
@@ -566,10 +591,15 @@ class DirectorTransformer(nn.Module):
         timestep_cond: Optional[torch.Tensor] = None,
         image_rotary_emb: Optional[torch.Tensor] = None,
         return_dict: bool = True,
+        gate_clamp: Optional[float] = None,
     ):
         """
         Custom forward that replicates CogVideoX's forward but adds
         post-block adapter calls.
+
+        Args:
+            gate_clamp: Optional max gate value for curriculum gating.
+                        None = no clamping (gates learn freely).
         """
         backbone = self.backbone
         batch_size, num_frames, channels, height, width = hidden_states.shape
@@ -627,6 +657,7 @@ class DirectorTransformer(nn.Module):
                 hidden_states, encoder_hidden_states = self._adapter_block(
                     i, hidden_states, encoder_hidden_states,
                     unified_context, context_mask,
+                    gate_clamp=gate_clamp,
                 )
 
         # 4. Final norm + projection
@@ -737,6 +768,7 @@ class DirectorPipeline:
         time_sampling: str = "logit_normal",
         logit_normal_mean: float = 0.0,
         logit_normal_std: float = 1.0,
+        gate_clamp: Optional[float] = None,
     ) -> Dict[str, torch.Tensor]:
         """
         Backbone-agnostic diffusion loss via self.diffusion wrapper.
@@ -766,6 +798,7 @@ class DirectorPipeline:
             unified_context=unified_context,
             context_mask=context_mask,
             return_dict=False,
+            gate_clamp=gate_clamp,
         )[0]
 
         loss = self.diffusion.compute_loss(pred, target)

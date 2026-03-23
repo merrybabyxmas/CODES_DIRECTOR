@@ -1,0 +1,138 @@
+# =============================================================================
+# DIRECTOR: Shared Caption + No LoRA — Pure Adapter Gate Test
+# Purpose: Without LoRA, backbone is 100% frozen. The ONLY way to reduce loss
+#   beyond text-only baseline is through the adapter gates.
+#   If gates don't grow here, the adapter architecture itself is broken.
+# Single GPU (RTX 5090 32GB)
+# =============================================================================
+
+seed: 42
+cuda_device: 0
+
+model:
+  backbone: "THUDM/CogVideoX-2b"
+  freeze_backbone: true
+  unfreeze_backbone_last_n: 0
+  inner_dim: 1920
+  text_embed_dim: 4096
+  num_heads: 30
+  head_dim: 64
+  num_layers: 30
+  max_text_seq_length: 226
+
+  context:
+    local_token_count: 256
+    num_local_frames: 2
+    global_token_count: 64
+    max_characters: 4
+    context_dim: 1920
+    clip_vision_dim: 1024
+    local_proj_dim: 1920
+    global_proj_dim: 1920
+    clip_model: "openai/clip-vit-large-patch14"
+
+  dropout:
+    drop_global_prob: 0.0
+    drop_local_prob: 0.0
+    keep_both_prob: 1.0
+
+  attention:
+    inject_layers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
+    context_gate_init: 0.1
+    adapter_init_gain: 0.2
+    freeze_gate: false
+
+  lora:
+    enabled: false    # NO LoRA — adapter is the ONLY trainable path into backbone
+
+dataset:
+  dataset_dir: "overfit_test/shared_caption_dataset"
+  metadata_path: "overfit_test/shared_caption_dataset/metadata.jsonl"
+  video:
+    num_frames: 49
+    fps: 8
+    height: 480
+    width: 720
+    latent_height: 60
+    latent_width: 90
+    latent_frames: 13
+  dataloader:
+    batch_size: 1
+    num_workers: 2
+    pin_memory: true
+    prefetch_factor: 2
+    use_stratified_sampler: false
+
+training:
+  optimizer:
+    type: "adamw8bit"
+    lr: 1.0e-4         # Encoder
+    adapter_lr: 1.0e-3  # Adapter (main learnable component)
+    gate_lr: 5.0e-4     # Gates
+    gate_grad_scale: 1.0
+    weight_decay: 0.0
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+
+  scheduler:
+    type: "cosine"
+    warmup_steps: 50
+    min_lr_ratio: 0.1
+
+  curriculum_gating:
+    enabled: false
+
+  num_epochs: 10000
+  max_steps: 2000
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+
+  mixed_precision: "bf16"
+  gradient_checkpointing: true
+
+  train_height: 480
+  train_width: 720
+  train_frames: 13
+
+  cache_text_embeddings: true
+  offload_text_encoder: false
+
+  flow_matching:
+    sigma_min: 0.001
+    time_sampling: "uniform"
+
+  checkpoint:
+    save_every_steps: 500
+    save_dir: "overfit_test/checkpoints_shared_nolora"
+    keep_last_n: 5
+    save_best: true
+    best_metric: "loss"
+
+  logging:
+    log_every_steps: 10
+    tensorboard_dir: "logs/overfit_shared_nolora"
+    log_grad_norm: true
+
+  sample_generation:
+    every_steps: 200
+    ablation_every_steps: 500
+    multishot_every_steps: 500
+    multishot_num_shots: 5
+    num_steps: 50
+    num_frames_to_log: 8
+    save_dir: "overfit_test/samples_shared_nolora"
+
+inference:
+  guidance:
+    omega_text: 6.0
+    omega_local: 2.0
+    omega_global: 3.0
+  solver:
+    type: "euler"
+    num_steps: 50
+    sigma_min: 0.001
+  generation:
+    num_frames: 49
+    height: 480
+    width: 720
+    fps: 8
